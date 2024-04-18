@@ -1,0 +1,298 @@
+---
+title: "vegetationdata_2023"
+output: html_document
+date: "2023-12-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vegetation data: collected summer 2023
+
+```{r libraries}
+library(tidyverse)
+library(readxl)
+library(vegan)
+```
+
+## upload data:
+
+DBH
+
+```{r data}
+dbh <- read_xlsx("Vegetation and soil.xlsx", sheet = 3, col_names = T)
+dbh <- dbh[,c(1:8,11,28:29)]
+dbh <- dbh %>% 
+  rename("grid_loc" = "grid location",
+         "DBH_single" = "DBH = CBH/pi",
+         "DBH_multi" = "forked only: square root of SS")
+dbh <- dbh %>% 
+  mutate(net_dbh = coalesce(DBH_single, DBH_multi)) %>% 
+  select(c(1:8, net_dbh, 11))
+
+dbh$species <- str_replace_all(dbh$species, "heart-leaved birch", "heartleaf birch")
+```
+
+ground vegetation
+```{r}
+grnd <- read_xlsx("Vegetation and soil.xlsx", sheet = 1, col_names = T)
+```
+
+shrubs
+```{r}
+shrub <- read_xlsx("Vegetation and soil.xlsx", sheet = 2, col_names = T)
+
+shrub <- shrub %>% 
+  select(-c(date,patches_heights, `...13`, `...14`, `...15`,
+            patches_dimensions, `...18`, `...19`, `...20`))
+# need to update these data: homogenize the two different types (= total volume of shrubs per plot)
+
+# clean: we want a "long" dataset that has estimated volume, a note as to whether it's a patch- or an individually-derived estimate, height (again, individual or patch aka average), and area (again, individual or patch derived).
+shrub <- shrub %>% 
+  mutate(veg_type = if_else((is.na(height)==TRUE), 
+                            "patch", "single stem")) %>% #asign vegetation type
+  mutate(h_forvol = if_else((is.na(height)==TRUE),
+                            avg_h, height)) %>% 
+  mutate(area_forvol = )
+```
+
+Dead trees
+```{r}
+dead <- read_xlsx("Vegetation and soil.xlsx", sheet = 4, col_names = T)
+```
+
+canopy cover
+```{r}
+canopy <- read_xlsx("Vegetation and soil.xlsx", sheet = 5, col_names = T)
+
+```
+
+## NFLD palette:
+```{r}
+palette <- c("#fc9272", "#f0dc82", "#30571f")
+```
+
+
+## visualize data:
+ground vegetation:
+```{r grnd}
+grnd %>% 
+  select(-c())
+  ggplot(aes(x=treatment, y=TOTAL))+
+  geom_boxplot()+
+  facet_wrap(~park)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+# transform grnd data into long format to look at individual groups' cover:
+grnd_long <- grnd %>% 
+  select(-c(date, notes, site_id, `grid location`, TOTAL)) %>% # don't need these variables
+  pivot_longer(!c(site, park, treatment, type), 
+               names_to = "functional_group", 
+               values_to = "percent_cover")
+```
+PCA of ground veg: following vegan tutorial here https://rpubs.com/an-bui/vegan-cheat-sheet
+```{r}
+# isolate just the site x functional groups data from grnd:
+grnd_grps <- grnd %>% 
+  select(-c("date", "park", "site_id", "treatment", "type", "grid location",
+            "TOTAL", "notes"))
+
+grnd_grps$site = as.numeric(as.factor(grnd_grps$site))
+
+pca_grnd <- rda(grnd_grps)
+pca_grnd
+summary(pca_grnd)
+```
+
+Shannon diversity, community-scale perMANOVA (permutational multivariate analysis of variance)
+```{r}
+# first: set up a metadata frame: with both data (% cover numbers) and metadata associated (treatment, type of gap, etc.)
+# count/percent data: the only entries are the values
+grnd_percent <- grnd %>% 
+  select(-c(date, park, site_id, site, treatment, type, "grid location", TOTAL, notes))
+# metadata df:
+grnd_env <- grnd %>% 
+  select(c(park, site, treatment, type))
+
+# SHANNON DIVERSITY:
+shan <- diversity(grnd_percent)
+shan_aov <- aov(shan ~ (treatment * park), data = grnd_env)
+summary(shan_aov) # significantly different ground veg communities in the park, and the treatments in each park
+
+# perMANOVA null: centroids of group (aka similiarity) are equivalent across groups
+perman <- adonis2(grnd_percent ~ (treatment*park), data = grnd_env)
+perman # ground cover differs by park, treatment, and by the interaction
+
+# PCA: get ordination of each functional group in "variance" space (how much influence does it have on community compostion as it pertains to the variables we're interested in)
+grnd_pca <- rda(grnd_percent)
+
+# PLOT:
+pca_scores <- scores(grnd_pca, display = "sites") %>% 
+  as.data.frame() %>% 
+  # rownames_to_column("site") %>% 
+  cbind(grnd_env)
+
+pca_vect <- scores(grnd_pca, display = "species") %>% 
+  as.data.frame()
+
+pca_scores %>% 
+  ggplot() +
+  geom_point(aes(x = PC1, y = PC2, color = treatment)) +
+  scale_color_manual(values = palette) +
+  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
+  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
+  geom_segment(data = pca_vect, aes(x = 0, y = 0, xend = PC1, yend = PC2), 
+               arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_text(data = pca_vect, aes(x = PC1, y = PC2, label = rownames(pca_vect))) +
+  labs(x = "PC1",
+       y = "PC2") +
+  theme_classic()
+```
+NMDS plot:
+```{r}
+grnd_nmds <- metaMDS(grnd_percent)
+grnd_nmds # low stress on the model, this is good: 0.1737944 (aka the ordination did a pretty good job representing community structure)
+stressplot(grnd_nmds)
+
+plot_df <- scores(grnd_nmds, display = "sites") %>% 
+  as.data.frame() %>% 
+  # rownames_to_column("site") %>% 
+  cbind(grnd_env)
+
+ggplot(plot_df, aes(x = NMDS1, y = NMDS2, color = treatment, shape = treatment)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = palette) +
+  stat_ellipse(linetype = 2, size = 1) +
+  theme_classic() +
+  labs(title = "NMDS plot of ground cover communities")
+```
+
+# canopy:
+```{r}
+# Tidy the data:
+canopy <- canopy %>% 
+  rename(paper_birch = `paper birch (% of closed)`,
+         balsam_fir = `balsam fir (% of closed)`,
+         american_ash = `American ash (% of closed)`,
+         speckled_alder = `Speckled alder (% of closed)`,
+         black_spruce = `Black spruce (% of closed)`,
+         red_maple = `Red Maple (% of closed)`,
+         larch = `Larch (% of closed)`,
+         tamarack = `tamarack (% of closed)`)
+canopy <- canopy %>% 
+  mutate_at(c("paper_birch", "balsam_fir", "american_ash",
+              "speckled_alder", "black_spruce", "red_maple",
+              "larch", "tamarack"), as.numeric) %>% 
+  mutate_at(c("paper_birch", "balsam_fir", "american_ash",
+              "speckled_alder", "black_spruce", "red_maple",
+              "larch", "tamarack"), ~na_if(., 0))
+
+canopy %>% 
+  ggplot(aes(x=treatment, y=closed))+
+  geom_boxplot(aes(fill = treatment))+
+  scale_fill_manual(values = palette)+
+  ylab("percent of canopy that is closed")+xlab("")+
+  theme_classic()+
+  theme(legend.position = "none")
+
+# convert to long-form
+canopy_long <- canopy %>% 
+  select(-c(date, site_id)) %>% # don't need these variables
+  pivot_longer(!c(site, park, treatment, type, `grid location`, open, closed), 
+               names_to = "tree_spp", 
+               values_to = "percent_cover") %>% 
+  mutate(percent_cover = as.numeric(percent_cover))
+```
+
+canopy cover: exclosure vs. mature
+```{r}
+canopy_long %>% 
+  filter(treatment != "gap") %>% 
+  ggplot(aes(x=treatment, y=closed))+
+  geom_boxplot()+
+  theme_classic()
+  
+```
+Canopy cover: exclosure vs. mature, NMDS/PCA
+```{r}
+# first: set up a metadata frame: with both data (% cover numbers) and metadata associated (treatment, type of gap, etc.)
+# count/percent data: the only entries are the values
+canopy_percent <- canopy %>% 
+  select(-c(date, park, site_id, site, treatment, type,
+            "grid location", open, closed))
+canopy_percent <- canopy_percent %>% 
+  mutate(across(where(is.numeric), tidyr::replace_na, 0))
+  
+# metadata df:
+canopy_env <- canopy %>% 
+  select(c(park, site, treatment, type, "grid location"))
+
+# SHANNON DIVERSITY:
+shan <- diversity(canopy_percent)
+shan_aov <- aov(shan ~ (treatment * park), data = canopy_env)
+summary(shan_aov) # significantly different across treatments but not parks
+
+# perMANOVA null: centroids of group (aka similiarity) are equivalent across groups
+perman <- adonis2(canopy_percent ~ (treatment*park), data = canopy_env)
+perman # ground cover differs by park, treatment, and by the interaction
+
+# PCA: get ordination of each functional group in "variance" space (how much influence does it have on community compostion as it pertains to the variables we're interested in)
+canopy_pca <- rda(canopy_percent)
+
+# PLOT:
+pca_scores <- scores(canopy_pca, display = "sites") %>% 
+  as.data.frame() %>% 
+  # rownames_to_column("site") %>% 
+  cbind(canopy_env)
+
+pca_vect <- scores(canopy_pca, display = "species") %>% 
+  as.data.frame()
+
+pca_scores %>% 
+  ggplot() +
+  geom_point(aes(x = PC1, y = PC2, color = treatment)) +
+  scale_color_manual(values = palette) +
+  geom_vline(xintercept = c(0), color = "grey70", linetype = 2) +
+  geom_hline(yintercept = c(0), color = "grey70", linetype = 2) +
+  geom_segment(data = pca_vect, aes(x = 0, y = 0, xend = PC1, yend = PC2), 
+               arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_text(data = pca_vect, aes(x = PC1, y = PC2, label = rownames(pca_vect))) +
+  labs(x = "PC1",
+       y = "PC2") +
+  theme_classic()
+```
+NMDS plot:
+```{r}
+canopy_nmds <- metaMDS(canopy_percent)
+canopy_nmds # low stress on the model, this is good: 0.1737944 (aka the ordination did a pretty good job representing community structure)
+stressplot(canopy_nmds)
+
+plot_df <- scores(grnd_nmds, display = "sites") %>% 
+  as.data.frame() %>% 
+  # rownames_to_column("site") %>% 
+  cbind(grnd_env)
+
+ggplot(plot_df, aes(x = NMDS1, y = NMDS2, color = treatment, shape = treatment)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = palette) +
+  stat_ellipse(linetype = 2, size = 1) +
+  theme_classic() +
+  labs(title = "NMDS plot of ground cover communities")
+```
+
+
+
+
+```{r hist}
+dbh %>% 
+  # filter(treatment == "gap") %>% 
+  ggplot(aes(x=net_dbh, group = park, fill = park))+
+  # ggplot(aes(x=net_dbh, group = species, fill = species))+
+  # geom_density(adjust=1.5, alpha = 0.75)+
+  geom_density(alpha = 0.75)+
+  scale_fill_manual(values = c("darkolivegreen", "goldenrod"))+
+  labs(y="", x="diameter at breast height (cm)")+
+  theme_classic()
+```

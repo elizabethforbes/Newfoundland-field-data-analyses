@@ -1,0 +1,7 @@
+NAME,treatment,location,line,collar,date [YYYY-MM-DD HH:MM:SS],intial pressure [kPa],total volume [cm+3],linear flux (dry) [umol+1m-2s-1],chamber volume [cm+3],collar height [cm],mean chamber T [C],mean pressure [kPa],mean CO2 [umol+1 mol-1],initial CO2 (dry) [umol+1 mol-1],initial CO2 (dry) [umol+1 mol-1],quadratic flux (dry) [umol+1m-2s-1],quadratic flux R2,linear flux R2,mean water content [mmol+1 mol-1],chamber area [cm+2],chamber closure time (s),CO2 range (dry) [umol+1 mol-1],range of pressure [kPa],Licor volume [cm+3]
+Excl_MillBrook,exclosure,MillBrook,1,3,7/28/22 13:37,99.05,1063.45,5.5083,835.2,2.5,26.48311,99.04,483.07,463.87,492.73,5.70283,0.99949,0.99945,19.588,83.7,0,61.83,0.03,19
+Excl_MillBrook,exclosure,MillBrook,1,3,7/28/22 13:38,99.04,1063.45,6.47646,835.2,2.5,26.26918,99.04,376.3,363.98,383.52,7.08455,0.99953,0.9989,18.785,83.7,0,71.75,0.04,19
+Excl_MillBrook,exclosure,MillBrook,1,2,7/28/22 13:44,99.03,958.83,2.97668,835.2,1.25,26.26508,99.03,383.63,346.05,391.96,3.03526,0.99931,0.9993,21.202,83.7,0,61.3,0.04,19
+Excl_MillBrook,exclosure,MillBrook,1,2,7/28/22 13:45,99.05,958.83,3.30811,835.2,1.25,26.27115,99.04,342.35,340.37,349.78,3.45624,0.99939,0.99915,21.166,83.7,0,35.38,0.03,19
+Excl_MillBrook,exclosure,MillBrook,1,1,7/28/22 13:52,99.03,979.75,4.29085,835.2,1.5,25.50754,99.03,347.76,336.83,354.84,4.65253,0.99965,0.99925,19.87,83.7,0,46.71,0.03,19
+Excl_MillBrook,exclosure,MillBrook,1,1,7/28/22 13:53,99.02,979.75,4.26438,835.2,1.5,25.38508,99.04,339.74,327.3,346.61,4.51799,0.99951,0.99933,19.762,83.7,0,50.93,0.04,19

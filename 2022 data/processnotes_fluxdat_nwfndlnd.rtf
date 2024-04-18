@@ -1,0 +1,388 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2706
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;\f2\fswiss\fcharset0 Helvetica-Oblique;
+}
+{\colortbl;\red255\green255\blue255;\red254\green253\blue213;\red0\green0\blue0;\red251\green2\blue7;
+\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c99682\c99006\c86634;\csgray\c0\c0;\cssrgb\c100000\c14913\c0;
+\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww12600\viewh17260\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 process notes\
+flux data summer 2022\
+\
+Weds, September 14, 2022\
+- some issues with recording; going to need to check out SB_berryhill1. Did I measure all of them twice, or just the two far transects?\
+	- according to my notes on June 22nd, I had already done 3 and needed to do 1 and 2 that day\
+	- Berry Pond (Hill1) line 3: Aug. 17th\
+	- lines 1 and 2: Aug. 22nd\
+- looks like Timber_Electric_line3 never recorded a successful collar 1 measurement despite 3 attempts.  Confusing AND annoying.\
+	- made copies of these files because I thought I had been indicating that I had measured the 	collars out of order\
+	- upon reflection I think I did measure them in order (e.g. \'935, 4, \'85\'94) but recorded wrong on 	paper\
+	- I am utterly mystified as to how that might have happened.\
+	-\cb2  also need to check this line for correct offset depths; may need to recalculate a few\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \cb3 \
+consider renaming BerryHill1 = BerryPond, and BerryHill2 = BerryHill\
+- update i\'92m doing this\
+\
+ugh realizing that the header on my excel files does not match the data for some sheets\
+_________\
+_________EOD\
+\
+Ok so: Ctrl_RH_line 2 had an issue with collar 3, where the collar height in the data did not match the notes.  It is fairly clear that this was a mistake in my typing in the updated height from the previous collar.  Adjusted in Soil Flux program and regenerated the data, deleted old file.\
+\
+Timber_Electric_line3_1 did not actually record, so that\'92s a lost datapoint.  C\'92est la vie.  I think the others are all correct, however.\
+\
+all data are generated in CSVs, to be concatenated in R/explored.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 \cb1 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Monday, 09/19/2022\
+\
+Today I tried to organize the master datasheet by adding flux and figuring out where to put the soils characteristics data.  I made duplicate tabs on the sheet to make sure I don\'92t irreversibly screw up.  lol.\
+\
+brain is dead so taking stevie for a walk, but save the original tab for reference and double-check that all the soil temp/moisture/etc. data matches the right sites!!\
+\
+ok so i double checked but it\'92d be a good idea to cross-check the data sheets automatically somehow.  I wonder if there\'92s some kind of comparison I could do.  Finish importing the flux data tomorrow; could do this in R, too.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Tuesday, 09/20/2022\
+\
+ok the tab didn\'92t save and i don\'92t know why this is why we don\'92t do work at niiiiiight!!!  Going to have to visually confirm these numbers with my notes.  fucking christ.\
+\
+ok double checked the flux data against my notes; the soils data (aka soil T, soil moisture, light level, etc.) all match up in the notes and in the spreadsheet.  phewwwww.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Wednesday, 09/21/2022\
+\
+Making drafts for sample prep lab work spreadsheets on the group Google sheet; need to finish the labels, get those printed out at Staples (or at work, on the laser printer?  just provide the sticker paper?)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Wednesday, 11/09/2022\
+\
+Ok doing some reading on semivariogram analyses today and I think it\'92d be interesting to run these analyses on the tree/veg data I collected in addition to the flux data.  I still need to figure out how I\'92m going to sort those data (wide format to enter, long in R).  But it\'92d be cool to get an idea of spatial autocorrelation/patterning at the gaps edges\'92 and into mature/open area.\
+\
+Things to keep in mind:\
+- you are very inexperienced with GPS projections.  Make sure you\'92re on the right track as you start to input your data in xy GPS formats in R. Projected data puts data on a flat surface (aka DEGREES); unprotected data shows points on earth\'92s surface, aka LAT/LONG. Which one do we need here?\
+- thing about if/how to include elevational data. This feels like it\'92d be important in Gros Morne particularly.  Also, slope data, which may influence the directional dependence of some of our sites (e.g. does being downslope change anything)\
+\
+https://www.aspexit.com/implementing-variograms-in-r/\
+https://rpubs.com/hildebrandta/Variogram\
+https://gsp.humboldt.edu/olm/R/04_01_Variograms.html\cf4 \
+\
+________________________________________________________________________________\
+\cf5 Thursday, 02/23/2023\
+\
+Back to data analysis!!  Kill me.\
+\
+Ok so spent way too long thinking about how to correct the data for ambient temperature, not thinking about how that is going to erase spatially-explicit temp differences in the same time period e.g. in shaded canopy vs. in open gap. Duhhhh. Ok so perhaps we use month of data collection as a random effect?  Or if there is some database of ambient T I could use.\
+\
+Modeling ideas:\
+\
+- linear mixed effects model on log-transformed flux data\
+\
+What am I testing here? May want to add other cols to the data:\
+- mature, edge, gap\
+- distance to edge\
+\
+Also just perhaps doing more spatially explicit data analysis\
+\
+Add gps points to flux dataset!!!\
+\
+Box plot of temp args. By month; could add month as a categorical variable to the data?  (This way I could do monthly correction/zeroing)\
+- or could subtract avg. ambient temp from air temps to \'91zero\'92 every temp, and just have relative differences in temp as the fixed effect?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Friday, 02/24/2023\
+\
+Okay just talked to Matteo: need to do a little more data exploration including:\
+- can I nest collar location (e.g. distance from center of gap) within month?\
+- presumably, the control site heated up the same amount as the other GMNP sites\
+	- does the relationship between canopy cover and air temp increase stay the same no matter location?\
+	- or, is there a difference in the dT increase between gap and canopy?\
+	- if there\'92s a difference, we can potentially nest\
+\
+If there isn\'92t: ignore control site for now and instead use either collar 5 or collar 1 as control for within-site variation (site ID as random effect, treatment as fixed effect)\
+\
+I *think* collar location can be nested within month?  I think that the change in temp is reflected by collar location on average.\
+\
+This is confusing.\
+\
+\
+\
+\
+\
+\
+\
+\'93I\'92m wondering if you could salvage them all as \'93canopy\'94 and then compare normal to warm or cool to warm with the points you have on transects that are in/out of canopy\'94 \'97 Ana\
+\
+Just wondering if you have 2 separate papers, 1 from these transects and 1 from exclosures; or if you could write a \'93here\'92s what we see in exclosures, when we extrapolate to the larger landscape do we see similar things? -> oh landscape heterogeneity mediates moose impacts\'94 \'97 Devyn\
+\
+so three transects, three groups (canopy, edge, gap) and for a first pass presentation, I think that\'92s pretty good! \'97 Heili\
+\
+Possible to get data on moose presence/absence in the gaps?  Cameras?  Darroch?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Tuesday, 02/28/2023\
+\
+Working on model building today\
+\
+Ok: definitely a random effect of site ID.\
+- do we also have a random slope of temp?\
+- and, is it correlated to site ID or uncorrelated? (I imagine uncorrelated; ambient T is universal (ish) across sites, no?  Unless altitude or slope-face influences things\'85ugh)\
+\
+Ok built a model: \
+M1 -> lmerTest::lmer(log(Lflux_dry) ~ coverage*disturbance*soil_mois_probe_VWC + (1+meanchamberT | site_name)\
+\
+However, the model is singular (aka the model is overfitted, e.g. some of the parameters are \'93on the boundary of feasible parameter space: variances of one or more linear combinations of effects are close to or at zero\'94. Often occurs with complex random-effects models like the one I used here. \
+\
+Ok new idea: standardize temp to calculate relative difference in temperature at each collar\
+- use relative temp differences as fixed effect\
+- use site ID as random effect (un-nested)\
+\
+So I\'92m going to do this but also need to make sure I do so by SAMPLING day as well.  Not all sites were sampled all in one day.  How to approach this?  Grouping in \'93tidy verse\'94 format.\
+\
+Ok heads up may also need to calculate mean flux bc I think there are two fluxes per collar you dope hahahaha\
+\
+\
+EOD: I averaged the two flux measurements at each collar\
+- I also calculated relative temp change and averaged that at each collar two across the two fluxes\
+- ok did some preliminary models and not seeing much difference across collars tbh.\
+- BUT 
+\f1\b NEED TO GET DISTURBANCE BACK INTO THE DATASET SO I CAN ADD TO MODEL\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b0 \cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Wednesday, 03/01/2023\
+\
+Happy March!  Wtf.  Time is a flat circle etc. etc. etc.  Is this getting older?  Just constantly remarking on the passage of time?\
+\
+Okay back to math.\
+\
+Question to ask Os: does relative diff. in temperature correlate with coverage, collar ID?\
+- is it necessary to include in the model if we know they\'92re correlated?  (Kruskal Wallis chi-squared test, p = 0.02)\
+- have run another model (also non-significant results of fixed effects) without relative temp difference (just coverage level, soil moisture, and treatment)\
+\
+\
+Worth modeling by standardized flux aka (flux / relative difference in T given collar location)?  Or am I fishing here?\
+\
+\
+Moose presence/absence, proportional presence/absence in gap types\
+- densities (from Rachael)\
+- age of gap (esp. old timber gap)\
+	- Darroch might have ages on timber\
+\
+Reach out to Lael re: this summer\
+\
+Truck rental: might be able to waive insurance (risk management; could indemnify me for this rental)\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b \cf5 DATA NEEDS
+\f0\b0 \
+Need to add: GPS points of collars\
+- also moose density at each site\
+Keep: relative T in fixed\
+Add organic layer depth to flux analysis (fixed effect, like relative T)\
+Add the control and exclosure sites, somehow (canopy cover\'85mature and exclosure?  Rather than mature only?)\
+	- add park ID as a random effect\
+- size of gap (need to do this in GIS, similar)\
+- can I draw this on iPad?\
+\
+
+\f1\b notes:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b0 \cf5 - I do not have moose density from Rachael on any of the timber gaps, as she only sampled insect gaps\
+- I emailed Rachael to ask if she has a data layer I could pull moose density data from\
+- how to get moose preferred habitat data?  (e.g. do they like timber gaps more than insect gaps?)\
+\
+EOD: added gps data, organic layer data to the larger flux dataset.  Work on getting moose density data in tomorrow.  Ended on line 150 of data.Rmd file; need to do all the manipulations to get it down to size.  (Does averaging \'85 GPS data work??  Lol)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Thursday, 03/02/2023\
+\
+Working on cleaning up the fluxbot 2023 data stream: need to make a function that will separate out each column into a separate tibble, use \'93separate()\'94 from TidyR to iteratively separate each cell in the tibble into multiple columns, then pivot_longer() to put back into rows (aka single col) with timestamps and then join the cols back together by timestamp.\
+\
+From Ana:\
+For after separate(): \'93So you would just have to make those columns all pivot_longer() but then do that for each column that has the list - which might be easier if you do it column by column in a set of sub-data frames and then join them all back together once they\'92re long to fill the timestamps that are missing\'94\
+\
+4pm: it probably doesn\'92t make sense to try to analyze for drift until we have data \
+\
+sf() in R can read .kmz files!!\
+\
+Could analyze data from the fluxbot 2019 to present alongside data from Newfoundland for MUN seminar?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 ________________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Monday, 03/06/2023
+\f1\b \cf0 \
+
+\f0\b0 \cf5 \
+Added in average soil organic layer depth to data, this is good\
+- modeling is still confusing: need to bring my brain to the party. See below.\
+1) calculate relatives for all climate-related fixed effects due to differences in sampling days\
+2) can use plotting to figure out which variables to toss (see below)\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f1\b \cf0 We need to keep treatment, coverage (these are predictor variables we\'92re simply interested in, can\'92t just ditch them Forbes)\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\b0 \cf0 - we can potentially remove:\
+	- hour of day (tho could add to random effect)\
+	- air temperature (we\'92re using relative chamber temp)\
+	- 
+\f2\i possibly
+\f0\i0  soil temp (tho calculating relative)\
+Should I calculate relative humidity? (Yes)\
+- should also calculate relative soil temp, relative soil moisture, relative light level\
+- THIS IS THE NEXT STEP BEFORE MODELING!\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 \
+Currently starting with a naive model a la https://www.rensvandeschoot.com/tutorials/lme4/\
+- so do the above and try again following this tutorial!\
+\
+ALSO GET THE MOOSE DENSITY DATA!\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 _______________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Tuesday, 03/06/2023\
+\
+Ok I think the lat/long are mixed up in my fluxdat4 data frame lolol ok just go back and look at this later\
+\
+Note to self, end of day: I didn\'92t get the moose density data yet, and some of my sites are out of the survey range.  Look into this; does Shawn know if the data is extrapolated out?  Or are there surveys of relative difference across the whole park?\
+\
+Spent too much time trying to figure out how to add labels to a map that weren\'92t all over the place\'85\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 _______________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Thursday, 03/09/2023\
+\
+Dallas Airport, I slept for far too little time, and I think I screwed up the relative diffs calculations for weather data (see plotting rel_chmbrT for fluxdat3 versus fluxdat4)\
+- yep!  Mean flux is different now.  Figure this out, Forbes!!\
+\
+Okay why don\'92t I have all the collars??? Looks like I somehow ended up with only 1, maybe 2 transects each in fluxdat4???\
+\
+Berry Pond: have all 3\
+Berry Hill: line 1\
+electric: line 3\
+Gros Morne trail: line 2\
+Old cut: line 3\
+wiltondale: line 2\
+\
+Did I only collect flux data from one line for multiple sites?  I don\'92t think so, that was just soil data\'85!  WHERE DID THE DATA GO\
+\
+OK I FIGURED IT OUT\
+- it was a bad merge; for some reason, there are only 123 observations of manual data.  Why is this?  What got missing here?  Think about using a left-join instead; and the flux data is the one where we won\'92t lose data\
+- figure out what\'92s going on there, re-join, and then re-summarize and keep the exclosure data (but categorize as \'93exclosure\'94 and don\'92t use collars for analysis)\
+- manual data is right: ok so we need to join manual data to the SUMMARIZED aka mean of the two flux measurements AFTER we\'92ve \'85 mean\'92d it.\
+- same with location GPS: also 123 observations there, 1 for each collar we used\cf4 \
+\
+_______________________________________________________________________________\
+\cf5 Friday, 03/10/2023\
+\
+Had Newfoundland meeting today, get analyses done!!!\
+1) fix data (flux)\
+2) also add in moose density data (re: Rachael\'92s idea; use most recent moos data assessment for each SU)\
+	- figure out SU id number for each one that I sampled in, then pull most recent moose pop dens for each\
+3) CN data!!\
+\
+I fixed the data!\
+- now the trends are less clear boo haha\
+- but also one thing to investigate, seem to have lost some of the organic layer depth data from the timber sites?\
+	- GM Trail has none?\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 _______________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Saturday, 03/18/2023\
+\
+I\'92ve been working on these models for a week or so now, and I think I need to do some separate analyses for moose\
+\
+Flux in covered areas ~ moose density + disturbance type\
+Flux in disturbed areas ~ coverage + moose density + disturbance type??  This feels too close to what I already have.\
+Flux in open areas ~ moose density + disturbance type\
+\
+I also need to decide whether I\'92m going with LMER or GLMER type models for the final flux dataset, and how to look at variance across the coverage levels as well as general differences.\
+- think about chamber temp: this is reflective of coverage level, yes, but it also does tell you something about microclimate in a way that coverage level doesn\'92t. Worth keeping?  Heili says yes and I\'92m inclined to trust her judgement on this.\
+\
+Also lastly: would really love to get a spatial analysis done for my talk at MUN.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 _______________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Tuesday, 03/21/2023\
+\
+IN BEVERLY!  My car has a squirrel\'92s nest in it again and it\'92s gonna cost 2.5k to fix it.\
+\
+Talked to the ladies today, and I think I\'92m double-parameterizing my model by including temperature in it.  Heili does too, so going to take it out.  Going to not worry about the random slope effect just the (1|site_name) (intercept).\
+\
+\
+\
+\
+\
+Jesus Christ lol.  I think I need to decide if the random slope is coming from site, or from soil moisture at each site.\
+Current model:\
+Flux ~ disturbance + coverage + soil moisture + (1+coverage | site)\
+^ assuming that we have different starting fluxes per site, and that the slope of change in flux at each site is determined by coverage cover \
+^ do I need it to be VWC instead tho?  I feel like maybe\'85\
+\
+Does soil moisture need to be a fixed effect if it is the random slope mediator for each site?\
+\
+Ok so\'85 obviously the response variable is flux, but how to account for the fact that the \'93control\'94 have such lower fluxes because I sampled on cooler days?\
+- add in random intercept of site\
+- and add in random slope of temp within each site\
+\
+Soil moisture is also a factor that could be site/day dependent because on some days, I sampled on multiple days if it rained and I had to pack it up.  So there could be differences in soil moisture here that I\'92m not accounting for (aside from having it as a fixed effect in the model). So does it make sense to add it as a random effect, as well?\
+\
+There\'92s also the thought of \'93should I include these as random effects bc there are technically only three of each \'93replicate\'94 gap type within each disturbance, so we don\'92t have the minimum 5-6 replicates per disturbance type just three\
+	- is it worth running regular lm\'92s on each disturbance type, then?\
+\
+Might be worth going with a Bayesian approach to mixed modeling: https://towardsdatascience.com/when-to-use-bayesian-8723c818b742 (small sample sizes)\
+\
+Ok two ideas:\
+1 (simple): run linear models for each disturbance type\
+2 (harder): experiment with Bayesian modeling for these data\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 _______________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Monday, 03/27/2023\
+\
+After meeting with the Newfoundland group last week, decided to add a random effect of (1+transect | site_name).  Didn\'92t change the outcome of the models but also maybe that\'92s not what Shawn was talking about when he said it\'92s worth thinking about the nestedness here.\
+\
+Trying to figure out best way to organize my talk for Friday\'85!\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 \ul \ulc5 Visiting with Connor, 3pm: \ulnone \
+- organize test run of hard-wired model in Newfoundland: prototype 0.2 (preproduction) \'97 under tree canopy and/or low cell connectivity\
+- copy over and move current data from prototype 0.2 to storage sheets, clear sheets for Newfoundland test\
+- swap out growth chamber sensor for new unused sensor; contact Jordan with data from prototype 0.2 as well as original growth chamber data\
+- set up LP miniature for Ravish\
+- computer hardware engineer loves ASCII I2C comms of Atlas tell Jordan!!  ;)  \'93quality of life feature\'94\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf4 _______________________________________________________________________________\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf5 Monday, 04/17/2023\
+\
+Well\'85I didn\'92t consider this, but I think my BD measurements may be an issue since they\'92re combined organic and mineral\'85\
+\
+Back to flux:\
+- going to calculate relative flux rate at each collar within each site?\
+\
+\
+\
+\
+}

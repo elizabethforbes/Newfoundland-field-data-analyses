@@ -1,0 +1,27 @@
+LI-8100:	99999999	99999999	99999999	99999999	99999999
+File Name:	SB_Berryhill2_line2_3
+Instrument Name:	BERI-8100A
+Serial Number:	81A-1200
+Software:	4.0.5
+Comments:	
+Obs#:	1
+Port#:	0
+Label:	
+Observation Length:	01:00
+Pre-purge:	00:30
+Post-purge:	00:00
+IRGA Averaging:	4
+Chamber:	102
+TSource:	Tcham
+Flow8100:	0
+Virga:	19
+Vext:	0
+Vcham:	835.2
+Offset:	1.25
+Area:	83.7
+Vtotal:	958.825
+V1 Info:	0	M=1	B=0
+T1 Info:	T
+Labels_01:	25
+Type	Etime	Date	Tcham	Pressure	H2O	CO2	Cdry	Tbench	T1	V1	SPEED	COURSE	RH	Tboard	Vin	CO2ABS	H2OABS	Hour	DOY	RAWCO2	RAWCO2REF	RAWH2O	RAWH2OREF	Annotation
+-1	0	2022-07-21 17:30:03	" The measurement was restarted. "

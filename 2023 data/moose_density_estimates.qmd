@@ -1,0 +1,200 @@
+---
+title: "moose_density_estimates"
+format: html
+editor: visual
+---
+
+## Moose Density
+
+Estimating moose density across GMNP, TNNP using Rachael's estimates and Parks Canada's survey results.
+
+### libraries:
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(sf)
+library(sp)
+library(here)
+library(ggrepel)
+```
+
+# import data:
+
+These data are a combination of Parks Canada data, and from Rachael and/or Shawn.
+
+## Gros Morne NP, Terra Nova NP sampling units: mean and max number of moose observed (density) based on data provided by the parks across multiple sampling years
+
+GMNP: survey units, mean and max moose density over survey years:
+
+```{r GMNP}
+# survey units, shape file, GMNP:
+su_gmnp <- here("GMNP moose density data", "All GMNP moose survey blocks", "Pre-Stratification_2019.shp")
+# make into sf file:
+su_gmnp <- st_read(su_gmnp)
+
+# add moose density data: pull maximum total number of moose from the five years' of total numbers in the "su" spreadsheet, calculate density, add to new df:
+su_max_gmnp <- su_gmnp %>% 
+  pivot_longer(c("X2018_total", 
+                 "X2015_total", 
+                 "X2017_tot_1",
+                 "X2016_total", ), names_to = "totals") %>% 
+  group_by(ID) %>% 
+  mutate(max = max(value), 
+         type = totals[which.max(value)],
+         mean = mean(value),
+         dens_mean = mean/Area,
+         dens_max = max/Area) %>% 
+  pivot_wider(everything(), names_from = "totals", values_from = "value")
+
+```
+
+TNNP: survey units, mean and max moose density over survey years:
+
+```{r}
+# survey units, KML file, TNNP:
+su_tnnp <- ("Moose_Sampling_Units_TNNP.kml")
+# make into sf file:
+su_tnnp <- st_read(su_tnnp)
+# add Sampling Unit (SU) attribute back in:
+name <- c(1:82)
+su_tnnp$Name <- as.character(name)
+
+# import the density data, which is in a differently-formatted XLSX file in which I just manually calculated mean and max density for all the survey units:
+file <- here("rachael_moosedensitydata", "moose survey review 2021_TNNP.xlsx") # paste together parts of the address
+tnnp_moose <- read_xlsx(file, sheet = 2)
+tnnp_moose$Block <- as.character(tnnp_moose$Block)
+# put moose density estimates on the SF file of TNNP:
+su_max_tnnp <- left_join(su_tnnp, tnnp_moose, by = join_by("Name" == "Block"))
+```
+
+2023 sampling sites, Forbes:
+
+```{r}
+gmnp_sites_2023 <- read.csv("2023 Gros Morne.csv", header = T)
+gmnp_sites_2023 <- gmnp_sites_2023 %>% 
+  # remove some rows that don't have real data
+  filter(!row_number() %in% c(7,8,13,14)) 
+
+tnnp_sites_2023 <- read.csv("2023 Terra Nova.csv", header = T)
+```
+
+Extract the moose density from the locations where my *2023* sampling sites are: GMNP
+
+```{r}
+# project the points from my sites:
+# get coordiante reference system (CRS) for gmnp: 
+st_crs(su_max_gmnp) # 4269
+
+gmnp_SFpoints_2023 <- data.frame(long = c(gmnp_sites_2023$Longitude), 
+                      lat  = c(gmnp_sites_2023$Latitude),
+                      site_name = c(gmnp_sites_2023$Name)) %>% 
+  st_as_sf(coords = c("long", "lat"), crs = 4269) %>% 
+  st_transform(crs = 4269)
+
+# intersect and extract survey unit ID name that encompasses each sampling site of mine: first need to convert the su_max_gmnp geometry to lat/long to match the gmnp_SFpoints_2023 lat/long format geometry
+gmnp_su_moosedensity <- st_transform(su_max_gmnp, 4269)
+
+# which survey unit ID (polygon) does each of my sites fall into?
+gmnp_sites_density <- st_intersection(gmnp_SFpoints_2023, gmnp_su_moosedensity)
+
+# write.csv(gmnp_sites_density, "GMNP_2023sites_moosedensities.csv")
+```
+
+Extract the moose density from the locations where my *2023* sampling sites are: TNNP
+
+```{r}
+# project the points from my sites:
+# get coordiante reference system (CRS) for gmnp: 
+st_crs(su_max_tnnp) # 4326
+
+tnnp_SFpoints_2023 <- data.frame(long = c(tnnp_sites_2023$Longitude), 
+                      lat  = c(tnnp_sites_2023$Latitude),
+                      site_name = c(tnnp_sites_2023$Name)) %>% 
+  st_as_sf(coords = c("long", "lat"), crs = 4326) %>% 
+  st_transform(crs = 4326)
+
+tnnp_su_moosedensity <- st_transform(su_max_tnnp, 4326)
+
+# which survey unit ID (polygon) does each of my sites fall into?
+sf_use_s2(FALSE) # for some reason, I had to turn off "spherical geometry" to get these two datasets to merge. Not sure why. Going forward with it for now, but making a note that this intersection for TNNP was done with planar assumption of coordinates. (see warning)
+tnnp_sites_density <- st_intersection(tnnp_SFpoints_2023, su_max_tnnp)
+# although coordinates are longitude/latitude, st_intersection assumes that they are planar
+# Warning: attribute variables are assumed to be spatially constant throughout all geometries
+
+# write.csv(tnnp_sites_density, "TNNP_2023sites_moosedensities.csv")
+```
+
+# Plotting
+
+## GMNP
+
+```{r gnnp map}
+
+options(ggrepel.max.overlaps = Inf)
+
+gmnp_sites <- su_max_gmnp %>% 
+  ggplot() +
+  geom_sf(aes(fill = dens_max))+
+  geom_sf(data = gmnp_sites_density,
+             color = "BLUE", size = 1)+
+  # ggrepel::geom_label_repel(
+  # data = gmnp_sites_density,
+  # aes(label = round(dens_max, 2), geometry = geometry),
+  # size = 2,
+  # box.padding = 0.1,
+  # stat = "sf_coordinates"
+  # )+
+  scale_fill_continuous(high = "red", low = "white")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90))+
+        # legend.position = "None")+
+  labs(x = "", y = "", title = "GMNP moose density: max")
+gmnp_sites
+
+```
+
+## TNNP
+
+```{r gnnp map}
+
+options(ggrepel.max.overlaps = Inf)
+
+# rename these cols for easier plotting:
+su_max_tnnp <- su_max_tnnp %>% 
+  rename(avg_moose = "average moose",
+         avg_dens = "average density",
+         max_moose = "max moose",
+         max_dens = "max density",
+         area_km2 = "Area (km^2)")
+
+# NOTE: this plot isn't working, I suspect due to the fact that the data aren't aligning in terms of their mismatch in geometry when I had to convert the lat/longs to planar (rather than spherical) when getting the moose densities for my sites in TNNP.
+# tnnp_sites <- su_max_tnnp %>% 
+
+# update: the plot wasn't working because the spatial data for TNNP is still 3-D, rather than 2-D (like above when extracting data) so had to two-dimensionalize it for this
+
+# plot 2022 sites only:
+tnnp_sites_2022 <- tnnp_sites_density %>% 
+  filter(site_name == "TN-excl-ochre" |
+           site_name == "TN-Excl-bluehill-E" |
+           site_name == "TN-Excl-bluehill-C"
+         )
+
+ggplot(st_zm(su_max_tnnp)) +
+  geom_sf(aes(fill = max_dens))+
+  geom_sf(data = tnnp_sites_density,
+             color = "BLUE", size = 1)+
+  ggrepel::geom_label_repel(
+    data = tnnp_sites_density,
+    # data = tnnp_sites_2022,  #making map of 2022 sites alone
+    aes(label = round(max.density, 2), geometry = geometry),
+    # aes(label = site_name, geometry = geometry), #making map of 2022 sites alone
+    size = 2,
+    box.padding = 0.1,
+    stat = "sf_coordinates")+
+  scale_fill_continuous(high = "red", low = "white")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 90))+
+  labs(x = "", y = "", title = "TNNP moose density: max")
+
+```

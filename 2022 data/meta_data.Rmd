@@ -1,0 +1,54 @@
+---
+title: "meta_data"
+output: html_document
+date: "2022-10-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries}
+library(tidyverse)
+library(calecopal)
+library(readxl)
+library(ggplot2)
+```
+
+
+## Meta data
+Data collected to accompany flux data summer 2022, including vegetation assays, organic layer depth, etc.
+
+```{r importdata}
+org <- read_xlsx("summer2022_datasheet.xlsx" , sheet = "org_layer")
+
+# because I  recorded some organic layer depths as "> 29" centimeters (aka my probe did not go down further), I need to change those characters to "30" to make those rows numeric (and not character) for analysis. Here I note that any organic layer depth that is recorded as "30" was greater than 29cm in depth and could have been deeper.
+org <- org %>% 
+  mutate(org_layer_depth_2 = if_else(org_layer_depth_2 == '>29', '30', org_layer_depth_2),
+         org_layer_depth_3 = if_else(org_layer_depth_3 == '>29', '30', org_layer_depth_3)) %>% 
+  mutate(org_layer_depth_2 = parse_number(org_layer_depth_2),
+         org_layer_depth_3 = parse_number(org_layer_depth_3))
+```
+
+Visualize: organic layer data
+```{r viz}
+
+# calculate mean organic layer depth at each collar by averaging the depth at all three sampling points:
+org <- org %>% 
+  rowwise() %>% 
+  mutate(avg_orglayerdepth = mean(c(org_layer_depth_1, org_layer_depth_2, org_layer_depth_3), na.rm = TRUE))
+
+# visualize average organic layer depth:
+org %>% 
+  # ggplot(aes(x=disturbance, y=avg_orglayerdepth, fill=as.character(collar_id)))+
+  ggplot(aes(x=collar_id, y=avg_orglayerdepth, fill=as.character(collar_id)))+
+  # geom_violin()+
+  geom_boxplot()+
+  facet_grid(~disturbance)+
+  # facet_grid(~collar_id)+
+  theme_classic()+
+  theme(legend.position = "none")+
+  ylab("average organic layer depth (cm)")+xlab(element_blank())
+
+```
+

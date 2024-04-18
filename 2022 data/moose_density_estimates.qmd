@@ -1,0 +1,255 @@
+---
+title: "moose_density_estimates"
+format: html
+editor: visual
+---
+
+## Moose Density
+
+Estimating moose density across GMNP, TNNP using Rachael's estimates and Parks Canada's survey results.
+
+### libraries:
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(sf)
+library(sp)
+library(here)
+library(ggrepel)
+```
+
+### import data:
+
+These data are a combination of Parks Canada data, and from Rachael and/or Shawn.
+
+Gros Morne NP, Terra Nova NP sampling units: max number of moose observed (density) based on data provided by the parks across multiple sampling years
+
+GMNP: survey units, mean and max moose density over survey years:
+
+```{r GMNP}
+# survey units, shape file, GMNP:
+su_gmnp <- here("GMNP moose density data", "All GMNP moose survey blocks", "Pre-Stratification_2019.shp")
+# make into sf file:
+su_gmnp <- st_read(su_gmnp)
+# add moose density data: pull maximum total number of moose from the five years' of total numbers in the "su" spreadsheet, calculate density, add to new df:
+su_max_gmnp <- su_gmnp %>% 
+  pivot_longer(c("X2018_total", 
+                 "X2015_total", 
+                 "X2017_tot_1",
+                 "X2016_total", ), names_to = "totals") %>% 
+  group_by(ID) %>% 
+  mutate(max = max(value), 
+         type = totals[which.max(value)],
+         mean = mean(value),
+         dens_mean = mean/Area,
+         dens_max = max/Area) %>% 
+  pivot_wider(everything(), names_from = "totals", values_from = "value")
+
+```
+
+TNNP: survey units, mean and max moose density over survey years:
+
+```{r}
+# survey units, KML file, TNNP:
+su_tnnp <- ("Moose_Sampling_Units_TNNP.kml")
+# make into sf file:
+su_tnnp <- st_read(su_tnnp)
+# add Sampling Unit (SU) attribute back in:
+name <- c(1:82)
+su_tnnp$Name <- as.character(name)
+# import the density data, which is in a differently-formatted XLSX file in which I just manually calculated mean and max density for all the survey units:
+file <- here("rachael_moosedensitydata", "moose survey review 2021_TNNP.xlsx") # paste together parts of the address
+tnnp_moose <- read_xlsx(file, sheet = 2)
+tnnp_moose$Block <- as.character(tnnp_moose$Block)
+# put moose density estimates on the SF file of TNNP:
+su_max_tnnp <- left_join(su_tnnp, tnnp_moose, by = join_by("Name" == "Block"))
+```
+
+2022 sampling sites, Forbes:
+
+```{r}
+sites <- fluxdat5 %>% 
+  group_by(site_name) %>% 
+  summarise(lon = mean(latitude),
+            lat = mean(longitude)) 
+# reminder that lat/lon are mixed up in my orig dataset
+
+gmnp_sites_2022 <- sites %>% filter(lat > 49)  # filter out the TNNP sites
+
+tnnp_sites_2022 <- sites %>% filter(lat < 49) # filter out the GMNP sites
+```
+
+2023 sampling sites, Forbes:
+
+```{r}
+
+```
+
+# Plotting
+
+## GMNP
+
+```{r gnnp map}
+# project the points from my sites:
+crs_use <- "+proj=laea +lat_0=30 +lon_0=-95"
+gmnp_sites_2022_sf <- data.frame(long = c(gmnp_sites_2022$lon), 
+                      lat  = c(gmnp_sites_2022$lat),
+                      site_name = c(gmnp_sites_2022$site_name)) %>% 
+  st_as_sf(coords = c("long", "lat"), crs = 4326) %>% 
+  st_transform(crs = crs_use)
+
+# plot density with my sites overlaid:
+su_max_gmnp_labels <- su_max_gmnp %>% 
+  filter(dens_mean > 0) %>% 
+  mutate(dens_rounded = round(dens_mean, digits = 1))
+
+su_max_gmnp %>% 
+  ggplot() +
+  geom_sf(aes(fill = dens_max))+
+  # annotate("point", x = c(gmnp_sites_2022$lon),
+  #          y = c(gmnp_sites_2022$lat))+
+  geom_sf(data = d_points,
+  color = "BLUE", size = 1)+
+  # geom_sf_label(data = su_max_gmnp_labels, 
+                # aes(label = dens_rounded), 
+                # label.padding = unit(0.1, "lines"))+
+  scale_fill_continuous(high = "red", low = "white", na.value="lightyellow")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))+
+  labs(x = "", y = "", title = "GMNP moose density: maximum")
+```
+
+NOTE TO SELF: for above plot (and TNNP), need to incorporate/keep NAs in the max/mean calculation so the non-measured plots don't seem like zeros \## TNNP
+
+# RACHAEL:
+
+these are Rachael's data, so just estimates for her sample sites (2022) not all the survey units in the parks:
+
+Moose density estimates from Rachael's sites, specifically
+
+```{r}
+# rachael's moose density estimates (incl. averages across sampling years) for HER SITES, SPECIFICALLY:
+# will need to match her data to the survey block data for TNNP to get comparisons and data for blocks she didn't sample herself
+rach <- read_xlsx(here("rachael_moosedensitydata", "All_Sites(new).xlsx")) 
+
+# make compressed df with lats/longs of sites, not each collar:
+sites <- fluxdat5 %>% 
+  group_by(site_name) %>% 
+  summarise(lon = mean(latitude),
+            lat = mean(longitude)) # reminder that lat/lon are mixed up in my orig dataset
+
+gmnp_sites <- sites %>% 
+  filter(lat > 49)  # filter out the TNNP sites
+
+tnnp_sites <- sites %>% 
+  filter(lat < 49) # exclude non-TNNP sites
+```
+
+### Cleaning data:
+
+What we want to do is associate each Parks SU with Rachel's estimates of moose density in each park. This is a bit easier in GMNP than in TNNP because the two parks stored the data in different formats.
+
+GMNP:
+
+```{r}
+# merge moose density estimate with survey unit by ID:
+# merge moose density estimates from rachael to the GMNP file:
+test2 <- su_gmnp %>% 
+  left_join(rach, join_by(ID == Survey_Block))
+test2 <- st_transform(test2)
+
+test2_noexcl <- test2 %>% filter(Ex_Ctrl != "EX")
+test2_onlyexcl <- test2 %>% filter(Ex_Ctrl == "EX")
+test2 %>% 
+  ggplot() +
+  geom_sf(aes(fill=Disturbance), na.rm = FALSE)+
+  coord_sf(default_crs = sf::st_crs(4326))+ #convert my points to the right coord ref system
+  theme_classic()+
+  geom_sf_label(data = test2_noexcl, aes(label = Moose_Density), size = 2, 
+                label.padding = unit(0.1, "lines"),
+                nudge_y = 0.015,
+                nudge_x = 0.005)+ #only label densities of non-exclosures
+  annotate("point", x = c(gmnp_sites$lon), 
+           y = c(gmnp_sites$lat), colour = "blue2", size = 2) + # my 2022 sites
+  annotate("point", x=c(test2_onlyexcl$Long),
+           y = c(test2_onlyexcl$Lat), colour = "green4", size = 2)+ # exclosure sites
+  # annotate("point", x = c(test2_noexcl$Long),
+           # y = c(test2_noexcl$Lat), colour = "purple3", size = 2)+ # Rachael's sampling sites
+  # scale_fill_continuous(high = "red", low = "white", na.value = "lightgray")
+  scale_fill_discrete(na.value = "white")
+```
+
+TNNP:
+
+```{r}
+# merge moose density estimate with survey unit by ID:
+# merge moose density estimates from rachael to this file of TNNP:
+test <- su_tnnp %>% 
+  left_join(rach, join_by(Name == Survey_Block))
+test <- st_transform(st_zm(test)) # removes any extra dimensionality that might produce an OGR error from  (https://gis.stackexchange.com/questions/316472/ogr-not-enough-data-error-when-using-st-transform-in-r)
+
+test_noexcl <- test %>% filter(Ex_Ctrl != "EX")
+test_onlyexcl <- test %>% filter(Ex_Ctrl == "EX")
+
+test %>% 
+  ggplot() +
+  geom_sf(aes(fill=Moose_Density), na.rm = FALSE)+
+  coord_sf(default_crs = sf::st_crs(4326))+ #convert my points to the right coord ref system
+  theme_classic()+
+  # geom_sf_label(data = test_noexcl, aes(label = Moose_Density), size = 2, 
+  #               label.padding = unit(0.1, "lines"),
+  #               nudge_y = 0.015,
+  #               nudge_x = 0.005)+ #only label densities of non-exclosures
+  # annotate("point", x = c(tnnp_sites$lon), 
+  #          y = c(tnnp_sites$lat), colour = "blue2", size = 2) + # my 2022 sites
+  # annotate("point", x=c(test_onlyexcl$Long),
+  #          y = c(test_onlyexcl$Lat), colour = "green4", size = 2)+ # exclosure sites
+  # annotate("point", x = c(test2_noexcl$Long),
+           # y = c(test2_noexcl$Lat), colour = "purple3", size = 2)+ # Rachael's sampling sites
+  scale_fill_continuous(high = "red", low = "white", na.value = "lightgray")
+  scale_fill_discrete(na.value = "white")
+```
+
+```{r}
+r_gmnp <- rachael_moose %>% 
+  filter(Park == "GM")
+r_gmnp <- data.frame(long = c(r_gmnp$Lat), 
+                      lat  = c(r_gmnp$Long),
+                      site_name = c(r_gmnp$Site)) %>% 
+  st_as_sf(coords = c("lat", "long"), crs = 4326) %>% 
+  st_transform(crs = crs_use)
+
+# plot density with my sites overlaid:
+su_max %>% 
+  ggplot() +
+  geom_sf(aes(fill = (dens_mean)))+
+  # geom_sf(data = r_gmnp, color = "red", size = 1)+ # add Rachael's sites
+  geom_sf(data = d_points, color = "darkred", size = 1)+ # add my sites
+  # geom_sf_label(data = su_max_labs, 
+  #               aes(label = dens_r), size = 2, 
+  #               label.padding = unit(0.1, "lines"))+
+  scale_fill_gradient(high = "orange", low = "white", na.value = "white")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))+
+  guides(fill=guide_legend(title="density (per sq. km)"))
+```
+
+Extract the moose density from the locations where my 2022 sampling sites are:
+
+```{r}
+
+# intersect and extract SU ID name:
+d_points_trans <- st_transform(d_points, 4326) # apply transformation to pnts sf
+moosedat_trans <- st_transform(moosedat_merge, 4326)      # apply transformation to polygons sf
+
+d_points$SU_ID <- apply(st_intersects(moosedat_trans, d_points_trans, sparse = FALSE), 2, 
+               function(col) { 
+                  moosedat_merge[which(col), ]$ID
+               })
+d_points$density <- apply(st_intersects(moosedat_trans, d_points_trans, sparse = FALSE), 2,
+                          function(col){
+                            moosedat_merge[which(col), ]$dens
+                          })
+View(d_points)
+```

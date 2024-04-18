@@ -1,0 +1,570 @@
+---
+title: "2022 flux data analysis"
+output: html_notebook
+---
+
+initial analyses: flux data, Newfoundland CA, 2022
+
+```{r packages}
+library(lmerTest)
+library(DHARMa)
+library(sjstats)
+library(sjPlot)
+library(tidyverse)
+library(sf)
+```
+
+I want to build a linear mixed-effects model with flux as the response variable and:
+1) treatment as a fixed effect
+2) transect location as a fixed effect
+3) transect number (1-3) as a nested random effect within site ((1|site/transect))
+
+I'll need to include other variables:
+1) ambient temperature
+2) soil moisture
+3) light level
+4) chamber temperature
+
+H1: there is a difference in flux rates across collars/coverage level
+  - higher fluxes in the gaps
+  - lower fluxes in the mature canopy
+H2: flux rates differ between the two treatment (gap provenance) types
+  - higher fluxes in timber gaps than in insect gaps
+  - greater variability in insect gaps than in timber gaps
+
+```{r}
+# calculate mean flux:
+mu = mean(fluxdat5$Lflux_dry)
+mu # 4.836783 umol/m2/sec
+
+fluxdat5 %>% 
+  ggplot(aes(x=Lflux_dry))+
+  geom_density(color = "black", 
+                 fill = "dodgerblue", alpha = 0.25)+ #right-skewed data distribution
+  xlab("flux")+theme_classic()+
+  geom_vline(xintercept = mu, color="red") # add vertical line at mu
+
+# calculate mean flux for each collar, coverage level:
+mn_flux_collar <- fluxdat5 %>%
+  filter(disturbance != "exclosure") %>% 
+  group_by(collar) %>%
+  summarize(mean=mean(Lflux_dry))
+mn_flux_coverage <- fluxdat5 %>%
+  filter(disturbance != "exclosure" & disturbance != "control") %>% 
+  group_by(coverage, disturbance) %>%
+  summarize(mean=mean(Lflux_dry))
+
+fluxdat5 %>% 
+  filter(disturbance != "exclosure" & disturbance != "control") %>% # if plotting collar data
+  ggplot(aes(x=Lflux_dry))+
+  geom_density(color = "black", fill = "dodgerblue", alpha = 0.25)+
+  # facet_grid(~collar)+
+  facet_grid(~disturbance)+
+  xlab(~paste("flux, ", mu, "mol m"^-2,"s"^-1))+
+  theme_classic()+
+  geom_vline(data = mn_flux_coverage,
+  # geom_vline(data = mn_flux_collar,
+             aes(xintercept = mean,
+                 # color = collar))+
+            color = coverage))
+  # theme(legend.position = "none")
+
+```
+Plot the flux data across treatment and location:
+```{r}
+fluxdat5 %>% 
+  ggplot(aes(x=rel_chmbrT, y=Lflux_dry, color = disturbance))+
+  # ggplot(aes(x=rel_chmbrT, y=rel_flux, color = disturbance))+
+  # geom_smooth(method = "lm", se = F)+
+  geom_point(size = 2, shape = 21, color = "black", alpha = .9,
+             aes(fill = disturbance))+
+  xlab("relative temperature at ground level")+
+  # ylab(~paste("relative flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  ylab(~paste("flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  # ylim(-5,13)+
+  stat_ellipse(size = 0.75)+
+  scale_fill_manual(values = c("control" = "darkgreen",
+                               "exclosure" = "coral3",
+                               "insect" = "goldenrod1",
+                               "timber" = "goldenrod3"))+
+  scale_color_manual(values = c("control" = "darkgreen",
+                               "exclosure" = "coral3",
+                               "insect" = "goldenrod1",
+                               "timber" = "goldenrod3"))+
+  theme_classic()
+```
+Plot with moose population density:
+```{r}
+fluxdat5 %>% 
+  # filter(coverage == "closed") %>% 
+  # filter(coverage == "open") %>% 
+  filter(disturbance == "insect" | disturbance == "timber") %>% 
+  ggplot(aes(y=density, x=disturbance, fill = site_name))+
+  # geom_violin(alpha = 0.1)+
+  # geom_density_ridges2()+
+  geom_point(position = "jitter", size = 3, shape = 21, colour = "black")+
+  # xlab("moose population density")+
+  # ylab(~paste("flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  xlab(element_blank())+
+  ylab(~paste("population density estimate, moose/", "km"^-2))+
+  theme_classic()+
+  theme(legend.title = element_blank())
+```
+Plot moost population density on the x-axis, soil carbon flux on the y:
+```{r}
+fluxdat_noexcl %>% 
+  filter(disturbance != "control") %>% 
+  # filter(coverage == "open") %>% 
+  ggplot(aes(x=altitude, y=Lflux_dry, fill = density))+
+  geom_point(position = "jitter", size = 4, shape = 21, colour = "black")+
+  ylab(~paste("flux rate, ", mu, "mol m"^-2,"s"^-1))+xlab("altitude (m)")+
+  scale_fill_continuous(type = "viridis")+
+  theme_classic()
+```
+
+Correlation (correlelogram) between selected variables in the dataset (including moose density):
+```{r}
+library(GGally)
+ggpairs(fluxdat_noexcl, columns = c("Lflux_dry", "altitude", "rel_chmbrT",
+                                    "rel_VWC", "coverage", "density"), ggplot2::aes(colour=disturbance, alpha = 0.5)) 
+```
+
+
+Next start to add first-level predictors: site-level predictors.  visualize them first:
+```{r firstlevel}
+# plot each predictor variable to determine which one has a relationship with flux:
+fluxdat5 %>% 
+  filter(disturbance == "insect" | disturbance == "timber") %>% 
+  ggplot(aes(
+    # x = avg_orgdepth, # yes
+    x = rel_chmbrT, # yes
+    # x = rel_RH, # yes
+    # x = soil_pH, # yes but, do we trust this data?
+    # x = rel_soilT, # yes
+    # x = rel_VWC, # yes...more similar between closed and edge than i realized.  open is different.
+    # x = rel_lux, # yes but also see if it covaries with other fixed effects
+             y=Lflux_dry, color=collar, group = collar))+
+  geom_point(size = 1, alpha = 0.5)+
+  geom_smooth(method = lm, se =T, size = 0.5, alpha = 0.15)+
+  facet_wrap(~disturbance)+
+  theme_minimal()
+```
+
+moose vs. carbon flux:
+```{r}
+mycols <- scale_color_manual(name="coverage", values = c("open" = "goldenrod",
+                                "closed" = "darkgreen"))
+
+fluxdat5 %>% 
+  filter(disturbance == "insect" | disturbance == "timber") %>%
+  filter(coverage == "open" | coverage == "closed" | coverage == "edge") %>%
+  # filter(coverage == "open") %>%
+  # filter(coverage == "closed") %>%
+  ggplot(aes(x = density, y = Lflux_dry))+
+  geom_point(position = "jitter", size = 3, shape = 21, 
+             color = "black", alpha = .75,
+             aes(fill = coverage))+
+             # aes(fill = disturbance))+
+  # geom_smooth(method = lm, se =T, size = 0.75, alpha = 0.1, aes(color = coverage))+
+  # geom_smooth(method = lm, se =T, size = 0.75, alpha = 0.1, aes(color = disturbance))+
+  scale_fill_manual(values = c("open" = "goldenrod",
+                               "edge" = "darkseagreen",
+                                "closed" = "darkgreen"))+
+  scale_color_manual(values = c("open" = "goldenrod",
+                                "edge" = "darkseagreen",
+                                "closed" = "darkgreen"))+
+  # scale_fill_manual(values = c("timber" = "goldenrod3",
+                               # "insect" = "goldenrod1"))+
+  # scale_color_manual(values = c("timber" = "goldenrod3",
+                               # "insect" = "goldenrod1"))+
+  # facet_wrap(vars(coverage))+
+  facet_grid(disturbance~coverage)+
+  xlab(~paste("moose density km"^-2))+
+  ylab(~paste("flux rate, ", mu, "mol m"^-2,"s"^-1))+
+                                theme_bw()+
+  theme(legend.position = "none")
+```
+
+
+Heili notes: "also organic layer depth prob is correlated with location - if i had to guess"
+"are your models flux ~ temp + location? unless you think it’s really driving things, i think this is the story you want to get across"
+- avg. organic layer depth is correlated with collar/coverage
+- temps across the board are correlated
+- final model should be much simpler to preserve power and not overfit aka flux ~ chamber/coverage
+- is it overfitting to include soil or chamber T in the final model, if those are correlated with collar location? (yes)
+
+final model structure:
+flux ~ location * temp * treatment
+
+Start with basic linear model:
+```{r model}
+# linear mod:
+lm1 <- lm(Lflux_dry ~ coverage*rel_VWC*disturbance, data = fluxdat5)
+
+simulateResiduals(lm1, plot = T) # residuals all look good
+hist(resid(lm1)) # fairly normally distributed, with one or two right-side outliers
+
+summary(lm1)
+# no relationship between coverage and relative chamber temp
+# no relationship between coverage and disturbance
+# *slight* relationship between coverage (closed) and relative chamber temp in insect gaps vs. timber gaps
+```
+remove relationship between fixed effects:
+```{r}
+lm2<- lm(Lflux_dry ~ coverage+rel_VWC+disturbance, data = fluxdat5)
+
+simulateResiduals(lm2, plot = T) # residuals all look good
+hist(resid(lm2)) # fairly normally distributed again, no obvious issues
+
+summary(lm2)
+
+# getting some NAs here: looks like perhaps "exclosure" is linearly dependent on the other variables?
+lm2$rank #7
+ncol(model.matrix(lm2)) #8
+# rank of the fitted model is lower than the rank of the matrix of regressors
+
+# run again:
+lm2<- lm(Lflux_dry ~ coverage+rel_VWC+disturbance, data = fluxdat5,
+         singular.ok = FALSE)
+# Error in lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...) : 
+# singular fit encountered
+
+# the issue is that we have too few replicates for the exclosure treatment. Remove exclosure from the dataset for analysis, or remove disturbance as a fixed effect? I think it's likely better to remove exclosure from the dataset, rather than remove disturbance, given that the "control" sites are "closed" versus a separate category altogether.  Could also consider re-categorizing the exclosure sites as "closed" since they are, but it is also a different kind of closed canopy.
+```
+```{r}
+# for now, try modeling the data with the removal of "exclosure":
+fluxdat_noexcl <- fluxdat5 %>% filter(disturbance != "exclosure")
+fluxdat_onlygaps <- fluxdat5 %>% filter(disturbance == "timber" | disturbance == "insect")
+fluxdat_timber <- fluxdat5 %>% filter(disturbance == "timber")
+fluxdat_insect <- fluxdat5 %>% filter(disturbance == "insect")
+
+lm3 <- lm(Lflux_dry ~ coverage+
+            rel_VWC+
+            disturbance,
+          data = fluxdat_onlygaps, singular.ok = FALSE)
+simulateResiduals(lm3, plot = T)
+# some outliers as well as deviations from normal for residuals
+hist(resid(lm3))
+summary(lm3) # some effect of disturbance type compared to control, and moose density; but none of coverage, chamber temp
+```
+
+We also want to add in the random effect of site: both slope and intercept.
+To incorporate both of these realities into our model, we want the fluxes' slope and the intercept to vary depending on the coverage level at each site. Thus, the starting flux for coverage level i depends on the site j (αj[i]), and the change in flux with coverage level ALSO varies by site (βj[i].)::
+
+```{r lmer}
+lmer1 <- lmerTest::lmer(Lflux_dry ~ 
+                          collar+
+                          rel_VWC+
+                          disturbance +
+                          # (1+rel_chmbrT|site_name)+
+                          (1+line|site_name), 
+                        # random intercept of site: each site "starts" somewhere 
+                        # different with slope when plotted against soil moisture; 
+                        # random slope of soil moisture level for each site
+                        data = fluxdat_noexcl)
+simulateResiduals(lmer1, plot = T)
+# looks good but possibly some deviations
+hist(resid(lmer1)) # ah yes; residuals have some right-skew
+summary(lmer1) # adding in the random effect of site does seem to remove all of the effects!
+```
+Log-transform the data to try and get rid of that weirdo skew:
+```{r lmer2}
+lmer2 <- lmerTest::lmer(log(Lflux_dry) ~ 
+                          collar+
+                          # rel_chmbrT+
+                          rel_VWC+
+                          disturbance +
+                          (1+line|site_name),
+                          # (1+rel_VWC|site_name)+ # RE of soil VWC on flux (slope only at each)
+                          # (1+rel_chmbrT|site_name), # RE of chamber temp on flux (slope + int)
+                          # (1+rel_chmbrT|site_name), # random slope and intercept
+                          # (1+rel_VWC|site_name),
+                        data = fluxdat_noexcl)
+simulateResiduals(lmer2, plot = T) # everything looks good
+hist(resid(lmer2)) # normally distributed residuals of log-transformed data
+summary(lmer2) # absolutely no effect of anything!! ha.
+```
+Look at effect size of each fixed effect in this model:
+```{r effectsize}
+sjPlot::plot_model(type = "est", lmer2, vline.color = "red")+
+  theme_bw()
+
+# anova(lmer2)
+```
+compare the models:
+```{r}
+anova(lmer1, lmer2) # lower AIC, BIC for model 2 with log-transformation
+```
+Look at variance by group:
+```{r variance}
+# library(car)
+leveneTest(Lflux_dry ~ disturbance*coverage, data = fluxdat_onlygaps)
+# no difference in variance across disturbance*coverage level
+
+fluxdat_onlygaps %>% 
+  # ggplot(aes(x=collar, y=Lflux_dry, fill = collar))+
+  ggplot(aes(x=collar, y=rel_flux, fill = collar))+
+  geom_violin(alpha = 0.5)+
+  geom_boxplot(width = 0.1, color = "white")+
+  geom_jitter(alpha = 0.5)+
+  # ylab(~paste("flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  ylab(~paste("relative flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  facet_wrap(~disturbance)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+fluxdat_onlygaps %>% 
+  # ggplot(aes(x=coverage, y=Lflux_dry, fill = coverage))+
+  ggplot(aes(x=coverage, y=rel_flux, fill = coverage))+
+  geom_violin(alpha = 0.75)+
+  geom_boxplot(width = 0.1, color = "white")+
+  # geom_boxplot()+
+  geom_jitter(alpha = 0.75)+
+  # ylab(~paste("flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  ylab(~paste("relative flux rate, ", mu, "mol m"^-2,"s"^-1))+xlab(element_blank())+
+  scale_fill_manual(values = c("open" = "goldenrod",
+                                 "edge" = "darkseagreen",
+                                "closed" = "darkgreen"))+
+  scale_color_manual(values = c("open" = "goldenrod",
+                                "edge" = "darkseagreen",
+                                "closed" = "darkgreen"))+
+  facet_wrap(~disturbance)+
+  theme_classic()+
+  theme(legend.position = "none")
+```
+Look at relative flux variability across disturbances, sites, transects, collars:
+```{r}
+# across disturbances:
+fluxdat5 %>% 
+  # ggplot(aes(x=site_name, y=Lflux_dry, fill = site_name))+
+  ggplot(aes(x=collar, y=rel_flux, fill = collar))+
+  geom_violin(alpha = 0.5)+
+  geom_boxplot(width = 0.1, color = "white")+
+  geom_jitter(alpha = 0.5)+
+  ylab(~paste("RELATIVE flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  facet_wrap(~disturbance)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+# across sites:
+# libraries
+library(gridExtra)
+# Make 4 simple graphics:
+g1 <- fluxdat5 %>% filter(disturbance=="insect") %>% ggplot(aes(x=site_name, y=rel_flux, fill = site_name))+
+  geom_violin(alpha = 0.5)+ geom_boxplot(width = 0.1, color = "white")+labs(title = "insect")+ylim(0,1.25)+
+  geom_jitter(alpha = 0.5)+ theme_classic()+theme(legend.position = "none", axis.title.x = element_blank())
+g2 <- fluxdat5 %>% filter(disturbance=="timber") %>% ggplot(aes(x=site_name, y=rel_flux, fill = site_name))+
+  geom_violin(alpha = 0.5)+ geom_boxplot(width = 0.1, color = "white")+labs(title = "timber")+ylim(0,1.25)+
+  geom_jitter(alpha = 0.5)+ theme_classic()+theme(legend.position = "none", axis.title.x = element_blank())
+g3 <- fluxdat5 %>% filter(disturbance=="exclosure") %>% ggplot(aes(x=site_name, y=rel_flux, fill = site_name))+
+  geom_violin(alpha = 0.5)+ geom_boxplot(width = 0.1, color = "white")+labs(title = "exclosure")+ylim(0,1.25)+
+  geom_jitter(alpha = 0.5)+ theme_classic()+theme(legend.position = "none", axis.title.x = element_blank())
+g4 <- fluxdat5 %>% filter(disturbance=="control") %>% ggplot(aes(x=site_name, y=rel_flux, fill = site_name))+
+  geom_violin(alpha = 0.5)+ geom_boxplot(width = 0.1, color = "white")+labs(title = "control")+ylim(0,1.25)+
+  geom_jitter(alpha = 0.5)+ theme_classic()+theme(legend.position = "none", axis.title.x = element_blank())
+ 
+# Plots
+grid.arrange(g1, g2, g3, g4, nrow = 2)
+
+# alt:
+fluxdat5 %>%
+  mutate(site_name = factor(site_name, levels = c("Berry Hill", "Berry Pond", "Wiltondale", 
+                                                    "Electric", "Gros Morne trail", "Old cut",
+                                                    "BlueHill_c", "BlueHill_e", "Ochre", "Mill Brook", 
+                                                    "Rocky Harbour"))) %>%
+  ggplot(aes(y=rel_flux, x=site_name, fill = site_name)) + 
+  geom_violin(position="dodge", alpha=0.5) +
+  geom_jitter(color = "black", alpha =0.5)+
+  theme_classic()  + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 25, vjust = .25, hjust = .5))+
+  xlab("") +
+  ylab("relative flux rate") +
+  ylim(0,1.25)
+
+# at transect level:
+fluxdat5 %>% 
+  mutate(site_name = factor(site_name, levels = c("Berry Hill", "Berry Pond", "Wiltondale", 
+                                                    "Electric", "Gros Morne trail", "Old cut",
+                                                    "BlueHill_c", "BlueHill_e", "Ochre", "Mill Brook", 
+                                                    "Rocky Harbour"))) %>%
+  filter(disturbance != "exclosure") %>% 
+  # ggplot(aes(x=site_name, y=Lflux_dry, fill = site_name))+
+  # ggplot(aes(x=collar, y=rel_flux, fill = collar))+
+  ggplot(aes(x=as.factor(line), y=rel_flux, fill = as.factor(line)))+
+  geom_violin(alpha = 0.5)+
+  geom_boxplot(width = 0.1, color = "white")+
+  geom_jitter(alpha = 0.5)+
+  ylab(~paste("RELATIVE flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  facet_grid(~site_name)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+# at collar level:
+fluxdat5 %>% 
+  # filter(disturbance != "exclosure") %>% 
+  # ggplot(aes(x=site_name, y=Lflux_dry, fill = site_name))+
+  # ggplot(aes(x=collar, y=rel_flux, fill = collar))+
+  ggplot(aes(x=as.factor(collar), y=rel_flux, fill = as.factor(collar)))+
+  geom_violin(alpha = 0.5)+
+  geom_boxplot(width = 0.1, color = "white")+
+  geom_jitter(alpha = 0.5)+
+  ylab(~paste("RELATIVE flux rate, ", mu, "mol m"^-2,"s"^-1))+
+  facet_grid(~disturbance)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+```
+
+
+```{r plot}
+fluxdat_noexcl %>% 
+  # filter(disturbance != "control") %>% 
+  filter(disturbance == "timber") %>%
+  # ggplot(aes(x=rel_chmbrT, y=Lflux_dry, color = site_name))+
+  # ggplot(aes(x=rel_VWC, y=Lflux_dry,
+  ggplot(aes(x=rel_VWC, y=rel_flux,
+             color = collar, fill = collar))+
+  # ggplot(aes(x=collar, y=Lflux_dry, color = site_name, fill = site_name))+
+  geom_point()+
+  # geom_boxplot(alpha = 0.5)+ geom_jitter()+
+  stat_smooth(method = "lm", alpha=0.05)+
+  # facet_wrap(~site_name)+
+  # stat_cor(method = "pearson")+
+  theme_classic()
+```
+Power analysis: disturbance type
+```{r sensitivity}
+##### mixedpower package
+library(mixedpower)
+
+### Information about model used for simulation ###
+# we want to explore power for different sample sizes, which corresponds to one of our random variables (i.e. disturbance replicates)
+model <- lmer2  # which model do we want to simulate power for?
+data_gaps <- fluxdat_noexcl # data used to fit the model
+
+# create dummy numeric variable for simvar and fixed_effects:
+data_gaps$repl_num <- c(2,1,3,2,1,3,2,1,3,2,1,3)
+data_gaps[["repl_num"]] <- as.numeric(as.factor(datagaps[["repl_num"]]))
+data_gaps$disturbance_num <- c(2,2,2,1,1,1,2,2,2,1,1,1) # 1 = disturbance, 2 = insect
+data_gaps[["disturbance_num"]] <- as.numeric(as.factor(data_C[["disturbance_num"]]))
+
+fixed_effects <- "treatment_num"  # all fixed effects specified in FLPmodel
+simvar <- "repl_num" # which random effect do we want to vary (in tmer os n) in the simulation?
+
+### simulation parameters ###
+steps <- c(3,6,9,12,15,18, 21, 24) # which sample sizes do we want to look at? existing sample size = 3.
+critical_value <- 2 # which t/z value do we want to use to test for significance? 1.96 is cutoff absolute t value for significance of alpha = 0.05
+n_sim <- 1000 # how many single simulations should be used to estimate power?
+
+## run simulation (warning could take awhile) ### SOIL DOC
+power_FLP <- mixedpower(model = lmm_soilC, data = data_C,
+                        fixed_effects = "treatment_num",
+                        simvar = "repl_num", 
+                        steps = c(3,6,9,12,15,18, 21, 24),
+                        critical_value = 2, 
+                        n_sim = 1000)
+power_FLP # examine output
+multiplotPower(power_FLP, ppi = 300, filename = "poweranalysis_DOC.png") # plot (and save in working directory) output
+
+```
+
+
+
+PARKING LOT
+#####################################################################
+ Just individual treatment-level effects
+```{r}
+lmer_timb <- lmerTest::lmer(Lflux_dry ~ coverage+rel_chmbrT + density +
+                          (1+line|site_name), 
+                        data = fluxdat_timber)
+summary(lmer_timb)
+ # site_name (Intercept) 0.000    0.000   
+ # Residual              3.569    1.889   
+# remove random effect of site?
+theta <- getME(lmer_timb, "theta")
+diag.element <- getME(lmer_timb,"lower")==0
+any(theta[diag.element]<1e-5)
+# TRUE, aka there are extremely small variances in the random effects?  i think?
+
+simulateResiduals(lmer_timb, plot = T) # looks good
+hist(resid(lmer_timb)) # small right-side outlier situation but otherwise good
+
+lm_timb <- lm(Lflux_dry ~ coverage+rel_chmbrT, 
+                        data = fluxdat_timber)
+summary(lm_timb) # no effects of fixed variables
+simulateResiduals(lm_timb, plot = T) # looks good
+
+sjPlot::plot_model(lm_timb)
+sjPlot::plot_model(lmer_timb)
+```
+
+Insects:
+```{r}
+lmer_ins <- lmerTest::lmer(Lflux_dry ~ coverage+rel_chmbrT +
+                          (1|site_name), 
+                        data = fluxdat_insect)
+summary(lmer_ins) # there is an effect of site here, interesting; more variable than timber sites I suppose?
+simulateResiduals(lmer_ins, plot = T) # looks alright
+
+sjPlot::plot_model(lmer_ins)
+
+# lm_ins <- lm(Lflux_dry ~ coverage + rel_chmbrT + density, data = fluxdat_insect)
+```
+
+think about running a *separate* analysis for moose density data: just "disturbance" and "density" (compared to control, and including exclosure) and explore variance
+
+
+```{r insect}
+
+ins_1 <- lmerTest::lmer(Lflux_dry ~ 
+                          collar +
+                          rel_VWC +
+                          (1+line|site_name),
+                        data = fluxdat_insect)
+summary(ins_1)
+
+simulateResiduals(ins_1, plot = T) # quantile deviations detected but this looks ok tbh
+hist(resid(ins_1))
+# log-transform the data...
+ins_2 <- lmerTest::lmer(log(Lflux_dry) ~ 
+                          collar +
+                          rel_VWC +
+                          (1+line|site_name),
+                        data = fluxdat_insect)
+summary(ins_2)
+sjPlot::plot_model(ins_2, p.threshold = c(0.1, 0.05, 0.01), p.style = "asterisk", 
+                   p.val = "wald", show.values = TRUE, show.p = TRUE, vline.color = "darkred",
+                   axis.labels = "") +
+  theme_classic()
+
+sjPlot::tab_model(ins_2)
+```
+
+timber analysis:
+```{r timber}
+
+tim_1 <- lmerTest::lmer(Lflux_dry ~ 
+                          collar +
+                          rel_VWC +
+                          (1+line|site_name),
+          data = fluxdat_timber)
+summary(tim_1)
+
+simulateResiduals(tim_1, plot = T) # quantile deviations detected but this looks ok tbh
+hist(resid(tim_1))
+# log-transform the data...
+tim_2 <- lmerTest::lmer(log(Lflux_dry) ~ 
+                          collar +
+                          rel_VWC +
+                          (1+line|site_name),
+          data = fluxdat_timber)
+summary(tim_2)
+sjPlot::plot_model(tim_2, p.threshold = c(0.1, 0.05, 0.01), p.style = "asterisk", 
+                   p.val = "wald", show.values = TRUE, show.p = TRUE, vline.color = "darkred",
+                   axis.labels = "") +
+  theme_classic()
+```
+
+```{r}
+sjPlot::tab_model(tim_2)
+```

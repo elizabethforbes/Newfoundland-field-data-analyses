@@ -1,0 +1,248 @@
+---
+title: "Moose density data"
+output: html_notebook
+---
+
+This script pulls moose population density data from existing Parks Canada records to go with the transect datasets I collected in summer 2022 (for which I have GPS data points).  The idea is to associate a moose population density with each site if possible. (Ideal scenario would be to have data on moose presence / absence inside and out of the canopy gaps, but these data are too coarse for that.)
+
+Librarys:
+```{r libraries}
+library(tidyverse)
+library(readxl)
+library(sf)
+library(here)
+library(ggrepel)
+```
+
+Read in moose data (from parks):
+```{r readdat}
+here()
+su <- here("GMNP moose density data", "All GMNP moose survey blocks", "Pre-Stratification_2019.shp")
+fixed <- here("GMNP moose density data", "fixed moose monitoring plots", "monitoring_plots24.shp")
+fname <- here("GMNP moose density data", 
+              "Fixed moose survey block results 2007-2021", 
+              "MonitoringSurvey_DensityResults2007-2021.shp")
+moose <- st_read(fname)
+su <- st_read(su)
+fixed <- st_read(fixed)
+
+View(moose)
+
+moose_geom <- st_geometry(moose)
+
+moose_plot <- sf::st_transform(moose)
+
+plot(moose[,"Density_16"], reset = F)
+```
+
+What I want to do is determine in which "SU" (survey unit) each of my sampling sites falls into. I will assign each one an SU, then pull the moose density from that SU into the df of my own sampled data.
+1) plot the SUs
+2) plot my sampling sites on top of the SU's
+3) assign an SU to each sampling site
+4) determine moose density for each SU and thus each sampling site
+
+Add data from fluxdat4: lat/long. these data are in A DIFFERENT crs (coordinate reference system) than the moose dataset from Parks Canada.  I took those lat/long data by hand, in WGS84 crs (reference code = 4326). The moose data is in NAD83; these two CRS's are similar, but not quite the same (which is why when i plot them without specifying the CRS as the same, it looks like I sampled right off the coast of Rocky Harbour).
+```{r}
+# make compressed df with lats/longs of sites, not each collar:
+sites <- fluxdat5 %>% 
+  group_by(site_name) %>% 
+  summarise(lon = mean(latitude),
+            lat = mean(longitude)) # reminder that lat/lon are mixed up in my orig dataset
+
+gmnp_sites <- sites %>% 
+  filter(lat > 49)  # filter out the TNNP sites
+
+moose_plot %>% 
+  ggplot() +
+  geom_sf(aes(fill=Density_16)) +
+  annotate("point", x = c(gmnp_sites$lon), 
+           y = c(gmnp_sites$lat), colour = "red", size = 0.5) +
+  coord_sf(default_crs = sf::st_crs(4326))+
+  theme_classic()
+  # theme(legend.position = "none")
+
+```
+Merge the two datasets to pull the survey unit ID and match it to the coordinates of each site of mine (e.g. which SU was each site located in?).
+```{r merge_1}
+
+moose_plot %>% 
+  ggplot() +
+  geom_sf(aes(fill = Density_16)) +
+  geom_sf(data = su, fill = NA, color = "lightgrey")+
+  geom_text_repel(data = gmnp_sites, aes(x = lon, y = lat, label = site_name),
+                  size = 4, col = "darkred",
+                  nudge_x = c(-.2,-.2,-.3,0, -0.2, .7),
+                  nudge_y = c(.1,.2,.4,-.1,-.2,-.1))+
+  annotate("point", x = c(gmnp_sites$lon),
+           y = c(gmnp_sites$lat), colour = "red", size = 0.5) +
+  coord_sf(default_crs = sf::st_crs(4326))+
+  theme_classic()+
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))+
+  theme(axis.title = element_blank())
+```
+
+List the total number of moose in each SU over time:
+```{r SU_obs}
+
+su %>% 
+  ggplot() +
+  geom_sf(aes(fill = X2018_total))+
+  theme_classic()+
+  theme(legend.position = "none")
+
+# pull maximum total number of moose from the five years' of total numbers in the "su" spreadsheet, calculate density, add to new df:
+su_max <- su %>% 
+  pivot_longer(c("X2018_total", 
+                 "X2015_total", 
+                 "X2017_tot_1",
+                 "X2016_total", ), names_to = "totals") %>% 
+  group_by(ID) %>% 
+  mutate(max = max(value), 
+         type = totals[which.max(value)],
+         mean = mean(value),
+         dens_mean = mean/Area,
+         dens_max = max/Area) %>% 
+  pivot_wider(everything(), names_from = "totals", values_from = "value")
+```
+
+```{r map}
+# project the points from my sites:
+crs_use <- "+proj=laea +lat_0=30 +lon_0=-95"
+d_points <- data.frame(long = c(gmnp_sites$lon), 
+                      lat  = c(gmnp_sites$lat),
+                      site_name = c(gmnp_sites$site_name)) %>% 
+  st_as_sf(coords = c("long", "lat"), crs = 4326) %>% 
+  st_transform(crs = crs_use)
+
+# plot density with my sites overlaid:
+su_max_labs <- su_max %>% filter(dens_mean > 0) %>% mutate(dens_r = round(dens_mean, digits = 1))
+su_max %>% 
+  ggplot() +
+  geom_sf(aes(fill = dens_mean))+
+  # annotate("point", x = c(gmnp_sites$lon),
+           # y = c(gmnp_sites$lat))+
+  # geom_sf(data = d_points, 
+             # color = "BLUE", size = 1)+
+  geom_sf_label(data = su_max_labs, 
+                aes(label = dens_r), size = 2, 
+                label.padding = unit(0.1, "lines"))+
+  scale_fill_continuous(high = "red", low = "white", na.value="lightyellow")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))+
+  labs(x = "", y = "")
+```
+
+Read in xlsx data from drive folder:
+```{r xlsx}
+moose_dat_all <- read_excel("2019_GMNP moose survey data.xlsx", sheet = "park-wide")
+
+# join these data to the one with the SU locations:
+moosedat_merge <- left_join(su_max, moose_dat_all, by = "ID") 
+
+# plot density with my sites overlaid:
+moosedat_merge %>% 
+  ggplot() +
+  geom_sf(aes(fill = (Total_moose/Area)))+
+  # geom_sf(data = d_points, fill = "darkred",
+             # color = "red", size = 1)+
+  scale_fill_gradient(high = "darkred", low = "pink", na.value = "white")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))
+
+# intersect and extract SU ID name:
+d_points_trans <- st_transform(d_points, 4326) # apply transformation to pnts sf
+moosedat_trans <- st_transform(moosedat_merge, 4326)      # apply transformation to polygons sf
+
+d_points$SU_ID <- apply(st_intersects(moosedat_trans, d_points_trans, sparse = FALSE), 2, 
+               function(col) { 
+                  moosedat_merge[which(col), ]$ID
+               })
+d_points$density <- apply(st_intersects(moosedat_trans, d_points_trans, sparse = FALSE), 2,
+                          function(col){
+                            moosedat_merge[which(col), ]$dens
+                          })
+View(d_points)
+
+```
+
+Plot using the data from above:
+```{r}
+d_points <- st_transform(d_points, 4326)      # apply transformation to polygons sf
+
+moosedat_merge %>% 
+  ggplot() +
+  geom_sf(aes(fill = dens))+
+  geom_sf(data = d_points,
+             color = "red", size = 1)+
+  scale_fill_continuous(high = "darkred", low = "white", na.value = "white")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))
+```
+One more datasheet:
+```{r}
+moose_2009_2021 <- read_csv(here("GMNP moose density data", "moose_monitoring_fixed blocks_alldata_2009to2021.csv"))
+
+# join these data to the one with the SU locations:
+moosedat_merge2 <- left_join(su_max, moose_2009_2021, by = "ID")
+
+# plot density with my sites overlaid:
+moosedat_merge2 %>% 
+  filter(dens < 3.1) %>% 
+  ggplot() +
+  geom_sf(aes(fill = Density))+
+  geom_sf(data = d_points, fill = "darkred",
+             color = "red", size = 1)+
+  scale_fill_gradient(high = "darkred", low = "lightblue", na.value = "white")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))
+```
+
+##################################
+18 March 2023: got new density data from Shawn.
+##################################
+##################################
+26 May 2023: Rachael estimated moose density data
+##################################
+
+Import Rachael's data:
+```{r}
+rachael_moose <- read_xlsx(here("rachael_moosedensitydata", "All_sites(New).xlsx"))
+r_gmnp <- rachael_moose %>% 
+  filter(Park == "GM")
+r_gmnp <- data.frame(long = c(r_gmnp$Lat), 
+                      lat  = c(r_gmnp$Long),
+                      site_name = c(r_gmnp$Site)) %>% 
+  st_as_sf(coords = c("lat", "long"), crs = 4326) %>% 
+  st_transform(crs = crs_use)
+
+# plot density with my sites overlaid:
+su_max %>% 
+  ggplot() +
+  geom_sf(aes(fill = (dens_mean)))+
+  geom_sf(data = r_gmnp, color = "red", size = 1)+ # add Rachael's sites
+  geom_sf(data = d_points, color = "darkred", size = 1)+ # add my sites
+  geom_sf_label(data = su_max_labs, 
+                aes(label = dens_r), size = 2, 
+                label.padding = unit(0.1, "lines"))+
+  scale_fill_gradient(high = "orange", low = "white", na.value = "white")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle = 20, vjust = -0.01))+
+  guides(fill=guide_legend(title="density (per sq. km)"))
+
+# intersect and extract SU ID name:
+d_points_trans <- st_transform(d_points, 4326) # apply transformation to pnts sf
+moosedat_trans <- st_transform(moosedat_merge, 4326)      # apply transformation to polygons sf
+
+d_points$SU_ID <- apply(st_intersects(moosedat_trans, d_points_trans, sparse = FALSE), 2, 
+               function(col) { 
+                  moosedat_merge[which(col), ]$ID
+               })
+d_points$density <- apply(st_intersects(moosedat_trans, d_points_trans, sparse = FALSE), 2,
+                          function(col){
+                            moosedat_merge[which(col), ]$dens
+                          })
+View(d_points)
+```
+
+

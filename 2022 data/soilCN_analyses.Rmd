@@ -1,0 +1,373 @@
+---
+title: "soilCN"
+output: html_document
+date: "2023-03-23"
+---
+
+```{r libraries}
+library(tidyverse)
+library(calecopal)
+library(ggridges)
+library(readxl)
+library(dplyr)
+library(lubridate)
+library(ggpubr)
+library(stringr)
+library(sf)
+```
+
+Import, clean data:
+```{r data}
+org <- readxl::read_xlsx("CN_organic.xlsx", sheet = "summary data 2")
+min <- readxl::read_xlsx("CN_mineral.xlsx", sheet = "data summary 2")
+roots <- readxl::read_xlsx("CN_roots.xlsx", sheet = "data summary 2") 
+bulk <- readxl::read_xlsx("fall2022_labwork.xlsx", sheet = "bulk density")
+whc <- readxl::read_xlsx("Newfoundland_WHC.xlsx")
+
+# do they have matching ID names?  no, not yet; because the org and min samples have "O" and "M" in their id names.  give them all consistent ID names, and left_join by ID:
+
+############### ORGANIC
+org <- org %>% 
+  # mutate(site_ID = str_detect(`sample name`, )) %>% # extract site ID from each sample name
+  mutate(disturbance = case_when(str_detect(`sample name`, pattern = "sb_") ~ "insect",
+                                 str_detect(`sample name`, pattern = "t_") ~ "timber",
+                                 str_detect(`sample name`, pattern = "excl_") ~ "exclosure",
+                                 str_detect(`sample name`, pattern = "ctrl_") ~ "control")) %>%  # new column, disturbance
+  mutate(site_name = case_when(str_detect(`sample name`, pattern = "_bh_") ~ "Berry Hill",
+                               str_detect(`sample name`, pattern = "_bp_") ~ "Berry Pond",
+                               str_detect(`sample name`, pattern = "_wilt_") ~ "Wiltondale",
+                               str_detect(`sample name`, pattern = "_el_") ~ "Electric",
+                               str_detect(`sample name`, pattern = "_gm_") ~ "Gros Morne Trail",
+                               str_detect(`sample name`, pattern = "_old_") ~ "Old Cut",
+                               str_detect(`sample name`, pattern = "_bhc_") ~ "Blue Hill (c)",                            
+                               str_detect(`sample name`, pattern = "_bhe_") ~ "Blue Hill (e)",
+                               str_detect(`sample name`, pattern = "_mb_") ~ "Mill Brook",
+                               str_detect(`sample name`, pattern = "_o_") ~ "Ochre",
+                               str_detect(`sample name`, pattern = "_rh_") ~ "Rocky Harbour", # new column for site name
+                               )) %>% 
+  mutate(transect = case_when(str_detect(`sample name`, '1(?=_\\d)') ~ "1",
+                              str_detect(`sample name`, '2(?=_\\d)') ~ "2",
+                              str_detect(`sample name`, '3(?=_\\d)') ~ "3")) %>% # new column for transect ID
+  mutate(collar = case_when(str_detect(`sample name`, '1(?=_[O])') ~ "1",
+                            str_detect(`sample name`, '2(?=_[O])') ~ "2",
+                            str_detect(`sample name`, '3(?=_[O])') ~ "3",
+                            str_detect(`sample name`, '4(?=_[O])') ~ "4",
+                            str_detect(`sample name`, '5(?=_[O])') ~ "5")) %>% # new column for collar ID/location
+  mutate(layer = "organic") # new column with organic label
+
+############### MINERAL
+min <- min %>% 
+  # mutate(site_ID = str_detect(`sample name`, )) %>% # extract site ID from each sample name
+  mutate(disturbance = case_when(str_detect(`sample name`, pattern = "sb_") ~ "insect",
+                                 str_detect(`sample name`, pattern = "t_") ~ "timber",
+                                 str_detect(`sample name`, pattern = "excl_") ~ "exclosure",
+                                 str_detect(`sample name`, pattern = "ctrl_") ~ "control")) %>%  # new column, disturbance
+  mutate(site_name = case_when(str_detect(`sample name`, pattern = "_bh_") ~ "Berry Hill",
+                               str_detect(`sample name`, pattern = "_bp_") ~ "Berry Pond",
+                               str_detect(`sample name`, pattern = "_wilt_") ~ "Wiltondale",
+                               str_detect(`sample name`, pattern = "_el_") ~ "Electric",
+                               str_detect(`sample name`, pattern = "_gm_") ~ "Gros Morne Trail",
+                               str_detect(`sample name`, pattern = "_old_") ~ "Old Cut",
+                               str_detect(`sample name`, pattern = "_bhc_") ~ "Blue Hill (c)",                            
+                               str_detect(`sample name`, pattern = "_bhe_") ~ "Blue Hill (e)",
+                               str_detect(`sample name`, pattern = "_mb_") ~ "Mill Brook",
+                               str_detect(`sample name`, pattern = "_o_") ~ "Ochre",
+                               str_detect(`sample name`, pattern = "_rh_") ~ "Rocky Harbour", # new column for site name
+                               )) %>% 
+  mutate(transect = case_when(str_detect(`sample name`, '1(?=_\\d)') ~ "1",
+                              str_detect(`sample name`, '2(?=_\\d)') ~ "2",
+                              str_detect(`sample name`, '3(?=_\\d)') ~ "3")) %>% # new column for transect ID
+  mutate(collar = case_when(str_detect(`sample name`, '1(?=_[M])') ~ "1",
+                            str_detect(`sample name`, '2(?=_[M])') ~ "2",
+                            str_detect(`sample name`, '3(?=_[M])') ~ "3",
+                            str_detect(`sample name`, '4(?=_[M])') ~ "4",
+                            str_detect(`sample name`, '5(?=_[M])') ~ "5")) %>% # new column for collar ID/location
+  mutate(layer = "mineral") # new column with mineral label
+
+############### ROOTS
+roots <- roots %>% 
+  # mutate(site_ID = str_detect(`sample name`, )) %>% # extract site ID from each sample name
+  mutate(disturbance = case_when(str_detect(`sample name`, pattern = "SB_") ~ "insect",
+                                 str_detect(`sample name`, pattern = "T_") ~ "timber",
+                                 str_detect(`sample name`, pattern = "Excl_") ~ "exclosure",
+                                 str_detect(`sample name`, pattern = "_Ctrl") ~ "control")) %>%  # new column, disturbance
+  mutate(site_name = case_when(str_detect(`sample name`, pattern = "_BH2_") ~ "Berry Hill",
+                               str_detect(`sample name`, pattern = "BH1") ~ "Berry Pond",
+                               str_detect(`sample name`, pattern = "_wilton_") ~ "Wiltondale",
+                               str_detect(`sample name`, pattern = "_elec_") ~ "Electric",
+                               # str_detect(`sample name`, pattern = "_gm_") ~ "Gros Morne Trail",
+                               # str_detect(`sample name`, pattern = "_old_") ~ "Old Cut",
+                               str_detect(`sample name`, pattern = "_blue_c_") ~ "Blue Hill (c)",                            
+                               str_detect(`sample name`, pattern = "_blue_e_") ~ "Blue Hill (e)",
+                               str_detect(`sample name`, pattern = "_MB_") ~ "Mill Brook",
+                               str_detect(`sample name`, pattern = "_ochre_") ~ "Ochre",
+                               str_detect(`sample name`, pattern = "RH_") ~ "Rocky Harbour", # new column for site name
+                               )) %>% 
+  mutate(transect = case_when(str_detect(`sample name`, '1(?=_\\d)') ~ "1",
+                              str_detect(`sample name`, '2(?=_\\d)') ~ "2",
+                              str_detect(`sample name`, '3(?=_\\d)') ~ "3")) %>% # new column for transect ID
+  mutate(collar = str_extract(`sample name`, '(\\d+)(?!.*\\d)')) %>% # extract last digit in the string for collar ID
+  mutate(layer = "roots") # new column with roots label
+
+# change colnames for roots df:
+cols <- c("sampleID", "weight", "fiftN", "thirtC", "%N", "%C", "C:N", "comments", "sample name", "disturbance", "site_name", "transect", "collar", "layer")
+colnames(roots) <- cols
+```
+
+Get bulk density data sorted for conversion to area, later:
+```{r bd}
+############### ROOTS
+bulk <- bulk %>% 
+  select(site_name, transect_id, collar_id, disturbance, 
+         `root bulk density (g fine roots/cm3)`, `soil bulk density (g dry soil/cm3)`, 
+         `height of sample`)
+cols <- c("site_name", "transect", "collar", "disturbance", "root_bd_g_cm3", "soil_bd_g_cm3", "sample_depth")
+colnames(bulk) <- cols
+
+# change names of sites to match with existing dfs
+bulk <- bulk %>% 
+  mutate(site_name=(case_when(site_name == "BlueHill_e" ~ "Blue Hill (e)",
+                             site_name == "BlueHill_c" ~ "Blue Hill (c)",
+                             site_name == "Gros Morne trail" ~ "Gros Morne Trail",
+                             site_name == "old cut" ~ "Old Cut",
+                             TRUE ~ site_name))) # this last line keeps the rest of the conditions from filling in with NAs
+
+```
+
+Concatenate: concentrations, ratios, sampling depth, BD:
+```{r collate}
+org <- org %>% select(weight, "%N", "%C", "C:N", disturbance, site_name, transect, collar, layer)
+min <- min %>% select(weight, "%N", "%C", "C:N", disturbance, site_name, transect, collar, layer)
+roots <- roots %>% select(weight, "%N", "%C", "C:N", disturbance, site_name, transect, collar, layer)
+
+soilCN <- rbind(org, min, roots)
+# soilCN$`C:N`
+```
+
+Visualize of all the response variables:
+```{r}
+soilCN %>% 
+  # filter(layer == "roots") %>%
+  filter(disturbance == "insect" | disturbance == "timber") %>%
+  filter(layer != "roots" & layer != "mineral") %>%
+  # filter(layer != "roots" & layer != "organic") %>%
+  # filter(disturbance != "exclosure") %>%
+  na.omit() %>%
+  # ggplot(aes(x=collar, y=`C:N`, fill = layer))+
+  # ggplot(aes(x=collar, y=`%C`, color = disturbance))+
+  # ggplot(aes(x=collar, y=`%N`))+
+  # ggplot(aes(x=collar, y=`C:N`, fill = layer))+
+  ggplot(aes(x=collar, y=`C:N`, color=disturbance))+
+  # geom_boxplot()+
+  # geom_violin(fill = "cyan2",alpha= 0.5)+
+  # geom_violin(fill = "#F8776D",alpha= 0.5)+
+  geom_point(aes(size = 5, alpha = 0.5))+
+ # geom_point(aes(size = 5, alpha = 0.5))+
+  facet_grid(~disturbance)+
+  theme_classic()
+
+```
+
+
+
+Calculate total C, N: [total C, N] (g/cm2) = (%C/%N) * BD(g/cm3) * depth(cm) / 100
+```{r total}
+# calculate total C in the organic layer in g per cm2:
+total_org <- bulk %>% 
+  left_join(org, by = c("site_name", "transect", "collar", "disturbance")) %>% 
+  mutate(layer = "organic")
+total_org <- total_org %>%
+  mutate(gC_cm2 = (`%C`*as.numeric(soil_bd_g_cm3)*sample_depth)/100) %>% 
+# calculate total N in g per cm2:
+  mutate(gN_cm2 = (`%N`*as.numeric(soil_bd_g_cm3)*sample_depth)/100)
+
+```
+Add additional "coverage" variable to organic layer data:
+```{r}
+total_org <- total_org %>% 
+   mutate(coverage = case_when(
+     disturbance %in% c("insect", "timber") & collar < 3 ~ "open", 
+     disturbance %in% c("insect", "timber") & collar == 3 ~ "edge",
+     disturbance %in% c("insect", "timber") & collar > 3 ~ "closed",
+     disturbance %in% c("control") & collar < 6 ~ "closed",
+     disturbance %in% c("exclosure") & collar < 6 ~ "exclosure"))
+```
+
+
+One thing to consider is that I'm not sure if the bulk density is going to apply to this org/min binary I've introduced by separating the samples like this.  If perhaps I had measured, with the bulk density samples that do include mineral layer, the height of the mineral layer?  no because then I'd want the bd of the mineral layer too.  Think this over with Shawn, Os. In the meantime...
+
+Explore data:
+```{r viz}
+total_org %>% 
+  # filter(disturbance == "timber" | disturbance == "insect") %>% 
+  # ggplot(aes(x=as.factor(collar), y=as.numeric(`C:N`)))+
+  # ggplot(aes(x=coverage, y=gC_cm2, fill = coverage))+
+  ggplot(aes(x=disturbance, y=gC_cm2, fill = disturbance))+
+  # ggplot(aes(x=as.factor(collar), y=gN_cm2))+
+  # geom_violin(fill = "cyan2",alpha= 0.5)+
+  # geom_violin(fill = "darkgreen",alpha= 0.5)+
+  # geom_boxplot(alpha = 0.75, aes(fill = coverage))+
+  geom_violin(alpha = 0.75)+
+  geom_boxplot(width = 0.1, color = "black")+
+  geom_point(position = "jitter", fill = "black", alpha = 0.5)+
+  scale_fill_manual(values = c("exclosure" = "salmon",
+                               "control" = "forestgreen",
+                               "timber" = "goldenrod3",
+                               "insect" = "goldenrod1"))+
+  # scale_fill_manual(values = c("open" = "goldenrod",
+                               # "edge" = "darkseagreen",
+                                # "closed" = "darkgreen"))+
+  # facet_grid(~disturbance)+
+  ylab(~paste("gC cm"^-2))+ xlab(element_blank())+
+  theme_classic()+
+  theme(legend.position = "none")
+```
+
+Multiply CN data with depth of organic layer:
+```{r}
+# fill in any cases of ">29" cm depth with the number "30" as a placeholder:
+org_layer <- org_layer %>% 
+  mutate(org_layer_depth_2alt = if_else(org_layer_depth_2 == ">29", 30,
+                                        as.numeric(org_layer$org_layer_depth_2)),
+         org_layer_depth_3alt = if_else(org_layer_depth_3 == ">29", 30,
+                                        as.numeric(org_layer$org_layer_depth_3)))
+
+total_org <- left_join(total_org, org_layer, by = )
+
+total_org <- total_org %>%
+  # na.omit() %>% 
+  mutate(avg_orgdepth = mean(org_layer$org_layer_depth_1,
+                             org_layer$org_layer_depth_2alt,
+                             org_layer$org_layer_depth_3alt, na.rm = TRUE))
+         gC_byorglayerdepth = gC_cm2*avg_orgdepth)
+
+```
+
+
+
+merge moosedata with soilCN data:
+```{r}
+fluxdat5$collar <- as.character(fluxdat5$collar)
+total_org$collar <- as.character(total_org$collar)
+
+soil_dens <- full_join(fluxdat5, total_org, join_by(site_name, line == transect, collar))
+
+# add moose density data (see "moosedata.Rmd" document):
+soildat_moosedens <- left_join(total_org, d_points, by = "site_name")
+```
+
+plot:
+```{r}
+# soil_dens %>% 
+soildat_moosedens %>% 
+  filter(disturbance != "NA") %>% 
+  # na.omit() %>% 
+  # filter(collar == 3) %>% 
+  # filter(collar == 1 | collar == 5) %>%
+  # mutate(soil_bd_g_cm3 = na_if(soil_bd_g_cm3, '#VALUE!')) %>% 
+  # mutate(root_bd_g_cm3 = na_if(root_bd_g_cm3, '#VALUE!')) %>% 
+  # ggplot(aes(x=collar, y=gC_cm2, col = density))+
+  ggplot(aes(x=density, y=gC_cm2))+
+  # ggplot(aes(x=as.factor(collar), y=gC_cm2))+
+  # ggplot(aes(x=as.factor(collar), y=gN_cm2))+
+  # geom_violin(fill = "cyan2",alpha= 0.5)+
+  # geom_violin(fill = "darkgreen",alpha= 0.5)+
+  geom_point()+
+  stat_smooth(method = "lm", se = F)+
+  # facet_grid(~disturbance.y)+
+  theme_classic()
+```
+Plot total soil C, vs. %C, with moose density on x-axis:
+```{r totC}
+soildat_moosedens %>% 
+  # filter(disturbance.x != "exclosure") %>% 
+  ggplot(aes(x=density, y=gC_cm2, color=disturbance))+
+  # geom_boxplot()+
+  geom_point()+
+  theme_classic()+
+  facet_wrap(~disturbance)+
+  stat_smooth(method = "lm")
+```
+
+```{r percC}
+soildat_moosedens %>% 
+  mutate(density = ifelse(is.na(density), 0, density)) %>% 
+  # filter(disturbance == "insect" | disturbance == "timber") %>%
+  # filter(coverage == "open" | coverage == "closed" | coverage == "edge") %>% 
+  filter(coverage == "closed") %>% 
+  ggplot(aes(x = density, y = `%C`))+
+  geom_point(position = "jitter", size = 3, shape = 21, color = "black", alpha = .75,
+             aes(fill = coverage))+
+  geom_smooth(method = lm, se =T, size = 0.75, alpha = 0.1, aes(color = coverage))+
+  scale_fill_manual(values = c("open" = "goldenrod",
+                               "edge" = "darkseagreen",
+                                "closed" = "darkgreen"))+
+  scale_color_manual(values = c("open" = "goldenrod",
+                                "edge" = "darkseagreen",
+                                "closed" = "darkgreen"))+
+  # facet_wrap(vars(disturbance))+
+  xlab(~paste("moose density km"^-2))+
+  ylab("soil %C")+
+  theme_classic()
+```
+
+One more try:
+```{r}
+soildat_moosedens %>% 
+  mutate(density = ifelse(is.na(density), 0, density)) %>% 
+  mutate(excl_nonexcl = if_else(disturbance == "exclosure", "exclosure",
+                                  "not exclosure")) %>%
+  # filter(disturbance != "exclosure") %>% 
+  # filter(disturbance == "insect" | disturbance == "timber") %>%
+  # filter(coverage == "open" | coverage == "closed" | coverage == "edge") %>% 
+  # filter(coverage == "closed") %>% 
+  # ggplot(aes(x = density, y = gN_cm2))+
+  # ggplot(aes(x = density, y = `%C`))+
+  # ggplot(aes(x = density, y = gC_cm2))+
+  ggplot(aes(x = density, y = `C:N`))+
+  geom_point(position = "jitter", size = 3, 
+             shape = 21, color = "black", alpha = .75,
+             aes(fill = coverage))+
+  # geom_smooth(method = lm, se =F, size = 0.75, alpha = 0.1, aes(color = coverage))+
+  scale_fill_manual(values = c("open" = "goldenrod",
+                               "edge" = "darkseagreen",
+                                "closed" = "darkgreen",
+                               "exclosure" = "gray"))+
+  scale_color_manual(values = c("open" = "goldenrod",
+                                "edge" = "darkseagreen",
+                                "closed" = "darkgreen",
+                                "exclosure" = "gray"))+
+  # facet_wrap(~excl_nonexcl)+
+  # facet_grid(disturbance~coverage)+
+  # facet_wrap(~excl_nonexcl)+
+  xlab(~paste("moose density km"^-2))+
+  # ylab(~paste("gC cm"^-2))+
+  ylab("soil CN")+
+  # ylab("soil %C")+
+theme_classic()
+```
+
+```{r}
+soildat_moosedens %>% 
+  mutate(density = ifelse(is.na(density), 0, density)) %>% 
+  # filter(disturbance != "exclosure" & disturbance != "control") %>%
+  filter(coverage == "closed") %>% 
+  ggplot(aes(x=density, y=gC_cm2, color = disturbance))+
+  # ggplot(aes(x=coverage, y=gC_cm2, fill = disturbance))+
+  geom_point(position = "jitter", size = 2, shape = 21, color = "black", alpha = .9,
+             aes(fill = disturbance))+
+  # geom_violin(alpha = 0.75)+
+  # geom_boxplot(width = 0.1, color = "white")+
+  # geom_point(position = "jitter", fill = "black", alpha = 0.5)+
+  # facet_grid(~disturbance)+
+  xlab("moose population density")+
+  ylab(~paste("gC cm"^-2))+
+  # ylim(-5,13)+
+  # stat_ellipse(size = 0.75)+
+  scale_fill_manual(values = c("insect" = "limegreen",
+                               "timber" = "cornflowerblue"))+
+  scale_color_manual(values = c("insect" = "limegreen",
+                               "timber" = "cornflowerblue"))+
+  theme_classic()
+```
+

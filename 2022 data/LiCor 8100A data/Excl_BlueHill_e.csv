@@ -1,0 +1,11 @@
+NAME,treatment,location,line,collar,date [YYYY-MM-DD HH:MM:SS],intial pressure [kPa],total volume [cm+3],linear flux (dry) [umol+1m-2s-1],chamber volume [cm+3],collar height [cm],mean chamber T [C],mean pressure [kPa],mean CO2 [umol+1 mol-1],initial CO2 (dry) [umol+1 mol-1],initial CO2 (dry) [umol+1 mol-1],quadratic flux (dry) [umol+1m-2s-1],quadratic flux R2,linear flux R2,mean water content [mmol+1 mol-1],chamber area [cm+2],chamber closure time (s),CO2 range (dry) [umol+1 mol-1],range of pressure [kPa],Licor volume [cm+3]
+Excl_BlueHill_e,exclosure,BlueHill_e,1,2,8/3/22 15:28,98.56,1230.85,4.50264,835.2,4.5,30.18197,98.56,333.21,327.49,341.37,5.18573,0.99962,0.99812,23.884,83.7,0,42.48,0.04,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,2,8/3/22 15:30,98.56,1230.85,4.18475,835.2,4.5,30.05049,98.56,337.82,319.24,345.91,4.84539,0.99948,0.99897,23.36,83.7,0,48.58,0.04,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,3,8/3/22 15:35,98.56,1084.38,5.0801,835.2,2.75,29.24279,98.56,346.14,328.06,354.33,6.80738,0.99923,0.99561,23.099,83.7,0,54.81,0.04,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,3,8/3/22 15:37,98.58,1084.38,4.83009,835.2,2.75,29.19738,98.57,336.72,321.81,344.44,5.81868,0.99945,0.99769,22.4,83.7,0,51.27,0.03,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,4,8/3/22 15:43,98.55,1147.15,3.49802,835.2,3.5,30.04721,98.55,389.51,311.78,398.25,3.49802,0.99932,0.99932,21.875,83.7,0,115.33,0.03,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,4,8/3/22 15:44,98.56,1147.15,4.51789,835.2,3.5,30.3582,98.55,338.62,334.5,346.56,5.26362,0.99962,0.99727,22.906,83.7,0,43.14,0.03,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,5,8/3/22 15:49,98.55,1272.7,7.2036,835.2,5,30.72934,98.54,344.91,324.88,352.98,8.29145,0.99969,0.99861,22.834,83.7,0,63.42,0.04,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,5,8/3/22 15:51,98.54,1272.7,7.16379,835.2,5,30.58443,98.55,341,316.23,348.74,8.07805,0.99977,0.99911,22.15,83.7,0,67.77,0.04,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,1,8/3/22 15:59,98.56,1021.6,5.82263,835.2,2,30.16525,98.58,344.63,331.86,352.7,6.57653,0.99983,0.99858,22.844,83.7,0,58.99,0.04,19
+Excl_BlueHill_e,exclosure,BlueHill_e,1,1,8/3/22 16:00,98.59,1021.6,5.62697,835.2,2,29.92246,98.59,345.68,329.13,353.64,6.32605,0.99977,0.9989,22.466,83.7,0,60.63,0.04,19

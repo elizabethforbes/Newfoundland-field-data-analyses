@@ -1,0 +1,62 @@
+---
+title: "Soil Data"
+output: html_notebook
+---
+
+Load libraries:
+```{r libraries}
+library(readxl)
+library(tidyverse)
+library(ggpubr)
+library(ggridges)
+```
+
+Read soil data:
+```{r soil}
+soil <- read_xlsx("Vegetation and soil.xlsx", sheet = 6, col_names = T)
+soil <- soil %>% 
+  select(1:11) %>% 
+  rename("grid_loc" = "grid location",
+         "org_1" = "org. layer 1",
+         "org_2" = "org. layer 2",
+         "org_3" = "org. layer 3",
+         "bd_depth" = "bd depth")
+
+soil <- soil %>% 
+  rowwise() %>% 
+  mutate(avg_depth = mean(c(org_1, org_2, org_3)))
+```
+Set palette colors:
+```{r}
+palette <- c("#fc9272", "#f0dc82", "#30571f")
+```
+
+
+```{r}
+soil %>% 
+  # filter(treatment == "gap") %>% 
+  ggplot(aes(x=avg_depth, group = park, fill = park))+
+  # ggplot(aes(x=net_dbh, group = species, fill = species))+
+  # geom_density(adjust=1.5, alpha = 0.75)+
+  geom_density(alpha = 0.75)+
+  labs(y="", x="average organic soil depth (cm)")+
+  theme_classic()
+
+soil %>% 
+  filter(treatment != "gap") %>% 
+  ggplot(aes(x=treatment, y=avg_depth, fill = treatment))+
+  geom_boxplot(alpha=0.75)+
+  scale_fill_manual(values = palette)+
+  geom_jitter(color = "black", size = 0.4, alpha = 0.75)+
+  theme_classic()+
+  facet_wrap(~park)+
+  theme(legend.position = "none")+
+  xlab("")+ylab("average org. layer depth (cm)")
+```
+Moose data: density from Parks Canada
+```{r}
+# import data generated from Parks Canada maps, with estimates of mean/max moose density at each site sampled in 2023
+tnnp_moose <- read.csv("TNNP_2023sites_moosedensities.csv", header = TRUE)
+gmnp_moose <- read.csv("GMNP_2023sites_moosedensities.csv", header = TRUE)
+```
+

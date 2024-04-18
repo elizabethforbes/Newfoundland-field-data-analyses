@@ -1,0 +1,48 @@
+---
+title: "veg_data"
+output: html_document
+date: "2022-11-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Vegetation data
+This doc explores the vegetation data collected in summer 2022, Newfoundland Canada.
+
+```{r libraries}
+library(tidyverse)
+library(readxl)
+```
+
+# data
+Read in data from the xlsx file.
+```{r}
+vegdat <- read_excel("summer2022_datasheet.xlsx", sheet = "vegetation")
+
+# switch from wide to long form, quadrat data (not canopy):
+veg_quad <- vegdat %>% 
+  select(!(`canopy cover`)) %>% 
+  select(!notes) %>% 
+  pivot_longer(
+    !c(disturbance, park_id, site_id, site_name, transect_id, collar_id),
+    names_to = "category",
+    values_to = "percent_cover")
+
+```
+
+# visualize:
+Brief data visualization to look at distributions, patterns.
+```{r}
+veg_quad %>% 
+  # filter(category == "bare"| category == "needle"| category == "rock") %>%
+  filter(category == "deadwood") %>% 
+  ggplot(aes(x=category, y=percent_cover, fill = collar_id))+
+  geom_boxplot(position = "dodge")+
+  facet_grid(cols = vars(disturbance),
+             rows = vars(collar_id))+
+  theme_bw()+theme(legend.position = "none")
+
+```
+

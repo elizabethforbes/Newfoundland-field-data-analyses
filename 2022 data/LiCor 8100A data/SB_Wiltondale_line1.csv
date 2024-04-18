@@ -1,0 +1,11 @@
+NAME,treatment,location,line,collar,date [YYYY-MM-DD HH:MM:SS],intial pressure [kPa],total volume [cm+3],linear flux (dry) [umol+1m-2s-1],chamber volume [cm+3],collar height [cm],mean chamber T [C],mean pressure [kPa],mean CO2 [umol+1 mol-1],initial CO2 (dry) [umol+1 mol-1],initial CO2 (dry) [umol+1 mol-1],quadratic flux (dry) [umol+1m-2s-1],quadratic flux R2,linear flux R2,mean water content [mmol+1 mol-1],chamber area [cm+2],chamber closure time (s),CO2 range (dry) [umol+1 mol-1],range of pressure [kPa],Licor volume [cm+3]
+SB_Wiltondale_line1_2,insect,Wiltondale,1,2,7/27/22 15:38,97.76,1042.53,10.33553,835.2,2.25,24.06533,97.76,422.82,360.44,431.55,12.08678,0.99979,0.99905,20.175,83.7,17,134.97,0.02,19
+SB_Wiltondale_line1_2,insect,Wiltondale,1,2,7/27/22 15:40,97.76,1042.53,9.72648,835.2,2.25,24.093,97.77,420.74,365.29,429.74,11.01979,0.9998,0.99933,20.921,83.7,17,123.43,0.03,19
+SB_Wiltondale_line1_4,insect,Wiltondale,1,4,7/27/22 15:47,97.77,1021.6,3.48395,835.2,2,23.257,97.77,349.37,332.23,355.85,3.56388,0.99941,0.9994,18.183,83.7,16,45.68,0.03,19
+SB_Wiltondale_line1_4,insect,Wiltondale,1,4,7/27/22 15:49,97.78,1021.6,3.6016,835.2,2,23.31817,97.78,361.68,344.92,368.59,3.66824,0.99963,0.99962,18.741,83.7,17,46.6,0.04,19
+SB_Wiltondale_line1_1,insect,Wiltondale,1,1,7/27/22 15:57,97.77,1189,4.23791,835.2,4,26.17817,97.78,327.83,310.49,335.06,4.82744,0.99948,0.99895,21.529,83.7,17,46.88,0.05,19
+SB_Wiltondale_line1_1,insect,Wiltondale,1,1,7/27/22 15:59,97.79,1189,4.11253,835.2,4,26.92267,97.79,326.08,310.5,333.06,4.41368,0.9995,0.99936,20.899,83.7,17,44.3,0.04,19
+SB_Wiltondale_line1_5,insect,Wiltondale,1,5,7/27/22 16:07,97.8,1105.3,6.79903,835.2,3,24.9785,97.8,418.19,382.13,425.94,7.71491,0.99951,0.99908,18.147,83.7,17,83.45,0.03,19
+SB_Wiltondale_line1_5,insect,Wiltondale,1,5,7/27/22 16:09,97.81,1105.3,8.13159,835.2,3,24.75,97.81,391.43,347.66,398.79,8.82283,0.99974,0.99957,18.405,83.7,16,98.27,0.03,19
+SB_Wiltondale_line1_3,insect,Wiltondale,1,3,7/27/22 16:18,97.77,1021.6,6.60859,835.2,2,24.3915,97.78,386.84,347.82,394.45,7.27035,0.99978,0.99955,19.259,83.7,16,89.11,0.04,19
+SB_Wiltondale_line1_3,insect,Wiltondale,1,3,7/27/22 16:20,97.78,1021.6,6.54024,835.2,2,24.22583,97.79,385.45,346.93,392.93,7.25929,0.99968,0.9994,18.977,83.7,16,87.91,0.04,19

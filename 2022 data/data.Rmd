@@ -1,0 +1,496 @@
+---
+title: "fluxdata_cleaning"
+author: "Elizabeth Forbes"
+date: "9/13/2022"
+output: html_document
+---
+
+Sept. 14th 2022:
+For whatever reason, the .81x files were not importing with the chamber volumes. So flux could not be calculated. I went the admittedly easier but far more time-consuming route of generating each transect's flux data in the SoilFluxPro software from Licor and exporting the .csv files. Here I'm going to concatenate them.
+
+```{r}
+library(tidyverse)
+library(calecopal)
+library(ggridges)
+library(readxl)
+library(dplyr)
+library(lubridate)
+library(ggpubr)
+library(sf)
+```
+
+
+```{r data}
+# identify a list of files ending in .csv:
+filenames <- list.files(pattern = "*.csv")
+
+
+
+# write each file to its own df in the Global Environment (though you can work with them in a list if preferred):
+list2env(
+  lapply(setNames(filenames, make.names(gsub("*.csv", "", filenames))),
+         read_csv), envir = .GlobalEnv
+)
+
+# some dfs I know have 27 variables, some have 25; we want them all to have 25
+# remove the "mean humidity" and "initial hour" cols from any df in the list that has those. doing it one by one because lazy enough to want to do it that way and not iterate it.
+Ctrl_RH_line1 <- Ctrl_RH_line1 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+Ctrl_RH_line3 <- Ctrl_RH_line3 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+Timber_electric_line1 <- Timber_electric_line1 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+Timber_electric_line2 <- Timber_electric_line2 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+Timber_electric_line3 <- Timber_electric_line3 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+Timber_GMtrail_line1 <- Timber_GMtrail_line1 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+Timber_GMtrail_line2 <- Timber_GMtrail_line2 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+Timber_GMtrail_line3 <- Timber_GMtrail_line3 %>% select(-all_of("initial hour of measurement")) %>% select(-all_of("mean relative humidity [%]"))
+
+# function that confirms all the objects in the global environment are dataframes
+dfs <- sapply(.GlobalEnv, is.data.frame)
+# disparate dfs to one dataframe
+fluxdat <- do.call(rbind, mget(names(dfs)[dfs]))
+
+# change column names to R-friendly:
+cols <- c("sample", "treatment", "location", "line", "collar", "datetime", "init_P_kPa",
+          "tot_vol_cm3", "Lflux_dry", "chamberVol", "colHeight_cm",
+          "meanchamberT", "meanP_kPa", "meanCO2", "initCO2_dry", "initCO2_dry",
+          "Qflux_dry", "Qflux_R2", "Lflux_R2", "meanH20_mmolmol", "chamberArea_cm2",
+          "chamber_closureTime", "CO2range_dry", "rangeP_kPa", "LicorVol_cm3")
+colnames(fluxdat) <- cols
+
+
+```
+
+I also want to incorporate the meta-data I collected manually to these data, aka soil moisture, light level, humidity, soil pH, etc.  I'll read in that datasheet and merge by site name, transect id, and collar id.
+```{r merge}
+
+# read in excel file: summer2022_datasheet.xlsx
+manual_dat <- read_excel("summer2022_datasheet.xlsx", sheet = "flux_meta")
+org_layer <- read_excel("summer2022_datasheet.xlsx", sheet = "org_layer")
+loc_gps <- read_excel("summer2022_datasheet.xlsx", sheet = "locations")
+```
+
+There is A LOT more information in the fluxdat df than we need so I will narrow this down to only columns that I'm interested in as metadata.
+```{r reduce_dat}
+
+fluxdat2 <- fluxdat %>% select(all_of(c("sample", "treatment", "location",
+                                        "line", "collar", "datetime",
+                                        "meanchamberT", "Lflux_dry", "Qflux_dry",
+                                        "Lflux_R2", "Qflux_R2")))
+# add site_name column (metadata): 
+fluxdat2 <- fluxdat2 %>%
+  mutate(site_name = case_when(
+    location == "BerryPond" ~ "Berry Pond",
+    # location == "GMtrail" ~ "Gros Morne trail",
+    location == "Gmtrail" ~ "Gros Morne trail",
+    location == "Wiltondale" ~ "Wiltondale",
+    location == "old" ~ "Old cut",
+    location == "RockyHarbour" ~ "Rocky Harbour",
+    location == "Ochre" ~ "Ochre",
+    location == "electric" ~ "Electric",
+    location == "BlueHill_c" ~ "BlueHill_c",
+    location == "BlueHill_e" ~ "BlueHill_e",
+    location == "BerryHill" ~ "Berry Hill",
+    location == "MillBrook" ~ "Mill Brook"))
+# add site_name column (GPS data): 
+loc_gps <- loc_gps %>%
+  mutate(site_name = case_when(
+    site_ID == "berrypond" ~ "Berry Pond",
+    site_ID == "grosmornetrail" ~ "Gros Morne trail",
+    site_ID == "wiltondale" ~ "Wiltondale",
+    site_ID == "old" ~ "Old cut",
+    site_ID == "rockyharbour" ~ "Rocky Harbour",
+    site_ID == "ochre" ~ "Ochre",
+    site_ID == "electric" ~ "Electric",
+    site_ID == "bluehill_c" ~ "BlueHill_c",
+    site_ID == "bluehill_e" ~ "BlueHill_e",
+    site_ID == "berryhill" ~ "Berry Hill",
+    site_ID == "millbrook" ~ "Mill Brook"))
+
+
+#add month, day, and hour column:
+fluxdat2$datetime <- mdy_hm(fluxdat2$datetime) 
+fluxdat2 <- fluxdat2 %>% 
+  mutate(month = month.name[lubridate::month(datetime)],
+         hour = lubridate::hour(datetime),
+         day = lubridate::day(datetime))
+
+# average the two flux datapoints for each collar:
+fluxdat2 <- fluxdat2 %>% 
+  # filter(treatment != "exclosure") %>% 
+  # filter(treatment != "control") %>% 
+  group_by(day, site_name, line, collar) %>% 
+  summarize_if(is.numeric, mean, na.rm = TRUE)
+
+loc_gps <- loc_gps %>% 
+  dplyr::rename(line = transect_id,
+         collar = collar_id)
+manual_dat <- manual_dat %>% 
+  dplyr::rename(line = transect_id,
+         collar = collar_id)
+org_layer <- org_layer %>% 
+  dplyr::rename(line = transect_id,
+         collar = collar_id)
+
+# # merge datasets on new name column:
+fluxdat3 <- left_join(fluxdat2, manual_dat)
+fluxdat3 <- left_join(fluxdat3, loc_gps)
+fluxdat3 <- left_join(fluxdat3, org_layer)
+
+# write file to home folder:
+# write_csv(fluxdat3, "fluxdat_all.csv", col_names = TRUE)
+```
+
+
+Add more useful columns to the dataset:
+```{r avg_temp}
+
+# replace all ">29" for org layer depth with "30", only in the 3rd sample (where those occurred)
+fluxdat3$org_layer_depth_3 <- if_else(fluxdat3$org_layer_depth_3 == ">29", "30", fluxdat3$org_layer_depth_3)
+# as.numeric for org layer depths 2, 3 (incl. NAs):
+fluxdat3$org_layer_depth_3 <- as.numeric(fluxdat3$org_layer_depth_3)
+fluxdat3$org_layer_depth_2 <- as.numeric(fluxdat3$org_layer_depth_2)
+# as character for collar ID:
+fluxdat3$collar <- as.character(fluxdat3$collar)
+
+# calculate relative differences for all the weather-related variables that would be influenced by sampling date: for each collar per site. *chamber T*, *soil moisture*, *humidity*, *soil temp*, *light level (lux)*
+# calculate mean chamber temp per site (per day, if sites sampled across different dates). also calculate mean organic layer depth in a new column
+fluxdat4 <- fluxdat3 %>% 
+  group_by(day, site_name) %>%
+  replace_na(list(humidity = 0, soil_temp = 0)) %>% 
+  mutate(rel_chmbrT = (meanchamberT-(mean(meanchamberT)))/(mean(meanchamberT))) %>% # chamber T
+  mutate(rel_VWC = (soil_mois_probe_VWC-(mean(soil_mois_probe_VWC)))/(mean(soil_mois_probe_VWC))) %>% # soil moisture
+  mutate(rel_RH = (humidity-(mean(humidity)))/(mean(humidity))) %>% # rel. humidity
+  mutate(rel_soilT = (soil_temp - (mean(soil_temp)))/(mean(soil_temp))) %>% # rel. soil T
+  mutate(rel_lux = (light_lux-(mean(light_lux)))/(mean(light_lux))) %>% # rel. light level
+  mutate(rel_airT = (air_temp-(mean(air_temp)))/(mean(air_temp))) %>% 
+  mutate(rel_flux = (Lflux_dry-(mean(Lflux_dry)))/(mean(Lflux_dry))) %>% 
+  ungroup() #ungroup for making the mean org layer depth column
+
+# calculate average organic layer depth:
+fluxdat4 <- fluxdat4 %>% 
+  mutate(avg_orgdepth = rowMeans(select(., org_layer_depth_1, org_layer_depth_2, org_layer_depth_3),
+                                 na.rm = TRUE))
+
+
+# add "closed", "open", "edge" for coverage level
+fluxdat4 <- fluxdat4 %>% 
+   mutate(coverage = case_when(
+     disturbance %in% c("insect", "timber") & collar < 3 ~ "open", 
+     disturbance %in% c("insect", "timber") & collar == 3 ~ "edge",
+     disturbance %in% c("insect", "timber") & collar > 3 ~ "closed",
+     disturbance %in% c("control") & collar < 6 ~ "closed",
+     disturbance %in% c("exclosure") & collar < 6 ~ "exclosure"))
+
+# add moose density data (see "moosedata.Rmd" document):
+fluxdat4 <- left_join(fluxdat4, d_points, by = "site_name")
+
+# simplify the dataframe to only what you need;
+fluxdat5 <- fluxdat4 %>% 
+  select(c(site_name:collar, Lflux_dry:Qflux_dry, disturbance:park_id, latitude:altitude,
+           rel_chmbrT:coverage, geometry, density))
+```
+
+General data exploration:
+
+Violin plot to get a visual sense of data spread, esp. IRT sample size:
+```{r}
+# violin plot IRT treatment (insect, timber, excl, or ctrl):
+fluxdat5 %>% 
+  ggplot(aes(x=disturbance, y=rel_flux, fill=disturbance))+
+  # ggplot(aes(x=disturbance, y=Lflux_dry, fill=disturbance))+
+  geom_violin()+
+  scale_fill_manual(values = cal_palette("sierra1"))+
+  geom_boxplot(width=0.1, color="white", alpha = 0.5, 
+               outlier.color = "black")+
+  theme_classic()
+
+```
+
+Look at data from the two disturbance types, by location in the transect:
+```{r}
+# violin plot IRT disturbance type and location on the transect:
+fluxdat5 %>% 
+  filter(disturbance == "insect" | disturbance == "timber" | disturbance == "control") %>%
+  # filter(disturbance == "insect" | disturbance == "timber") %>%
+  # filter(disturbance == "insect") %>%
+  # filter(disturbance == "timber") %>% 
+  # ggplot(aes(x=disturbance, y=Lflux_dry, fill=collar))+
+  ggplot(aes(x=disturbance, y=rel_flux, fill=collar))+
+  geom_boxplot(position="dodge", alpha = 0.75)+
+  scale_fill_manual(values = cal_palette("sierra1"),
+                    labels=c("0m (gap)", "25m (gap)", "50m (edge)", 
+                             "75m (mature)", "100m (mature)"))+
+  theme_classic()+
+  theme(legend.title = element_blank(),
+        legend.text = )
+
+```
+
+Ridgeline graph to look at distributions of data:
+```{r distr}
+
+fluxdat5 %>% 
+  filter(disturbance == "timber" | disturbance == "insect") %>%
+  # ggplot(aes(x=Lflux_dry, group = disturbance, 
+  ggplot(aes(x=rel_flux, group = disturbance,
+             fill = disturbance))+
+  geom_density(alpha = 0.75)+
+  facet_grid(~as.character(collar))+
+  theme_classic()+
+  scale_fill_manual(values = cal_palette("superbloom1"))+
+                    # labels=c("timber", "insect"))+
+                     # labels=c("0m (gap)", "25m (gap)", "50m (edge)",
+                             # "75m (mature)", "100m (mature)"))+
+  xlab("relative flux rate (umol/m2/sec)")+
+  theme(legend.title = element_blank())
+```
+
+Plot fluxes by collar AND average temperature inside the chamber!
+```{r collar_temp}
+col_vals <- cal_palette(name = "sierra1", n = 5)
+
+fluxdat4 %>% 
+  filter(disturbance == "insect") %>%
+  filter(rel_soilT > -1) %>% # take these out, they're NA's functionally
+  # ggplot(aes(x = rel_chmbrT, y = Lflux_dry, color = collar))+
+  ggplot(aes(x = rel_chmbrT, y = rel_flux, color = collar))+ # relative flux
+  geom_point(aes(colour = collar))+
+  stat_ellipse(alpha = 0.5)+
+  stat_smooth(method = "lm", se = FALSE)+
+  scale_fill_manual(values = col_vals)+
+  theme(legend.title = element_blank())+
+  ggtitle("Insect outbreak sites")+
+  theme_classic()
+
+```
+
+```{r collar_temp}
+
+fluxdat5 %>% 
+  filter(disturbance == "timber") %>% 
+  # ggplot(aes(x = rel_chmbrT, y = Lflux_dry, 
+  ggplot(aes(x = rel_chmbrT, y = rel_flux, # relative flux
+             color = collar))+
+  geom_point()+
+  stat_ellipse(aes(colour = collar))+
+  stat_smooth(method = "lm", se = FALSE)+
+  theme_classic()+
+  scale_fill_manual(values = cal_palette("sierra1"))+
+  theme(legend.title = element_blank())+
+  ggtitle("timber extraction sites")
+
+```
+
+```{r collar_temp}
+
+fluxdat5 %>% 
+  filter(disturbance == "exclosure") %>% 
+  # ggplot(aes(x = rel_chmbrT, y = Lflux_dry, color = collar))+
+  ggplot(aes(x = rel_chmbrT, y = rel_flux, color = collar))+
+  geom_point()+
+  # stat_ellipse(aes(color = collar))+
+  stat_smooth(method = "lm", se = FALSE)+
+  theme_classic()+
+  scale_fill_manual(values = cal_palette("sierra1"))+
+  theme(legend.title = element_blank())+
+  ggtitle("exclosure sites")
+
+```
+
+
+```{r collar_temp}
+
+fluxdat5 %>% 
+  filter(disturbance == "control") %>% 
+  # ggplot(aes(x = meanchamberT, y = Lflux_dry, color = as.character(collar)))+
+  # ggplot(aes(x = rel_chmbrT, y = Lflux_dry, 
+  ggplot(aes(x = rel_chmbrT, y = rel_flux, # relative flux   
+             color = collar))+
+  geom_point()+
+  # stat_ellipse(aes(color=collar))+
+  stat_smooth(method = "lm", se = FALSE)+
+  theme_classic()+
+  scale_fill_manual(values = cal_palette("sierra1"))+
+  theme(legend.title = element_blank())+
+  ggtitle("mature forest sites")
+
+```
+
+Plot all flux:temp relationships and facet by treatment:
+```{r collar_temp}
+# re-order the collar as a factor, 1 - 5:
+fluxdat5$collar <- factor(fluxdat5$collar, levels = c("1", "2", "3", "4", "5"))
+
+fluxdat5 %>% 
+  filter(disturbance == "timber" | disturbance == "insect") %>%
+  # ggplot(aes(y = Lflux_dry, x= rel_chmbrT, fill = collar))+
+  # ggplot(aes(y = rel_flux, x= rel_chmbrT, fill = collar))+
+  ggplot(aes(y = rel_flux, x= collar))+
+  geom_boxplot()+
+  # geom_violin(alpha = 0.25)+
+  facet_wrap(~disturbance)+
+  theme_classic()+
+  theme(legend.title = element_blank())
+```
+
+
+```{r}
+fluxdat5 %>% 
+  filter(disturbance == "timber" | disturbance == "insect") %>%
+  # ggplot(aes(y = Lflux_dry, x= rel_chmbrT, color = collar))+
+  # ggplot(aes(y = Lflux_dry, x= rel_chmbrT, color = site_name))+
+  ggplot(aes(y = rel_flux, x= rel_chmbrT, color = collar))+
+  geom_point()+
+  # geom_violin(alpha = 0.25)+
+  stat_smooth(method = "lm", alpha=0.05)+
+  xlab("relative temperature at soil surface")+
+  ylab("relative soil carbon flux rate")+
+  facet_wrap(~disturbance)+
+  theme_classic()
+```
+
+Explore correlated independent variables:
+```{r}
+fluxdat5 %>% 
+  # filter(rel_soilT>-1.0) %>%
+  # filter(rel_RH>-1.0) %>% 
+  # ggplot(aes(x=rel_VWC, y = rel_lux))+ ####### NOT CORRELATED ########
+  # ggplot(aes(x=rel_chmbrT, y=rel_lux))+ # yes correlated (0.46)
+  # ggplot(aes(x=rel_chmbrT, y=rel_RH))+ # very correlated (-0.41)
+  # ggplot(aes(x=rel_airT, y=rel_soilT))+ # yes correlated (0.54)
+  # ggplot(aes(x=rel_airT, y=rel_chmbrT))+ # EXTREMELY CORRELATED (0.89)
+  # ggplot(aes(x=rel_chmbrT, y=rel_soilT))+ # also so correlated, 0.61
+  ggplot(aes(x=rel_VWC, y = rel_chmbrT))+ #### NOT CORRELATED #####
+  geom_point()+
+  theme_classic()+
+  geom_smooth(method="lm", na.rm = TRUE)+
+  stat_cor(method = "pearson", label.x = 0.1, label.y = .5)
+
+# interesting: ok so soil moisture (VWC) and chamber temp are not correlated (keep as separate covariates), but chamber temp and light level are (fair enough).  But, VWC and light level are not.  Keep both?
+
+# primary variables: disturbance type, canopy cover
+```
+
+
+correlation between collar location/coverage level and relative chamber temp, organic layer depth:
+```{r}
+fluxdat5$coverage <- factor(fluxdat5$coverage, levels = c("exclosure", "closed", "edge", "open"))
+
+fluxdat5 %>% 
+  filter(disturbance == "insect" | disturbance == "timber") %>% 
+  ggplot(aes(x=collar, y=rel_soilT))+
+  # ggplot(aes(x=collar, y=avg_orgdepth, color = collar))+
+  geom_boxplot()+
+  theme_classic()
+```
+Relative soil moisture by collar:
+```{r}
+fluxdat5 %>% 
+  filter(disturbance == "insect" | disturbance == "timber") %>% 
+  ggplot(aes(x=collar, y=rel_VWC))+
+  # ggplot(aes(x=collar, y=avg_orgdepth, color = collar))+
+  geom_boxplot()+
+  theme_classic()
+```
+
+
+
+Test collar location correlations with all the climatic variables, to confirm that collar location is a viable stand-in for those variables in analysis:
+```{r corr_tests}
+# relative chamber temp: e.g. not using it in the model due to correlation
+kruskal.test(fluxdat5$rel_chmbrT, fluxdat5$collar)
+# chi-squared = 10.275, df = 4, p-value = 0.03605 <-- correlated (this is important; can use chamber temp as a proxy for collar and/or)
+kruskal.test(fluxdat5$rel_chmbrT, fluxdat5$coverage)
+# chi-squared = 9.1947, df = 3, p-value = 0.02681  <-- also correlated
+
+# relative soil temp:
+kruskal.test(fluxdat5$rel_soilT, fluxdat5$collar)
+# chi-squared = 13.446, df = 4, p-value = 0.009291 <-- also correlated
+kruskal.test(fluxdat5$rel_soilT, fluxdat5$rel_chmbrT)
+# chi-squared = 112, df = 112, p-value = 0.4822 <-- NOT correlated ****
+
+# relative soil moisture:
+kruskal.test(fluxdat5$rel_VWC, fluxdat5$collar)
+# chi-squared = 3.2751, df = 4, p-value = 0.5129 <-- NOT correlated ****
+
+# relative air temp:
+kruskal.test(fluxdat5$rel_airT, fluxdat5$collar)
+# chi-squared = 3.0951, df = 4, p-value = 0.542 <-- NOT correlated ****
+kruskal.test(fluxdat5$rel_airT, fluxdat5$rel_chmbrT)
+# chi-squared = 118.01, df = 118, p-value = 0.4825 <-- also NOT correlated ****
+kruskal.test(fluxdat5$rel_airT, fluxdat5$rel_soilT)
+# chi-squared = 30.939, df = 49, p-value = 0.9795 <-- also NOT correlated ****
+
+```
+Plot relative air temp against collar, relative chamber temp, and relative soil temp to see if there is any visual relationship between them.  it looks like it might be uncorrelated statistically but worth looking at visually:
+```{r air_T}
+
+fluxdat5 %>% 
+  # filter(disturbance == "insect" | disturbance == "timber") %>% 
+  # ggplot(aes(x=rel_airT, y=rel_soilT, color = collar))+
+  ggplot(aes(x=rel_soilT, y=rel_chmbrT, color = collar))+
+  geom_point()+
+  geom_smooth(method="lm", na.rm = T, se=F)+
+  theme_classic()
+
+# relative air temp doesn't seem to have a whole lot of relationship with soil temp, though a fairly positively linear one with chamber temp.  Its relationship with soil temp is pretty flat (e.g. no matter the temp of the air, soil temp remains pretty constant; generally, collars one and two and higher temps than 4 and 5, and collar 3 is between, pretty predictable). So there is no relationship between relative air temp and relative soil temp, but there is a relationship between relative air temp and relative chamber temp.
+
+# I think it's reasonable to drop air T from the analysis, tbh, but will think further.
+```
+Look at effects across sites IDs (e.g. random effect, but with slope and/or intercept?):
+```{r randomeffects}
+fluxdat5 %>% 
+  filter(disturbance == "insect" | disturbance == "timber") %>%
+  ggplot(aes(x=rel_chmbrT, y=Lflux_dry, color = site_name))+
+  geom_point()+
+  geom_smooth(method="lm", na.rm = T, se=T, alpha = 0.15)+
+  theme_classic()
+```
+
+
+# exploratory models: 
+looks like chamber temp is a big thing, perhaps worth also exploring soil moisture and temp.
+
+```{r expl_models}
+
+# homogeneity of variance in flux across collars, sites:
+
+bartlett.test(Lflux_dry ~ collar, data = fluxdat5)
+# data:  Lflux_dry by collar
+# Bartlett's K-squared = 5.725, df = 4, p-value = 0.2206
+# aka the variance of each group is relatively similar
+bartlett.test(rel_flux ~ collar, data = fluxdat5)
+# Bartlett's K-squared = 2.5132, df = 4, p-value = 0.6423
+# even with relative flux, variance of each group is relatively similar
+
+bartlett.test(Lflux_dry ~ disturbance, data = fluxdat5)
+# data:  Lflux_dry by disturbance
+# Bartlett's K-squared = 17.406, df = 3, p-value = 0.0005831
+# variance is significantly *dissimilar* across treatment
+bartlett.test(rel_flux ~ disturbance, data = fluxdat5)
+# Bartlett's K-squared = 4.5063, df = 3, p-value = 0.2117
+# when using relative flux, variance is pretty similar across disturbance type/treatment
+
+bartlett.test(Lflux_dry ~ site_name, data = fluxdat5)
+# data:  Lflux_dry by site_name
+# Bartlett's K-squared = 21.901, df = 10, p-value = 0.01562
+# variance is ALSO dissimilar across sites.
+bartlett.test(rel_flux ~ site_name, data = fluxdat5)
+# Bartlett's K-squared = 7.4487, df = 10, p-value = 0.6825
+# again, using relative flux, variance is pretty similar across sites
+
+# this is telling me that all these fixed factors are going to be important in comparing in a multilevel model. Could use site as a random effect, perhaps, though it is not like KLEE where the site differences are minimal (or supposed to be) or UHURU where the site differences correlate with climate context (e.g. precipitation gradient).
+
+# if using RELATIVE flux, however, site doesn't have a lot of inherent differences. Could argue for leaving it out of the model entirely, or for incorporating as a random effect in the final model (e.g. there will of course be site-specific differences in things like soil temp, moisture, altitude, etc. that should be minimaly accounted for).
+
+```
+Explore relative flux by moose population density (just in GMNP):
+```{r}
+fluxdat5 %>% 
+  filter(park_id == "GMNP") %>%
+  filter(disturbance != "exclosure") %>% 
+  ggplot(aes(x=density, y=rel_flux))+
+  geom_point()+
+  theme_classic()
+```
+
+

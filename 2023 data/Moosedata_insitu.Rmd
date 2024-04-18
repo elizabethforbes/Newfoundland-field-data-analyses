@@ -1,0 +1,68 @@
+---
+title: "Mooseinsitu"
+output: html_document
+date: "2024-02-11"
+---
+
+Load libraries:
+```{r libraries}
+library(readxl)
+library(tidyverse)
+library(ggpubr)
+library(ggridges)
+```
+
+Read in data:
+```{r}
+act_abund <- read_xlsx("Moose activity and abundance.xlsx", 
+                        sheet = 1, col_names = T)
+```
+
+set plot colors, etc:
+```{r}
+palette_treatments <- c("#f0dc82", "#30571f") # gap and closed canopy
+
+```
+
+Plot moose abundance (by droppings) per park, per treatment type:
+```{r}
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9328498/ (calculating abundance from pellets)
+
+act_abund %>% 
+  filter(treatment != "exclosure") %>% 
+  ggplot(aes(x=treatment, y = droppings, fill = treatment))+
+  geom_boxplot()+
+  scale_fill_manual(values=palette_treatments) +
+  geom_jitter()+
+  theme_classic()+
+  facet_wrap(~park)+
+  labs(y = "droppings: individual piles")+
+  theme(legend.position = "none")
+```
+
+Plot moose activity per park, per treatment type:
+```{r}
+act_abund %>% 
+  filter(treatment != "exclosure") %>% 
+         # park == "GMNP") %>% 
+  ggplot(aes(x=treatment, y = browsing, fill = treatment))+
+  # geom_point()+
+  geom_boxplot()+
+  scale_fill_manual(values=palette_treatments) +
+  geom_jitter()+
+  theme_classic()+
+  ylim(0,80)+
+  facet_wrap(~park)+
+  labs(y = "browsing: individual plants")+
+  theme(legend.position = "none")
+```
+
+Merge the above data with the moose density data you gleaned from the Parks: this way, you can associate ambient moose population density with the above in situ observations of activity and abundance. (e.g.: does observed abundance == Parks-counted density? Does activity correlate with Parks-counted density? etc.)
+```{r}
+# import data generated from Parks Canada maps, with estimates of mean/max moose density at each site sampled in 2023, if not already read in
+# tnnp_moose <- read.csv("TNNP_2023sites_moosedensities.csv", header = TRUE)
+# gmnp_moose <- read.csv("GMNP_2023sites_moosedensities.csv", header = TRUE)
+
+# append these data to the activity/abundance data: do they match up?
+```
+

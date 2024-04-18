@@ -1,0 +1,594 @@
+---
+title: "EGM5 data: cleaning, organizing"
+format: html
+editor: visual
+---
+
+## EGM5: soil carbon flux data, collected manually in 2023
+
+The data here were taken with a manual, hand-held chamber in summer 2023 by Elizabeth Forbes, at collars installed in Terra Nova and Gros Morne national parks in Newfoundland Canada. The data are of soil carbon flux rates, or the emission rates of carbon dioxide from the soil to the atmosphere (via soil microbial and root respiration, as well as physical processes that release gases). The raw data are reported in csvs and the final flux rates must be extracted, associated with relevant meta-data (e.g. location, date, time), and collated.
+
+```{r packages}
+#| echo: false
+library(tidyverse)
+library(here)
+library(calecopal) # colors
+# library(data.table)
+library(lubridate)
+library(hms)
+library(ggpubr)
+library(ggridges)
+```
+
+## Upload data:
+
+Upload data from the EGM5 folder in this project's working directory.
+
+```{r}
+# define colnames based on EGM5 manual:
+colnames <- c("mtype", "date", "time", "plot_no", "rec_no", "co2_ref", "pressure", "flow", "h20_ref",
+              "rh_T", "O2_ref", "errorcode", "aux", "PAR", "soil_T", "air_T", "soil_mois",
+              "process", "dC", "dTime", "r_linear", "r_quadratic")
+# units: flux estimates are in g/m2/hr, dC and co2_ref are in ppm, all temps in C, RH in %, pressure is in millibars
+
+# read all files in folder with a .txt extension, using the "here" functionality to go one folder down:
+filedir <- here::here("EGM5")
+
+# list files in the folder, assign to list named "files":
+files <- filedir %>% list.files()
+
+# read files into list of tables:
+df <- list.files(path = filedir, pattern = "*.TXT",
+                 full.names = T) %>% 
+  map_df(~read.table(., sep = ",", header = F, col.names = colnames, fill = T))
+```
+
+## Clean data
+
+Extract the final fluxes (linear and quadratic) as well as the meta-data included in the EGM data output (things like soil temp, ambient temp, humidity, etc.).
+
+```{r}
+# extract only those rows where "mtype" = R5 (aka the last observation per interval)
+nl_flux <-  df %>% 
+  filter(mtype == "R5")
+```
+
+## Date and time
+
+The date on the EGM5 was off while data was being collected; I have determined that date was set for one day previous than reality, and that time was set correctly to Newfoundland time.
+
+```{r}
+class(nl_flux$date) #character
+class(nl_flux$time) #character
+
+nl_flux$date <- as.Date(nl_flux$date, "%d/%m/%y")+1 #add one day to the date
+nl_flux$time <- as_hms(nl_flux$time) # convert from character to time
+nl_flux$datetime <- as.POSIXct(paste(nl_flux$date, nl_flux$time), format = "%Y-%m-%d %H:%M:%S") # create datetime obj
+```
+
+## Add meta-data
+
+Associate relevant meta-data with the flux data: park ID, disturbance type (insect, fire, timber, exclosure, or mature), collar number. This requires matching the date/time and plot_no from each row to the notes from the field (digitized on Google drive).
+
+Add park identifier, when/if gaskets were used, and site identifier:
+
+```{r}
+# if data occurred before July 10th, it occurred at TNNP; if after, at GMNP. Add "park_id" to df with these criteria.
+nl_flux <- nl_flux %>% 
+  mutate_at(c("plot_no", "rec_no", "co2_ref", "pressure", "flow", "h20_ref", "rh_T", 
+              "O2_ref", "errorcode", "aux", "PAR", "soil_T",
+              "soil_mois", "air_T", "process", "dC", "dTime", "r_linear", "r_quadratic"), 
+            as.numeric)
+
+nl_flux <- nl_flux %>% 
+  # add nat'l park ID:
+  mutate(park_id = case_when(date < "2023-07-10" ~ "TNNP", 
+                             date > "2023-07-10" ~ "GMNP")) %>% 
+  # note when we were not using a foam gasket between chamber and collar:
+  mutate(gasket = case_when(date < "2023-06-30" ~ "no gasket", .default = "gasket")) %>% 
+                             # TNNP metadata: site ID
+  mutate(site_id = case_when(date == "2023-06-28" & plot_no == 1 ~ "BlueHill_C_excl",
+                             date == "2023-06-28" & plot_no == 2 ~ "BlueHill_E_excl",
+                             date == "2023-06-28" & plot_no == 3 ~ "BlueHill_E_gap",
+                             date == "2023-06-29" & plot_no %in% 1:3 ~ "BlueHill_fairy_mature",
+                             date == "2023-06-30" & datetime < "2023-06-30 12:00:00" ~ "practice (at house)",
+                             date == "2023-06-30" & plot_no %in% 1:3 ~ "Ochre_mature",
+                             date == "2023-06-30" & plot_no %in% 4:6 ~ "BlueHill_fairy_mature",
+                             date == "2023-06-30" & plot_no %in% 7:9 ~ "BlueHill_big_gap",
+                             date == "2023-07-01" & plot_no %in% 1:3 ~ "Ochre_gap",
+                             date == "2023-07-01" & plot_no %in% 4:6 ~ "Ochre_excl",
+                             date == "2023-07-01" & plot_no %in% 7:9 ~ "BlueHill_S_gap",
+                             date == "2023-07-02" & plot_no %in% 1:3 ~ "BlueHill_E_excl",
+                             date == "2023-07-02" & plot_no %in% 4:6 ~ "BlueHill_C_excl",
+                             date == "2023-07-02" & plot_no %in% 7:9 ~ "BlueHill_E_gap",
+                             date == "2023-07-02" & plot_no %in% 10:12 ~ "BlueHill_S_gap",
+                             date == "2023-07-05" & plot_no %in% 1:3 ~ "BlueHill_C_excl",
+                             date == "2023-07-05" & plot_no %in% 4:6 ~ "BlueHill_E_gap",
+                             date == "2023-07-05" & plot_no %in% 7:9 ~ "BlueHill_E_excl",
+                             date == "2023-07-05" & plot_no %in% 10:12 ~ "BlueHill_W_excl",
+                             date == "2023-07-05" & plot_no %in% 13:15 ~ "BlueHill_W_gap",
+                             date == "2023-07-05" & plot_no %in% 16:18 ~ "BlueHill_W_mature",
+                             date == "2023-07-05" & plot_no %in% 19:21 ~ "BlueHill_W_close_mature",
+                             date == "2023-07-06" & plot_no %in% 1:3 ~ "Ochre_mature",
+                             date == "2023-07-06" & plot_no %in% 4:6 ~ "Ochre_excl",
+                             date == "2023-07-06" & plot_no %in% 7:9 ~ "Ochre_gap",
+                             date == "2023-07-06" & plot_no %in% 10:12 ~ "BlueHill_fairy_mature",
+                             date == "2023-07-06" & plot_no %in% 13:15 ~ "BlueHill_big_gap",
+                             # GMNP data metadata: site ID
+                             date == "2023-07-24" & plot_no %in% 1:3 ~ "BerryTrail_gap",
+                             date == "2023-07-24" & plot_no %in% 4:6 ~ "BerryTrail_mature",
+                             date == "2023-07-24" & plot_no %in% 7:9 ~ "Electric_mature",
+                             date == "2023-07-24" & plot_no %in% 10:12 ~ "Electric_gap",
+                             date == "2023-07-25" & plot_no %in% 1:3 ~ "NorrisPt_gap",
+                             date == "2023-07-25" & plot_no %in% 4:6 ~ "NorrisPt_mature",
+                             date == "2023-07-25" & plot_no %in% 7:9 ~ "NorrisPt_excl",                                             
+                             date == "2023-07-26" & plot_no %in% 1:3 ~ "MillBrook_mature",
+                             date == "2023-07-26" & plot_no %in% 4 ~ "MillBrook_gap",
+                             date == "2023-07-26" & plot_no %in% 5:7 ~ "BerryHill_gap",
+                             date == "2023-07-26" & plot_no %in% 8:10 ~ "BerryHill_mature",
+                             date == "2023-07-27" & plot_no %in% 1:3 ~ "BerryBaby_mature",
+                             date == "2023-07-27" & plot_no %in% 4:6 ~ "BerryBaby_gap",
+                             date == "2023-07-27" & plot_no %in% 7:9 ~ "BerryPond_gap",
+                             date == "2023-07-27" & plot_no %in% 10:12 ~ "BerryPond_mature",
+                             date == "2023-07-28" & plot_no %in% 1:3 ~ "SoutheastBrook_excl",
+                             date == "2023-07-28" & plot_no %in% 4:6 ~ "SoutheastBrook_gap",
+                             date == "2023-07-28" & plot_no %in% 7:9 ~ "SoutheastBrook_mature",
+                             date == "2023-07-28" & plot_no %in% 10:12 ~ "GMTrail_gap",
+                             date == "2023-07-28" & plot_no %in% 13:15 ~ "GMTrail_mature",
+                             date == "2023-07-28" & plot_no %in% 16:18 ~ "MillBrook_excl",
+                             .default = "other"))
+```
+
+Now add collar identifier: this will be a bit clumsy.
+
+```{r}
+ 
+nl_flux <- nl_flux %>% 
+  mutate(collar = case_when(date == "2023-06-28" & site_id == "BlueHill_C_excl" & rec_no %in% c(914,1093,1220) ~ 7, #TNNP collars
+                            date == "2023-06-28" & site_id == "BlueHill_C_excl" & rec_no %in% c(1403,1552,1665) ~ 2,
+                            date == "2023-06-28" & site_id == "BlueHill_C_excl" & rec_no %in% c(1800,1889,1976) ~ 6,
+                            date == "2023-06-28" & site_id == "BlueHill_E_excl" & rec_no %in% c(2830,2936,3052) ~ 3,
+                            date == "2023-06-28" & site_id == "BlueHill_E_excl" & rec_no %in% c(3251,3355,3459) ~ 7,
+                            date == "2023-06-28" & site_id == "BlueHill_E_excl" & rec_no %in% c(3666,3777,3886) ~ 9,
+                            date == "2023-06-28" & site_id == "BlueHill_E_gap" & rec_no %in% c(5608,5733,5838) ~ 4,
+                            date == "2023-06-28" & site_id == "BlueHill_E_gap" & rec_no %in% c(6651,6750,6852) ~ 9,
+                            date == "2023-06-28" & site_id == "BlueHill_E_gap" & rec_no %in% c(6961,7043,7118) ~ 5,
+                            date == "2023-06-29" & site_id == "BlueHill_fairy_mature" & plot_no == 1 ~ 2,
+                            date == "2023-06-29" & site_id == "BlueHill_fairy_mature" & plot_no == 2 ~ 5,
+                            date == "2023-06-29" & site_id == "BlueHill_fairy_mature" & plot_no == 3 ~ 8,
+                            date == "2023-06-30" & site_id == "Ochre_mature" & plot_no == 1 ~ 1,
+                            date == "2023-06-30" & site_id == "Ochre_mature" & plot_no == 2 ~ 4,
+                            date == "2023-06-30" & site_id == "Ochre_mature" & plot_no == 3 ~ 5,
+                            date == "2023-06-30" & site_id == "BlueHill_fairy_mature" & plot_no == 4 ~ 2,
+                            date == "2023-06-30" & site_id == "BlueHill_fairy_mature" & plot_no == 5 ~ 5,
+                            date == "2023-06-30" & site_id == "BlueHill_fairy_mature" & plot_no == 6 ~ 8,
+                            date == "2023-06-30" & site_id == "BlueHill_big_gap" & plot_no == 7 ~ 2,
+                            date == "2023-06-30" & site_id == "BlueHill_big_gap" & plot_no == 8 ~ 5,
+                            date == "2023-06-30" & site_id == "BlueHill_big_gap" & plot_no == 9 ~ 9,
+                            date == "2023-07-01" & site_id == "Ochre_gap" & plot_no == 1 ~ 3,
+                            date == "2023-07-01" & site_id == "Ochre_gap" & plot_no == 2 ~ 4,
+                            date == "2023-07-01" & site_id == "Ochre_gap" & plot_no == 3 ~ 6,
+                            date == "2023-07-01" & site_id == "Ochre_excl" & plot_no == 4 ~ 1,
+                            date == "2023-07-01" & site_id == "Ochre_excl" & plot_no == 5 ~ 4,
+                            date == "2023-07-01" & site_id == "Ochre_excl" & plot_no == 6 ~ 8,
+                            date == "2023-07-01" & site_id == "BlueHill_S_gap" & plot_no == 7 ~ 5,
+                            date == "2023-07-01" & site_id == "BlueHill_S_gap" & plot_no == 8 ~ 7,
+                            date == "2023-07-01" & site_id == "BlueHill_S_gap" & plot_no == 9 ~ 9,
+                            date == "2023-07-02" & site_id == "BlueHill_E_excl" & plot_no == 1 ~ 3,
+                            date == "2023-07-02" & site_id == "BlueHill_E_excl" & plot_no == 2 ~ 7,
+                            date == "2023-07-02" & site_id == "BlueHill_E_excl" & plot_no == 3 ~ 9,
+                            date == "2023-07-02" & site_id == "BlueHill_C_excl" & plot_no == 4 ~ 7,
+                            date == "2023-07-02" & site_id == "BlueHill_C_excl" & plot_no == 5 ~ 6,
+                            date == "2023-07-02" & site_id == "BlueHill_C_excl" & plot_no == 6 ~ 2,
+                            date == "2023-07-02" & site_id == "BlueHill_E_gap" & plot_no == 7 ~ 4,
+                            date == "2023-07-02" & site_id == "BlueHill_E_gap" & plot_no == 8 ~ 5,
+                            date == "2023-07-02" & site_id == "BlueHill_E_gap" & plot_no == 9 ~ 9,
+                            date == "2023-07-02" & site_id == "BlueHill_S_gap" & plot_no == 10 ~ 5,
+                            date == "2023-07-02" & site_id == "BlueHill_S_gap" & plot_no == 11 ~ 7,
+                            date == "2023-07-02" & site_id == "BlueHill_S_gap" & plot_no == 12 ~ 9,
+                            date == "2023-07-05" & site_id == "BlueHill_C_excl" & plot_no == 1 ~ 7,
+                            date == "2023-07-05" & site_id == "BlueHill_C_excl" & plot_no == 2 ~ 6,
+                            date == "2023-07-05" & site_id == "BlueHill_C_excl" & plot_no == 3 ~ 2,
+                            date == "2023-07-05" & site_id == "BlueHill_E_gap" & plot_no == 4 ~ 5,
+                            date == "2023-07-05" & site_id == "BlueHill_E_gap" & plot_no == 5 ~ 4,
+                            date == "2023-07-05" & site_id == "BlueHill_E_gap" & plot_no == 6 ~ 9,
+                            date == "2023-07-05" & site_id == "BlueHill_E_excl" & plot_no == 7 ~ 9,
+                            date == "2023-07-05" & site_id == "BlueHill_E_excl" & plot_no == 8 ~ 3,
+                            date == "2023-07-05" & site_id == "BlueHill_E_excl" & plot_no == 9 ~ 7,
+                            date == "2023-07-05" & site_id == "BlueHill_W_excl" & plot_no == 10 ~ 4,
+                            date == "2023-07-05" & site_id == "BlueHill_W_excl" & plot_no == 11 ~ 3,
+                            date == "2023-07-05" & site_id == "BlueHill_W_excl" & plot_no == 12 ~ 8,
+                            date == "2023-07-05" & site_id == "BlueHill_W_gap" & plot_no == 13 & rec_no %in% c(4571,4671,4778) ~ 1,
+                            date == "2023-07-05" & site_id == "BlueHill_W_gap" & plot_no == 13 & rec_no == 5022 ~ 3, # notes from field: mislabeled the first one here re: plot_no
+                            date == "2023-07-05" & site_id == "BlueHill_W_gap" & plot_no == 14 ~ 3,
+                            date == "2023-07-05" & site_id == "BlueHill_W_gap" & plot_no == 15 ~ 9,
+                            date == "2023-07-05" & site_id == "BlueHill_W_mature" & plot_no == 16 ~ 1,
+                            date == "2023-07-05" & site_id == "BlueHill_W_mature" & plot_no == 17 ~ 2,
+                            date == "2023-07-05" & site_id == "BlueHill_W_mature" & plot_no == 18 ~ 8,
+                            date == "2023-07-05" & site_id == "BlueHill_W_close_mature" & plot_no == 19 ~ 1,
+                            date == "2023-07-05" & site_id == "BlueHill_W_close_mature" & plot_no == 20 ~ 2,
+                            date == "2023-07-05" & site_id == "BlueHill_W_close_mature" & plot_no == 21 ~ 9,
+                            date == "2023-07-06" & site_id == "Ochre_mature" & plot_no == 1 ~ 4,
+                            date == "2023-07-06" & site_id == "Ochre_mature" & plot_no == 2 ~ 5,
+                            date == "2023-07-06" & site_id == "Ochre_mature" & plot_no == 3 ~ 1,
+                            date == "2023-07-06" & site_id == "Ochre_excl" & plot_no == 4 ~ 1,
+                            date == "2023-07-06" & site_id == "Ochre_excl" & plot_no == 5 ~ 4,
+                            date == "2023-07-06" & site_id == "Ochre_excl" & plot_no == 6 ~ 8,
+                            date == "2023-07-06" & site_id == "Ochre_gap" & plot_no == 7 ~ 3,
+                            date == "2023-07-06" & site_id == "Ochre_gap" & plot_no == 8 ~ 6,
+                            date == "2023-07-06" & site_id == "Ochre_gap" & plot_no == 9 ~ 4,
+                            date == "2023-07-06" & site_id == "BlueHill_fairy_mature" & plot_no == 10 ~ 5,
+                            date == "2023-07-06" & site_id == "BlueHill_fairy_mature" & plot_no == 11 ~ 2,
+                            date == "2023-07-06" & site_id == "BlueHill_fairy_mature" & plot_no == 12 ~ 8,
+                            date == "2023-07-06" & site_id == "BlueHill_big_gap" & plot_no == 13 ~ 9,
+                            date == "2023-07-06" & site_id == "BlueHill_big_gap" & plot_no == 14 ~ 5,
+                            date == "2023-07-06" & site_id == "BlueHill_big_gap" & plot_no == 15 ~ 2,
+                            # GMNP collars:
+                            date == "2023-07-24" & site_id == "BerryTrail_gap" & plot_no == 1 ~ 5,
+                            date == "2023-07-24" & site_id == "BerryTrail_gap" & plot_no == 2 ~ 8,
+                            date == "2023-07-24" & site_id == "BerryTrail_gap" & plot_no == 3 ~ 7,
+                            date == "2023-07-24" & site_id == "BerryTrail_mature" & plot_no == 4 ~ 4, # double checked all these that match plot_no and collar
+                            date == "2023-07-24" & site_id == "BerryTrail_mature" & plot_no == 5 ~ 5,
+                            date == "2023-07-24" & site_id == "BerryTrail_mature" & plot_no == 6 ~ 6,
+                            date == "2023-07-24" & site_id == "Electric_mature" & plot_no == 7 ~ 7,
+                            date == "2023-07-24" & site_id == "Electric_mature" & plot_no == 8 ~ 5,
+                            date == "2023-07-24" & site_id == "Electric_mature" & plot_no == 9 ~ 2,
+                            date == "2023-07-24" & site_id == "Electric_gap" & plot_no == 10 ~ 2,
+                            date == "2023-07-24" & site_id == "Electric_gap" & plot_no == 11 ~ 4,
+                            date == "2023-07-24" & site_id == "Electric_gap" & plot_no == 12 ~ 9,
+                            date == "2023-07-25" & site_id == "NorrisPt_gap" & plot_no == 1 ~ 5,
+                            date == "2023-07-25" & site_id == "NorrisPt_gap" & plot_no == 2 ~ 3,
+                            date == "2023-07-25" & site_id == "NorrisPt_gap" & plot_no == 3 ~ 8,
+                            date == "2023-07-25" & site_id == "NorrisPt_mature" & plot_no == 4 ~ 1,
+                            date == "2023-07-25" & site_id == "NorrisPt_mature" & plot_no == 5 ~ 2,
+                            date == "2023-07-25" & site_id == "NorrisPt_mature" & plot_no == 6 ~ 9,
+                            date == "2023-07-25" & site_id == "NorrisPt_excl" & plot_no == 7 ~ 8,
+                            date == "2023-07-25" & site_id == "NorrisPt_excl" & plot_no == 8 ~ 5,
+                            date == "2023-07-25" & site_id == "NorrisPt_excl" & plot_no == 9 ~ 1,
+                            date == "2023-07-26" & site_id == "MillBrook_mature" & plot_no == 1 ~ 4,
+                            date == "2023-07-26" & site_id == "MillBrook_mature" & plot_no == 2 ~ 3,
+                            date == "2023-07-26" & site_id == "MillBrook_mature" & plot_no == 3 ~ 8,
+                            date == "2023-07-26" & site_id == "MillBrook_gap" & plot_no == 4 ~ 5,  # other two collars pulled up
+                            date == "2023-07-26" & site_id == "BerryHill_gap" & plot_no == 5 ~ 5,
+                            date == "2023-07-26" & site_id == "BerryHill_gap" & plot_no == 6 ~ 2,
+                            date == "2023-07-26" & site_id == "BerryHill_gap" & plot_no == 7 ~ 3,
+                            date == "2023-07-26" & site_id == "BerryHill_mature" & plot_no == 8 ~ 5,
+                            date == "2023-07-26" & site_id == "BerryHill_mature" & plot_no == 9 ~ 2,  # looks like only two measurements here
+                            date == "2023-07-26" & site_id == "BerryHill_mature" & plot_no == 10 ~ 1,
+                            date == "2023-07-27" & site_id == "BerryBaby_mature" & plot_no == 1 ~ 3,
+                            date == "2023-07-27" & site_id == "BerryBaby_mature" & plot_no == 2 ~ 1,
+                            date == "2023-07-27" & site_id == "BerryBaby_mature" & plot_no == 3 ~ 4,
+                            date == "2023-07-27" & site_id == "BerryBaby_gap" & plot_no == 4 ~ 6,
+                            date == "2023-07-27" & site_id == "BerryBaby_gap" & plot_no == 5 ~ 8,
+                            date == "2023-07-27" & site_id == "BerryBaby_gap" & plot_no == 6 ~ 5, 
+                            date == "2023-07-27" & site_id == "BerryPond_gap" & plot_no == 7 ~ 6,
+                            date == "2023-07-27" & site_id == "BerryPond_gap" & plot_no == 8 ~ 1,
+                            date == "2023-07-27" & site_id == "BerryPond_gap" & plot_no == 9 ~ 2,
+                            date == "2023-07-27" & site_id == "BerryPond_mature" & plot_no == 10 ~ 8,
+                            date == "2023-07-27" & site_id == "BerryPond_mature" & plot_no == 11 ~ 9,
+                            date == "2023-07-27" & site_id == "BerryPond_mature" & plot_no == 12 ~ 3,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_excl" & plot_no == 1 ~ 3,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_excl" & plot_no == 2 ~ 4,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_excl" & plot_no == 3 ~ 7,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_gap" & plot_no == 4 ~ 4,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_gap" & plot_no == 5 ~ 6,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_gap" & plot_no == 6 ~ 9,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_mature" & plot_no == 7 ~ 9,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_mature" & plot_no == 8 ~ 5,
+                            date == "2023-07-28" & site_id == "SoutheastBrook_mature" & plot_no == 9 ~ 1,
+                            date == "2023-07-28" & site_id == "GMTrail_gap" & plot_no == 10 ~ 9,
+                            date == "2023-07-28" & site_id == "GMTrail_gap" & plot_no == 11 ~ 5,
+                            date == "2023-07-28" & site_id == "GMTrail_gap" & plot_no == 12 ~ 4,
+                            date == "2023-07-28" & site_id == "GMTrail_mature" & plot_no == 13 ~ 6,
+                            date == "2023-07-28" & site_id == "GMTrail_mature" & plot_no == 14 ~ 3,
+                            date == "2023-07-28" & site_id == "GMTrail_mature" & plot_no == 15 ~ 8,
+                            date == "2023-07-28" & site_id == "MillBrook_excl" & plot_no == 16 ~ 5,
+                            date == "2023-07-28" & site_id == "MillBrook_excl" & plot_no == 17 ~ 2,
+                            date == "2023-07-28" & site_id == "MillBrook_excl" & plot_no == 18 ~ 6,
+
+                                                        .default = 0))
+```
+
+Remove data that was collected with no gasket:
+
+```{r}
+nl_flux <- nl_flux %>% 
+  filter(gasket == "gasket") %>%  #396 total observations, so about 130 or so locations
+  filter(site_id != "practice (at house)") #394 total
+```
+
+Add column indicting treatment: gap, mature, or exclosure.
+
+```{r}
+nl_flux <- nl_flux %>% 
+  mutate(location = case_when(str_detect(site_id, pattern = "gap")~"gap",
+                              str_detect(site_id, pattern = "mature")~"mature",
+                              str_detect(site_id, pattern = "excl")~"exclosure"))
+
+```
+
+## Visualize data:
+
+First, visualize the linear vs. quadratic fluxes:
+
+```{r}
+#| echo: false
+# compare linear to quadratic fluxes:
+nl_flux %>% 
+  ggplot(
+  aes(x=r_linear, y = r_quadratic))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F)+
+  stat_regline_equation(label.y = 3.5, aes(label = ..eq.label..))+
+  stat_regline_equation(label.y = 3.25, aes(label = ..rr.label..))+
+  xlim(-1,4)+ylim(-1, 4)+
+  labs(x="flux rate, linear regression", y = "flux rate, quadratic regression")+
+  theme_classic()
+
+# R2 value for relationship between linear and quadratic: 0.93
+```
+
+Visualize distribution of fluxes over the locations:
+
+```{r}
+nl_flux %>% 
+  ggplot(aes(x=r_linear, y = location, fill = location))+
+  geom_density_ridges(alpha = .75)+
+  theme_ridges()+
+  xlab("flux (g/m2/hr)")+
+  ylab("")+
+  facet_wrap(~park_id)+
+  theme_classic()+
+  theme(legend.position = "none")
+```
+
+Visualize correlations between ambient temperature, ambient humidity, and time of day (and flux):
+
+```{r}
+nl_flux %>% 
+  ggplot(
+  aes(y=air_T, x = h20_ref, color = location))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F)+
+  facet_wrap(~park_id*location)+
+  labs(y="ambient air temp, C", x = "ambient RH, %")+
+  theme_classic()
+
+nl_flux %>% 
+  ggplot(
+  # aes(y=r_linear, x = h20_ref, color = location))+
+  # aes(y=r_linear, x = air_T, color = location))+
+  aes(y=r_linear, x = time, color = location))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F)+
+  facet_wrap(~park_id*location)+
+  # labs(y="flux", x = "ambient RH, %")+  
+  # labs(y="flux", x = "ambient temp, C")+
+  labs(y="flux", x = "time of day")+
+  theme_classic()
+
+# tbh flux is pretty pretty highly correlated with all three; so depending on the tightness of the correlation between temp and humidity just use one of those to correct the data
+# compare linear to quadratic fluxes:
+nl_flux %>% 
+  ggplot(
+  aes(x=air_T, y = h20_ref))+
+  geom_point()+
+  geom_smooth(method = "lm", se = F)+
+  stat_regline_equation(label.y = 30, aes(label = ..eq.label..))+
+  stat_regline_equation(label.y = 29, aes(label = ..rr.label..))+
+  # xlim(15,35)+ylim(15,35)+
+  labs(x="air temp", y = "RH")+
+  theme_classic()
+
+# slope = .53x, R2 = 0.49
+```
+
+## Add columns representing flux data corrected for ambient temp: relative flux
+
+```{r}
+nl_flux <- nl_flux %>% 
+  group_by(date, site_id) %>% 
+  # replace_na() %>% 
+  mutate(rel_RH = (h20_ref - (mean(h20_ref)))/(mean(h20_ref))) %>%
+  mutate(rel_airT = (air_T -(mean(air_T)))/(mean(air_T))) %>%
+  mutate(rel_soilT = (soil_T-(mean(soil_T)))/(mean(soil_T))) %>%
+  mutate(rel_soilM = (soil_mois-(mean(soil_mois)))/(mean(soil_mois))) %>%
+  mutate(rel_refC = (co2_ref - (mean(co2_ref)))/(mean(co2_ref))) %>%
+  mutate(rel_P = (pressure - (mean(pressure)))/(mean(pressure))) %>%
+  mutate(rel_flux_L = (r_linear - (mean(r_linear)))/(mean(r_linear))) %>% 
+  mutate(rel_flux_Q = (r_quadratic - (mean(r_quadratic)))/(mean(r_quadratic))) %>% 
+  ungroup()
+```
+
+## calculate average relative flux using the three data points taken at each collar:
+
+```{r}
+nl_flux_avg <- nl_flux %>% 
+  group_by(date, park_id, site_id, location, collar) %>% 
+  # summarize_if(is.numeric, mean, na.rm = TRUE)
+  summarize(across(where(is.numeric), mean, na.rm = TRUE),
+            across(where(is.POSIXct), max, na.rm = TRUE))
+```
+
+## Visualize relative differentes in flux:
+
+first all, then average:
+Set palette colors:
+```{r}
+palette <- c("#fc9272", "#f0dc82", "#30571f")
+```
+
+```{r}
+# density distributions of flux:
+nl_flux_avg %>% 
+  ggplot(aes(x=rel_flux_L, y = location, fill = location))+
+  geom_density_ridges(alpha = .75)+
+  theme_ridges()+
+  xlab("relative flux (g/m2/hr)")+
+  ylab("")+
+  facet_wrap(~park_id)+
+  theme_classic()+
+  theme(legend.position = "none")
+
+# flux plotted by location (mature, gap, or exclosure):
+nl_flux_avg %>% 
+  ggplot(aes(x=location, y=r_linear, fill = location))+
+    # ggplot(aes(x=location, y = rel_flux_L, fill = location))+
+   # ggplot(aes(x=rel_airT, y = rel_flux_L, color = location))+
+  # geom_smooth(method = "lm", se = F)+
+  # geom_point()+
+  geom_violin(alpha = 0.75)+
+  geom_boxplot(width = 0.25, color = "maroon", alpha = 0.75)+
+  scale_fill_manual(values = palette)+
+  geom_jitter(color = "black", size = 0.3, alpha = 0.75)+
+  facet_wrap(~park_id)+
+  theme_classic()+
+  theme(legend.position = "none")+
+  ylab("flux rate (g/m2/hr)")+xlab("")
+  # ylab("flux rate (g/m2/hr)")+xlab("")
+  # ylab("flux rate (g/m2/hr)")+xlab("relative air temperature")
+
+```
+
+## Plot the flux data across treatment and location:
+
+```{r}
+nl_flux_avg %>% 
+  filter(location != "gap") %>% 
+  ggplot(aes(x=air_T, y=r_linear, color = location))+
+  # ggplot(aes(x=rel_airT, y=rel_flux_L, color = location))+
+  # ggplot(aes(x=rel_airT, y=r_linear, color = location))+
+  # ggplot(aes(x=rel_chmbrT, y=Lflux_dry, color = disturbance))+
+  # geom_smooth(method = "lm", se = F)+
+  geom_point(size = 2, shape = 21, color = "black", alpha = .9,
+             aes(fill = location))+
+  xlab("air temperature (C) at ground level")+
+  ylab(~paste("flux rate, ", "g m"^-2,"hr"^-1))+
+  # ylab(~paste("flux rate, ", "g m"^-2,"hr"^-1))+
+  # ylim(-5,13)+
+  stat_ellipse(size = 0.75)+
+  scale_fill_manual(values = palette)+
+  scale_color_manual(values = palette)+
+  facet_wrap(~park_id)+
+  theme_classic()
+```
+## Plot flux along time:
+```{r}
+coeff <- 10 #value used to transform data for secondary axis
+
+nl_flux_avg %>% 
+  filter(park_id == "GMNP") %>%
+  # filter(park_id == "TNNP") %>%
+  ggplot(aes(x=datetime, y=r_linear))+
+  geom_point(size = 2, shape = 21, color = "black", alpha = .9,
+             aes(fill = location))+
+  geom_line(aes(y=soil_T/coeff, group = date))+
+  # geom_boxplot(color = "black")+
+  xlab("")+
+  ggtitle("Gros Morne NP, 2023 soil Rs survey")+
+  # ggtitle("Terra Nova NP, 2023 soil Rs survey")+
+  ylab(~paste("flux rate, ", "g m"^-2,"hr"^-1))+
+  scale_y_continuous(sec.axis = sec_axis(~.*coeff, name = "soil temp (C)"))+
+  scale_fill_manual(values = palette)+
+  scale_color_manual(values = palette)+
+  theme_classic()+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+## Add GPS data for each location, moose density data
+
+```{r}
+# import data generated from Parks Canada maps, with estimates of mean/max moose density at each site sampled in 2023
+tnnp_moose <- read.csv("TNNP_2023sites_moosedensities.csv", header = TRUE)
+gmnp_moose <- read.csv("GMNP_2023sites_moosedensities.csv", header = TRUE)
+
+# match the site names, add max/mean moose densities to existing soil flux dfs:
+nl_flux_avg <- nl_flux_avg %>% 
+  mutate(moosedens_max = case_when(site_id == "BlueHill_big_gap" ~ 1.3539652,
+                                site_id == "BlueHill_fairy_mature" ~ 1.3539652,
+                                site_id == "Ochre_mature" ~ 0.3105590,
+                                site_id == "Ochre_gap" ~ 0.3105590,
+                                site_id == "Ochre_excl" ~ 0.3105590,
+                                site_id == "BlueHill_W_mature" ~ 0,
+                                site_id == "BlueHill_W_gap" ~ 0.7968127,
+                                site_id == "BlueHill_W_excl" ~ 0,
+                                site_id == "BlueHill_W_close_mature" ~ 0,
+                                site_id == "BlueHill_S_gap" ~ 1.3539652,
+                                site_id == "BlueHill_E_gap" ~ 0,
+                                site_id == "BlueHill_E_excl" ~ 0,
+                                site_id == "BlueHill_C_excl" ~ 0,
+                                ######
+                                site_id == "SoutheastBrook_mature" ~ 2.942138,
+                                site_id == "SoutheastBrook_gap" ~ 2.942138,
+                                site_id == "SoutheastBrook_excl" ~ 2.942138,
+                                site_id == "NorrisPt_mature" ~ 0,
+                                site_id == "NorrisPt_gap" ~ 0,
+                                site_id == "NorrisPt_excl" ~ 0,
+                                site_id == "MillBrook_mature" ~ 5.343028,
+                                site_id == "MillBrook_gap" ~ 5.343028,
+                                site_id == "MillBrook_excl" ~ 5.343028,
+                                site_id == "GMTrail_mature" ~ 0,
+                                site_id == "GMTrail_gap" ~ 0,
+                                site_id == "Electric_mature" ~ 2.123186,
+                                site_id == "Electric_gap" ~ 2.123186,
+                                site_id == "BerryHill_gap" ~ 2.123186,
+                                site_id == "BerryHill_mature" ~ 2.123186,
+                                site_id == "BerryTrail_mature" ~ 2.892998,
+                                site_id == "BerryTrail_gap" ~ 2.892998,
+                                site_id == "BerryPond_mature" ~ 2.554156,
+                                site_id == "BerryPond_gap" ~ 2.554156,
+                                site_id == "BerryBaby_mature" ~ 2.554156,
+                                site_id == "BerryBaby_gap" ~ 2.554156)) %>% 
+  mutate(moosedens_mean = case_when(site_id == "BlueHill_big_gap" ~ 0.9,
+                                site_id == "BlueHill_fairy_mature" ~ 0.9,
+                                site_id == "Ochre_mature" ~ 0.3,
+                                site_id == "Ochre_gap" ~ 0.3,
+                                site_id == "Ochre_excl" ~ 0.3,
+                                site_id == "BlueHill_W_mature" ~ 0,
+                                site_id == "BlueHill_W_gap" ~ 0.3,
+                                site_id == "BlueHill_W_excl" ~ 0,
+                                site_id == "BlueHill_W_close_mature" ~ 0,
+                                site_id == "BlueHill_S_gap" ~ 0.9,
+                                site_id == "BlueHill_E_gap" ~ 0,
+                                site_id == "BlueHill_E_excl" ~ 0,
+                                site_id == "BlueHill_C_excl" ~ 0,
+                                ######
+                                site_id == "SoutheastBrook_mature" ~ 0.7355345,
+                                site_id == "SoutheastBrook_gap" ~ 0.7355345,
+                                site_id == "SoutheastBrook_excl" ~ 0.7355345,
+                                site_id == "NorrisPt_mature" ~ 0,
+                                site_id == "NorrisPt_gap" ~ 0,
+                                site_id == "NorrisPt_excl" ~ 0,
+                                site_id == "MillBrook_mature" ~ 1.8214867,
+                                site_id == "MillBrook_gap" ~ 1.8214867,
+                                site_id == "MillBrook_excl" ~ 1.8214867,
+                                site_id == "GMTrail_mature" ~ 0,
+                                site_id == "GMTrail_gap" ~ 0,
+                                site_id == "Electric_mature" ~ 0.9436382,
+                                site_id == "Electric_gap" ~ 0.9436382,
+                                site_id == "BerryHill_gap" ~ 0.9436382,
+                                site_id == "BerryHill_mature" ~ 0.9436382,
+                                site_id == "BerryTrail_mature" ~ 0.7232496,
+                                site_id == "BerryTrail_gap" ~ 0.7232496,
+                                site_id == "BerryPond_mature" ~ 1.2238667,
+                                site_id == "BerryPond_gap" ~ 1.2238667,
+                                site_id == "BerryBaby_mature" ~ 1.2238667,
+                                site_id == "BerryBaby_gap" ~ 1.2238667))
+```
+
+Plot flux by moose density:
+```{r}
+nl_flux_avg %>% 
+  # filter(location != "gap") %>% 
+  ggplot(aes(x = moosedens_max, y=r_linear, color = location))+
+  geom_point()+
+  facet_grid(park_id~location)+
+  # geom_smooth(method = "lm")+
+  scale_color_manual(values = palette)+
+  ylab(~paste("flux rate, ", "g m"^-2,"hr"^-1))+
+  xlab("maximum moose density (indiv/km2)")+
+  theme_bw()+
+  theme(legend.position = "none")
+```
+
