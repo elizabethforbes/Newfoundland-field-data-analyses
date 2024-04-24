@@ -7,14 +7,20 @@ Collected summers 2022, 2023 and consisting of:
 
 <img src= "https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_collars_treatments.png" width = "650" />
 
-![fluxes_treatments](https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_coverlevel_noexcl.png)
+<img src= "https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_coverlevel_noexcl.png" width = "650" />
 
 - soil C and N content;
 - soil pH;
+<img src = "https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_soilpH.png" width = "650" />
+  
 - soil moisture and temp;
+<img src = "https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_soilM.png" width = "650" />
+<img src = "https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_soilT.png" width = "650" />
+
 - light level;
 - rough ground vegetation composition;
 - canopy cover
+
 # 2023: 
 - soil carbon flux (EGM5) across 3x locations per site, including mature stands, moose meadows, and exclosures;
 - soil C and N content;
