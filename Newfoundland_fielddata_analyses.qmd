@@ -4,32 +4,337 @@ author: "Elizabeth S. Forbes"
 editor: visual
 format:
   html:
+    code-fold: true
+    code-link: true
     toc: true
+    warning: false
     toc-title: Contents
     number-sections: true
-    code-link:
-      - text: Github repository
-      - repo: 
-    
 ---
 
-## Quarto
+```{r, include=FALSE}
+# include = FALSE hides this chunk in the rendered output
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
+# load packages
+library(tidyverse)
+library(calecopal)
+library(ggridges)
+library(readxl)
+library(dplyr)
+library(lubridate)
+library(ggpubr)
+library(sf)
+library(ggpmisc)
+library(piecewiseSEM)
+library(here)
 ```
 
-You can add options to executable code like this
+# Newfoundland field data analysis
+
+In this document I am visualizing, analyzing, and interpreting data collected in 2022 and 2023 in Newfoundland, Canada, as part of a collaborative research project on the effects of moose browsing/activity on boreal forest soil carbon dynamics (stocks and emissions).
+
+I have a handful of datasets from each year: - soil carbon respiration/flux data collected using survey chambers (handheld, manually operated) - vegetation data (community composition, canopy) - soil data (carbon and nitrogen content, bulk density) - associated meta-data (soil temp/moisture, light level, etc.)
+
+The goal is to determine how best to analyze these data to explore my research questions: - 2022: what is the overall difference, as well as the difference in spatial variability, in soil carbon flux in moose meadows compared to mature forests? - 2023: what is the overall difference in soil carbon flux across observational treatments (exclosure aka moose recovery; moose meadow; mature stand) as well as the difference in spatial variability?
+
+The difference between the two datasets above is in how I collected it: - 2022: smaller number of sites, greater within-site sampling rate: 15 total collars ranging from inside a moose meadow, to its edge, to inside the mature stand adjacent (three transects of five collars each) - 2023: larger number of sites, less within-site sampling: 3 collars located at each site, ranging from mature stand to moose meadow to exclosure (the goal being to capture across-site patterns in soil respiration with greater power, so focusing less on within-site variability and more on across-site)
+
+# 2022 soil flux/respiration data: LiCor 8100A
+
+In 2022, I collected survey data on soil respiration using a handheld LiCor-brand 8100A chamber system. I cleaned and conducted initial visualizations and assessments of that dataset in another R project. (Located within this project, in the subfolder titled, "2022 data". I have copied over that dataset to the main folder of this project for the sake of simplicity, but the cleaning/tidying process is clearly replicable within that subfolder.)
+
+## import data, brief visualization:
 
 ```{r}
 #| echo: false
-2 * 2
+# echo: false disables code printing (only output displayed in rendered doc)
+
+# 2022 flux data:3  `6
+fluxes22 <- read.csv("fluxes22.csv", header = T)
+#add month, day, and hour column:
+fluxes22$datetime <- mdy_hm(fluxes22$datetime) 
+fluxes22 <- fluxes22 %>% 
+  mutate(month = month.name[lubridate::month(datetime)],
+         hour = lubridate::hour(datetime),
+         day = lubridate::day(datetime))
+
+# organic layer depth data, 2022:
+orgdepth22 <- read_excel(here("2022 data", "summer2022_datasheet.xlsx"), sheet = 3)
+# GPS location data:
+gps22 <- read_excel(here("2022 data", "summer2022_datasheet.xlsx"), sheet = "locations")
+
+# average the two datapoints taken per collar, per measurement:
+fluxes22 <- fluxes22 %>% 
+  group_by(day, site_name, line, collar) %>% 
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = T)),
+            across(!where(is.numeric), ~head(.x, 1))) %>% 
+  mutate(collar = as.character(collar))
+
+gps22 <- gps22 %>% 
+  dplyr::rename(line = transect_id,
+         collar = collar_id)
+orgdepth22 <- orgdepth22 %>% 
+  dplyr::rename(line = transect_id,
+         collar = collar_id)
+
+# replace all ">29" for org layer depth with "30", only in the 3rd sample (where those occurred)
+orgdepth22$org_layer_depth_3 <- if_else(orgdepth22$org_layer_depth_3 == ">29", "30", orgdepth22$org_layer_depth_3)
+orgdepth22$org_layer_depth_2 <- if_else(orgdepth22$org_layer_depth_2 == ">29", "30", orgdepth22$org_layer_depth_2)
+# as.numeric for org layer depths 2, 3 (incl. NAs):
+orgdepth22$org_layer_depth_3 <- as.numeric(orgdepth22$org_layer_depth_3)
+orgdepth22$org_layer_depth_2 <- as.numeric(orgdepth22$org_layer_depth_2)
+# as character for collar ID:
+orgdepth22$collar <- as.character(orgdepth22$collar)
+orgdepth22 <- orgdepth22 %>% 
+  # make "mean organic layer depth" column:
+  rowwise() %>% 
+  mutate(mean_depth = mean(c(org_layer_depth_1, org_layer_depth_2, org_layer_depth_3), na.rm = T)) 
+
+# # merge datasets on new name column:
+# fluxes22 <- left_join(fluxes22, gps22)
+fluxes22 <- left_join(fluxes22, orgdepth22,
+                      join_by("site_name", "line", "collar"))
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+plot relationship between Q and L flux estimates:
+
+```{r}
+fluxes22 %>% 
+  ggplot(aes(x=Lflux_dry, y=Qflux_dry))+
+  geom_point()+
+  stat_poly_line() +
+  stat_poly_eq() +  
+  labs(x = "linear flux estimate", y = "quadratic flux estimate")+
+  theme_bw()
+# R2 = 0.98, great relationship between the two so going to go with the linear estimates for simplicity's sake
+```
+R2 = 0.98, relationship between linear and quadratic flux estimates is very high. Going forward with linear estimates for simplicity's sake.
+
+plot distribution of the data itself:
+
+```{r}
+fluxes22 %>% 
+  ggplot(aes(x=Lflux_dry))+
+  geom_density()+
+  xlab("linear flux estimate, umol/m2/sec") + ylab("density distribution")+
+  theme_bw()
+```
+As expected, slight tail on the right side of the distribution (standard) with a mean around 3 umol/m2/sec.
+
+test of normality, Shapiro Wilkes:
+
+```{r}
+shapiro.test(fluxes22$Lflux_dry)
+#W = 0.91001, p-value = 7.241e-07; data is significantly non-normally distributed
+
+# distribution of data is non-normal, meaning I may want to explore an analysis that is non-parametric/median based (e.g. Fligner-Killeen nonparametric test of variances between groups as used in Bond-Lamberty et al. 2019; https://github.com/PNNL-PREMIS/PREMIS-ghg)
+
+```
+
+data distribution around collars:
+
+```{r}
+fluxes22 %>%  
+  filter(!is.na(treatment)) %>% 
+  ggplot(aes(as.factor(collar), Lflux_dry, group = as.factor(collar), color = as.factor(collar))) +
+  geom_boxplot() +
+  geom_jitter(aes(color = as.factor(collar), alpha = 0.75))+
+  xlab("collar location (least to most canopy cover)")+
+  ylab("flux estimate")+
+  facet_wrap(~treatment)+
+  scale_color_manual(values = cal_palette("conifer")) +
+  theme_bw()+
+  theme(legend.position = "none")
+```
+
+data distribution at different treatments:
+
+```{r}
+pal <- cal_palette("conifer", 8, "continuous")
+
+fluxes22 %>%  
+  filter(!is.na(treatment)) %>% 
+  # filter(treatment != "exclosure") %>% 
+  ggplot(aes(treatment, Lflux_dry, color = treatment)) +
+  geom_boxplot() +
+  geom_jitter(aes(color = treatment, alpha = 0.75))+
+  xlab("")+
+  ylab("flux estimate")+
+  scale_color_manual(values = pal) +
+  theme_bw()+
+  theme(legend.position = "none")
+```
+
+data distribution at different canopy covers:
+
+```{r}
+fluxes22 <- fluxes22 %>%
+  filter(!is.na(treatment)) %>%
+  #assign the collars a canopy cover level
+  mutate(canopy = case_when(
+    collar == 4 | collar == 5 ~ "mature",
+    collar == 3 ~ "edge",
+    collar == 1 | collar == 2 ~ "open")) %>%           
+  #change all the collars from the "control" site to mature canopy cover
+  mutate(canopy = case_when(
+    treatment == "control" ~ "mature",
+    .default = as.character(canopy))) %>%  
+  mutate(canopy = case_when(
+    treatment == "exclosure" ~ "exclosure",
+    .default = as.character(canopy)))
+
+neworder <- c("open", "edge", "mature", "exclosure")
+
+fluxes22 <- fluxes22 %>% 
+  #relevel the order so plot increases in cover L --> R
+  mutate_at(vars(canopy), ~fct_relevel(.x, neworder))
+
+fluxes22 %>% 
+  filter(treatment != "exclosure") %>% 
+  ggplot(aes(canopy, Lflux_dry, color = canopy)) +
+  geom_boxplot() +
+  geom_jitter(aes(color = canopy, alpha = 0.75))+
+  xlab("")+
+  ylab("flux estimate")+
+  ggtitle("flux estimates by canopy cover (no exclosures)")+
+  scale_color_manual(values = cal_palette("conifer")) +
+  facet_wrap(~treatment)+
+  theme_bw()+
+  theme(legend.position = "none")
+```
+
+plot relationship between flux and soil temp:
+
+```{r}
+fluxes22 %>%
+  filter(!is.na(treatment)) %>% 
+  # filter(treatment != "exclosure" & treatment != "control") %>%
+  filter(treatment != "exclosure") %>%
+  ggplot(aes(soil_temp, Lflux_dry, color = canopy)) +
+  geom_point() +
+  stat_smooth(method = lm)+
+  xlab("soil temperature (C)")+
+  ylab("flux estimate")+
+  facet_wrap(~canopy)+
+  scale_color_manual(values = cal_palette("conifer")) +
+  theme_bw()+
+  theme(legend.position = "none")
+```
+
+Plot relationship between flux, soil moisture:
+
+```{r}
+fluxes22 %>%
+  filter(!is.na(treatment)) %>% 
+  # filter(treatment != "control") %>% 
+  filter(treatment != "exclosure") %>% 
+  ggplot(aes(soil_mois_probe_VWC, Lflux_dry, color = canopy)) +
+  geom_point() +
+  stat_smooth(method = lm)+
+  xlab("soil moisture (VWC)")+
+  ylab("flux estimate")+
+  facet_wrap(~canopy)+
+  scale_color_manual(values = cal_palette("conifer")) +
+  theme_bw()+
+  theme(legend.position = "none")
+```
+Plot relationship between flux and soil pH:
+```{r}
+fluxes22 %>%
+  filter(!is.na(treatment)) %>% 
+  filter(treatment != "exclosure") %>% 
+  ggplot(aes(soil_pH, Lflux_dry, color = canopy)) +
+  geom_point() +
+  stat_smooth(method = lm)+
+  xlab("soil pH")+
+  ylab("flux estimate")+
+  facet_wrap(~canopy)+
+  scale_color_manual(values = cal_palette("conifer")) +
+  theme_bw()+
+  theme(legend.position = "none")
+```
+
+Plot relationship between flux and soil organic depth:
+note to self: still need to integrate avg. soil organic depth to this dataset
+```{r}
+#| echo: false
+
+```
+
+## assess coefficient of variation (per a few papers: Bond-Lamberty et al. 2019, Khomik, Arain, and McCaughey 2006)
+
+Calculate CV across collars at each site:
+```{r}
+#| echo: false
+# calculate coefficient of variation across collars and sites, and then compare across different groupings:
+fluxes22_CV <- fluxes22 %>% 
+  filter(!is.na(treatment)) %>% 
+  group_by(site_name, treatment, collar) %>%
+  summarise(n = n(), 
+            meanFlux = mean(Lflux_dry), 
+            medianFlux = median(Lflux_dry),
+            CV = sd(Lflux_dry) / mean(Lflux_dry))
+
+sjPlot::tab_df(fluxes22_CV)
+```
+
+...and across collars, summarized across all sites:
+```{r}
+# | echo: false
+fluxes22_CV2 <- fluxes22 %>% 
+  filter(!is.na(treatment)) %>% 
+  group_by(treatment, collar) %>%
+  summarise(n = n(), 
+            meanFlux = mean(Lflux_dry), 
+            medianFlux = median(Lflux_dry),
+            CV = sd(Lflux_dry) / mean(Lflux_dry))
+
+sjPlot::tab_df(fluxes22_CV2)
+```
+
+## comparing across treatments and locations:
+
+Helper functions pulled from Bond-Lamberty et al. 2019:
+```{r}
+#| echo: false
+
+# Helper function - compute coefficient of variability (CV) between x[1] and x[2], x[2] and x[3], etc.
+running_cv <- function(x) {
+  out <- rep(NA_real_, length(x))
+  for(i in seq_along(x)[-1]) {
+    obs <- c(x[i-1], x[i])
+    out[i] <- sd(obs) / mean(obs)
+  }
+  out
+}
+```
+
+Use a linear mixed-effects model to examine effects of soil temp (5cm) and soil moisture (volumetric water content, 0-100%), and their interaction on soil respiration (fixed effects; site as a random effect to account for the variation among sampling days). Natural log of flux to account for non-normal data distribution for dependent variable. Restricted maximum likelihood estimation (REML) using lme4 package. (See Bond-Lamberty et al. 2019)
+
+Compute CV using helper function: code hacked from Bond-Lamberty et al. 2019
+```{r}
+#| echo: false
+
+```
+
+## analyze statistical difference in coefficient of variation across collar locations (5) (site as random effect)
+
+```{r}
+#| echo: false
+
+```
+
+## analyze statistical difference in coefficient of variation across canopy cover levels (3) (site as random effect)
+
+```{r}
+#| echo: false
+
+```
+
+# 2023 soil flux/respiration data: PP Systems EGM-5
+
+In 2023, I collected survey data on soil respiration using a handheld PP Systems-brand EGM-5 chamber system.
+
+```{r}
+#| echo: false
+```

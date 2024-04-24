@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.3.450">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Elizabeth S. Forbes">
-
 <title>Newfoundland field data analyses</title>
 <style>
 code{white-space: pre-wrap;}
@@ -57,7 +54,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="Newfoundland_fielddata_analyses_files/libs/clipboard/clipboard.min.js"></script>
 <script src="Newfoundland_fielddata_analyses_files/libs/quarto-html/quarto.js"></script>
 <script src="Newfoundland_fielddata_analyses_files/libs/quarto-html/popper.min.js"></script>
@@ -68,18 +64,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="Newfoundland_fielddata_analyses_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Newfoundland_fielddata_analyses_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="Newfoundland_fielddata_analyses_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-
-
 </head>
-
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Contents</h2>
+   
+  <ul>
+<li><a href="#newfoundland-field-data-analysis" id="toc-newfoundland-field-data-analysis" class="nav-link active" data-scroll-target="#newfoundland-field-data-analysis"><span class="header-section-number">1</span> Newfoundland field data analysis</a></li>
+  <li>
+<a href="#soil-fluxrespiration-data-licor-8100a" id="toc-soil-fluxrespiration-data-licor-8100a" class="nav-link" data-scroll-target="#soil-fluxrespiration-data-licor-8100a"><span class="header-section-number">2</span> 2022 soil flux/respiration data: LiCor 8100A</a>
+  <ul class="collapse">
+<li><a href="#import-data-brief-visualization" id="toc-import-data-brief-visualization" class="nav-link" data-scroll-target="#import-data-brief-visualization"><span class="header-section-number">2.1</span> import data, brief visualization:</a></li>
+  <li><a href="#assess-coefficient-of-variation-per-a-few-papers-bond-lamberty-et-al.-2019-khomik-arain-and-mccaughey-2006" id="toc-assess-coefficient-of-variation-per-a-few-papers-bond-lamberty-et-al.-2019-khomik-arain-and-mccaughey-2006" class="nav-link" data-scroll-target="#assess-coefficient-of-variation-per-a-few-papers-bond-lamberty-et-al.-2019-khomik-arain-and-mccaughey-2006"><span class="header-section-number">2.2</span> assess coefficient of variation (per a few papers: Bond-Lamberty et al.&nbsp;2019, Khomik, Arain, and McCaughey 2006)</a></li>
+  <li><a href="#comparing-across-treatments-and-locations" id="toc-comparing-across-treatments-and-locations" class="nav-link" data-scroll-target="#comparing-across-treatments-and-locations"><span class="header-section-number">2.3</span> comparing across treatments and locations:</a></li>
+  <li><a href="#analyze-statistical-difference-in-coefficient-of-variation-across-collar-locations-5-site-as-random-effect" id="toc-analyze-statistical-difference-in-coefficient-of-variation-across-collar-locations-5-site-as-random-effect" class="nav-link" data-scroll-target="#analyze-statistical-difference-in-coefficient-of-variation-across-collar-locations-5-site-as-random-effect"><span class="header-section-number">2.4</span> analyze statistical difference in coefficient of variation across collar locations (5) (site as random effect)</a></li>
+  <li><a href="#analyze-statistical-difference-in-coefficient-of-variation-across-canopy-cover-levels-3-site-as-random-effect" id="toc-analyze-statistical-difference-in-coefficient-of-variation-across-canopy-cover-levels-3-site-as-random-effect" class="nav-link" data-scroll-target="#analyze-statistical-difference-in-coefficient-of-variation-across-canopy-cover-levels-3-site-as-random-effect"><span class="header-section-number">2.5</span> analyze statistical difference in coefficient of variation across canopy cover levels (3) (site as random effect)</a></li>
+  </ul>
+</li>
+  <li><a href="#soil-fluxrespiration-data-pp-systems-egm-5" id="toc-soil-fluxrespiration-data-pp-systems-egm-5" class="nav-link" data-scroll-target="#soil-fluxrespiration-data-pp-systems-egm-5"><span class="header-section-number">3</span> 2023 soil flux/respiration data: PP Systems EGM-5</a></li>
+  </ul></nav>
+</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">Newfoundland field data analyses</h1>
 </div>
 
@@ -99,33 +106,885 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header>
-
-<section id="quarto" class="level2">
-<h2 class="anchored" data-anchor-id="quarto">Quarto</h2>
-<p>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <a href="https://quarto.org" class="uri">https://quarto.org</a>.</p>
-</section>
-<section id="running-code" class="level2">
-<h2 class="anchored" data-anchor-id="running-code">Running Code</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+</header><section id="newfoundland-field-data-analysis" class="level1" data-number="1"><h1 data-number="1">
+<span class="header-section-number">1</span> Newfoundland field data analysis</h1>
+<p>In this document I am visualizing, analyzing, and interpreting data collected in 2022 and 2023 in Newfoundland, Canada, as part of a collaborative research project on the effects of moose browsing/activity on boreal forest soil carbon dynamics (stocks and emissions).</p>
+<p>I have a handful of datasets from each year: - soil carbon respiration/flux data collected using survey chambers (handheld, manually operated) - vegetation data (community composition, canopy) - soil data (carbon and nitrogen content, bulk density) - associated meta-data (soil temp/moisture, light level, etc.)</p>
+<p>The goal is to determine how best to analyze these data to explore my research questions: - 2022: what is the overall difference, as well as the difference in spatial variability, in soil carbon flux in moose meadows compared to mature forests? - 2023: what is the overall difference in soil carbon flux across observational treatments (exclosure aka moose recovery; moose meadow; mature stand) as well as the difference in spatial variability?</p>
+<p>The difference between the two datasets above is in how I collected it: - 2022: smaller number of sites, greater within-site sampling rate: 15 total collars ranging from inside a moose meadow, to its edge, to inside the mature stand adjacent (three transects of five collars each) - 2023: larger number of sites, less within-site sampling: 3 collars located at each site, ranging from mature stand to moose meadow to exclosure (the goal being to capture across-site patterns in soil respiration with greater power, so focusing less on within-site variability and more on across-site)</p>
+</section><section id="soil-fluxrespiration-data-licor-8100a" class="level1" data-number="2"><h1 data-number="2">
+<span class="header-section-number">2</span> 2022 soil flux/respiration data: LiCor 8100A</h1>
+<p>In 2022, I collected survey data on soil respiration using a handheld LiCor-brand 8100A chamber system. I cleaned and conducted initial visualizations and assessments of that dataset in another R project. (Located within this project, in the subfolder titled, “2022 data”. I have copied over that dataset to the main folder of this project for the sake of simplicity, but the cleaning/tidying process is clearly replicable within that subfolder.)</p>
+<section id="import-data-brief-visualization" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="import-data-brief-visualization">
+<span class="header-section-number">2.1</span> import data, brief visualization:</h2>
+<p>plot relationship between Q and L flux estimates:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<details><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fluxes22</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Lflux_dry</span>, y<span class="op">=</span><span class="va">Qflux_dry</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">stat_poly_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_poly_eq</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>  </span>
+<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"linear flux estimate"</span>, y <span class="op">=</span> <span class="st">"quadratic flux estimate"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
+<details><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># R2 = 0.98, great relationship between the two so going to go with the linear estimates for simplicity's sake</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<p>You can add options to executable code like this</p>
+<p>R2 = 0.98, relationship between linear and quadratic flux estimates is very high. Going forward with linear estimates for simplicity’s sake.</p>
+<p>plot distribution of the data itself:</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
+<details><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fluxes22</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">Lflux_dry</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">geom_density</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span><span class="st">"linear flux estimate, umol/m2/sec"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ylab</span><span class="op">(</span><span class="st">"density distribution"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
-</section>
+<p>As expected, slight tail on the right side of the distribution (standard) with a mean around 3 umol/m2/sec.</p>
+<p>test of normality, Shapiro Wilkes:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span><span class="va">fluxes22</span><span class="op">$</span><span class="va">Lflux_dry</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
 
-</main>
-<!-- /main column -->
-<script id="quarto-html-after-body" type="application/javascript">
+data:  fluxes22$Lflux_dry
+W = 0.91001, p-value = 7.241e-07</code></pre>
+</div>
+<details><summary>Code</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#W = 0.91001, p-value = 7.241e-07; data is significantly non-normally distributed</span></span>
+<span></span>
+<span><span class="co"># distribution of data is non-normal, meaning I may want to explore an analysis that is non-parametric/median based (e.g. Fligner-Killeen nonparametric test of variances between groups as used in Bond-Lamberty et al. 2019; https://github.com/PNNL-PREMIS/PREMIS-ghg)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>data distribution around collars:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fluxes22</span> <span class="op">%&gt;%</span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">collar</span><span class="op">)</span>, <span class="va">Lflux_dry</span>, group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">collar</span><span class="op">)</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">collar</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_jitter</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">collar</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span><span class="st">"collar location (least to most canopy cover)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"flux estimate"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">treatment</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu">cal_palette</span><span class="op">(</span><span class="st">"conifer"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>data distribution at different treatments:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pal</span> <span class="op">&lt;-</span> <span class="fu">cal_palette</span><span class="op">(</span><span class="st">"conifer"</span>, <span class="fl">8</span>, <span class="st">"continuous"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fluxes22</span> <span class="op">%&gt;%</span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># filter(treatment != "exclosure") %&gt;% </span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">treatment</span>, <span class="va">Lflux_dry</span>, color <span class="op">=</span> <span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_jitter</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="va">treatment</span>, alpha <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span><span class="st">""</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"flux estimate"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="va">pal</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>data distribution at different canopy covers:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fluxes22</span> <span class="op">&lt;-</span> <span class="va">fluxes22</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="co">#assign the collars a canopy cover level</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>canopy <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
+<span>    <span class="va">collar</span> <span class="op">==</span> <span class="fl">4</span> <span class="op">|</span> <span class="va">collar</span> <span class="op">==</span> <span class="fl">5</span> <span class="op">~</span> <span class="st">"mature"</span>,</span>
+<span>    <span class="va">collar</span> <span class="op">==</span> <span class="fl">3</span> <span class="op">~</span> <span class="st">"edge"</span>,</span>
+<span>    <span class="va">collar</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">collar</span> <span class="op">==</span> <span class="fl">2</span> <span class="op">~</span> <span class="st">"open"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>           </span>
+<span>  <span class="co">#change all the collars from the "control" site to mature canopy cover</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>canopy <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
+<span>    <span class="va">treatment</span> <span class="op">==</span> <span class="st">"control"</span> <span class="op">~</span> <span class="st">"mature"</span>,</span>
+<span>    .default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">canopy</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>  </span>
+<span>  <span class="fu">mutate</span><span class="op">(</span>canopy <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
+<span>    <span class="va">treatment</span> <span class="op">==</span> <span class="st">"exclosure"</span> <span class="op">~</span> <span class="st">"exclosure"</span>,</span>
+<span>    .default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">canopy</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">neworder</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"open"</span>, <span class="st">"edge"</span>, <span class="st">"mature"</span>, <span class="st">"exclosure"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fluxes22</span> <span class="op">&lt;-</span> <span class="va">fluxes22</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co">#relevel the order so plot increases in cover L --&gt; R</span></span>
+<span>  <span class="fu">mutate_at</span><span class="op">(</span><span class="fu">vars</span><span class="op">(</span><span class="va">canopy</span><span class="op">)</span>, <span class="op">~</span><span class="fu">fct_relevel</span><span class="op">(</span><span class="va">.x</span>, <span class="va">neworder</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fluxes22</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">!=</span> <span class="st">"exclosure"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">canopy</span>, <span class="va">Lflux_dry</span>, color <span class="op">=</span> <span class="va">canopy</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_boxplot</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_jitter</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color <span class="op">=</span> <span class="va">canopy</span>, alpha <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span><span class="st">""</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"flux estimate"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"flux estimates by canopy cover (no exclosures)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu">cal_palette</span><span class="op">(</span><span class="st">"conifer"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">treatment</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>plot relationship between flux and soil temp:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fluxes22</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># filter(treatment != "exclosure" &amp; treatment != "control") %&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">!=</span> <span class="st">"exclosure"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">soil_temp</span>, <span class="va">Lflux_dry</span>, color <span class="op">=</span> <span class="va">canopy</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="va">lm</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span><span class="st">"soil temperature (C)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"flux estimate"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">canopy</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu">cal_palette</span><span class="op">(</span><span class="st">"conifer"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Plot relationship between flux, soil moisture:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fluxes22</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="co"># filter(treatment != "control") %&gt;% </span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">!=</span> <span class="st">"exclosure"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">soil_mois_probe_VWC</span>, <span class="va">Lflux_dry</span>, color <span class="op">=</span> <span class="va">canopy</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="va">lm</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span><span class="st">"soil moisture (VWC)"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"flux estimate"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">canopy</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu">cal_palette</span><span class="op">(</span><span class="st">"conifer"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Plot relationship between flux and soil pH:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fluxes22</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">treatment</span> <span class="op">!=</span> <span class="st">"exclosure"</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">soil_pH</span>, <span class="va">Lflux_dry</span>, color <span class="op">=</span> <span class="va">canopy</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">stat_smooth</span><span class="op">(</span>method <span class="op">=</span> <span class="va">lm</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">xlab</span><span class="op">(</span><span class="st">"soil pH"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">ylab</span><span class="op">(</span><span class="st">"flux estimate"</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">canopy</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu">cal_palette</span><span class="op">(</span><span class="st">"conifer"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<p><img src="Newfoundland_fielddata_analyses_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Plot relationship between flux and soil organic depth: note to self: still need to integrate avg. soil organic depth to this dataset</p>
+</section><section id="assess-coefficient-of-variation-per-a-few-papers-bond-lamberty-et-al.-2019-khomik-arain-and-mccaughey-2006" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="assess-coefficient-of-variation-per-a-few-papers-bond-lamberty-et-al.-2019-khomik-arain-and-mccaughey-2006">
+<span class="header-section-number">2.2</span> assess coefficient of variation (per a few papers: Bond-Lamberty et al.&nbsp;2019, Khomik, Arain, and McCaughey 2006)</h2>
+<p>Calculate CV across collars at each site:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small"><tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">site_name</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">treatment</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">collar</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">n</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">meanFlux</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">medianFlux</td>
+<td data-quarto-table-cell-role="th">CV</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Hill</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.55</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.43</td>
+<td>0.46</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Hill</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.94</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.38</td>
+<td>0.39</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Hill</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.90</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.56</td>
+<td>0.21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Hill</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.48</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.50</td>
+<td>0.38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Hill</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.32</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.08</td>
+<td>0.42</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Pond</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.25</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.82</td>
+<td>0.27</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Pond</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.60</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.69</td>
+<td>0.62</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Pond</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.44</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.28</td>
+<td>0.57</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Pond</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.51</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.45</td>
+<td>0.61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Berry Pond</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.58</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.51</td>
+<td>0.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_c</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.06</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.06</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_c</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.11</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.11</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_c</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.02</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.02</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_c</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.01</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.01</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_c</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.03</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.03</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_e</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.72</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.72</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_e</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.34</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.34</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_e</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.96</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.96</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_e</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.01</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.01</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">BlueHill_e</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.18</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.18</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Electric</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.86</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.86</td>
+<td>0.35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Electric</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.02</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.62</td>
+<td>0.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Electric</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.46</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.21</td>
+<td>0.19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Electric</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.47</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.42</td>
+<td>0.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Electric</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.36</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.17</td>
+<td>0.47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Gros Morne trail</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.72</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.45</td>
+<td>0.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Gros Morne trail</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.98</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.02</td>
+<td>0.18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Gros Morne trail</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.17</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.26</td>
+<td>0.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Gros Morne trail</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.63</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.63</td>
+<td>0.32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Gros Morne trail</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.77</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.83</td>
+<td>0.23</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Mill Brook</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.28</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.28</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Mill Brook</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.14</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.14</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Mill Brook</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.99</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.99</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ochre</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.24</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.24</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ochre</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.78</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.78</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ochre</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.09</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.09</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ochre</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.64</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.64</td>
+<td>NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Ochre</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.49</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.49</td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Old cut</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.74</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.71</td>
+<td>0.28</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Old cut</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">10.05</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">10.05</td>
+<td>0.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Old cut</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.25</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.25</td>
+<td>0.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Old cut</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.90</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.65</td>
+<td>0.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Old cut</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.79</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.62</td>
+<td>0.08</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Rocky Harbour</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.83</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.12</td>
+<td>0.32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Rocky Harbour</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.40</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.66</td>
+<td>0.24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Rocky Harbour</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.95</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.11</td>
+<td>0.17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Rocky Harbour</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.73</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.05</td>
+<td>0.54</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Rocky Harbour</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.06</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.99</td>
+<td>0.30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Wiltondale</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.15</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.50</td>
+<td>0.38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Wiltondale</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.98</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.17</td>
+<td>0.59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Wiltondale</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.04</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.57</td>
+<td>0.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">Wiltondale</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.94</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.04</td>
+<td>0.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">Wiltondale</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">8.28</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">7.47</td>
+<td>0.19</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<p>…and across collars, summarized across all sites:</p>
+<div class="cell">
+<details><summary>Code</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># | echo: false</span></span>
+<span><span class="va">fluxes22_CV2</span> <span class="op">&lt;-</span> <span class="va">fluxes22</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">treatment</span>, <span class="va">collar</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">summarise</span><span class="op">(</span>n <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>, </span>
+<span>            meanFlux <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Lflux_dry</span><span class="op">)</span>, </span>
+<span>            medianFlux <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">Lflux_dry</span><span class="op">)</span>,</span>
+<span>            CV <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">Lflux_dry</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">Lflux_dry</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">sjPlot</span><span class="fu">::</span><span class="fu"><a href="https://strengejacke.github.io/sjPlot/reference/tab_df.html">tab_df</a></span><span class="op">(</span><span class="va">fluxes22_CV2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details><div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small"><tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">treatment</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">collar</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">n</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">meanFlux</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">medianFlux</td>
+<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: italic; font-weight: normal; padding: 0.2cm; border-bottom: 1px solid black;">CV</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.83</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.12</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.40</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.66</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.24</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.95</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.11</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.73</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.05</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">control</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.06</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.99</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.58</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.26</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.17</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.09</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.23</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.17</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.01</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.04</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.55</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.01</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.25</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">exclosure</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.24</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">7.18</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.98</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.82</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.84</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.79</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.79</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.28</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.46</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.31</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.54</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.65</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">insect</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.06</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.17</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.53</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">8</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.89</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.50</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.37</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">8</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.26</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.43</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.44</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">8</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.30</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.15</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.39</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">8</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.67</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.24</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">timber</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">5</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">9</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">4.64</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">4.15</td>
+<td style="text-align: left; padding: 0.2cm; vertical-align: top; border-bottom: double;">0.33</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section><section id="comparing-across-treatments-and-locations" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="comparing-across-treatments-and-locations">
+<span class="header-section-number">2.3</span> comparing across treatments and locations:</h2>
+<p>Helper functions pulled from Bond-Lamberty et al.&nbsp;2019:</p>
+<p>Use a linear mixed-effects model to examine effects of soil temp (5cm) and soil moisture (volumetric water content, 0-100%), and their interaction on soil respiration (fixed effects; site as a random effect to account for the variation among sampling days). Natural log of flux to account for non-normal data distribution for dependent variable. Restricted maximum likelihood estimation (REML) using lme4 package. (See Bond-Lamberty et al.&nbsp;2019)</p>
+<p>Compute CV using helper function: code hacked from Bond-Lamberty et al.&nbsp;2019</p>
+</section><section id="analyze-statistical-difference-in-coefficient-of-variation-across-collar-locations-5-site-as-random-effect" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="analyze-statistical-difference-in-coefficient-of-variation-across-collar-locations-5-site-as-random-effect">
+<span class="header-section-number">2.4</span> analyze statistical difference in coefficient of variation across collar locations (5) (site as random effect)</h2>
+</section><section id="analyze-statistical-difference-in-coefficient-of-variation-across-canopy-cover-levels-3-site-as-random-effect" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="analyze-statistical-difference-in-coefficient-of-variation-across-canopy-cover-levels-3-site-as-random-effect">
+<span class="header-section-number">2.5</span> analyze statistical difference in coefficient of variation across canopy cover levels (3) (site as random effect)</h2>
+</section></section><section id="soil-fluxrespiration-data-pp-systems-egm-5" class="level1" data-number="3"><h1 data-number="3">
+<span class="header-section-number">3</span> 2023 soil flux/respiration data: PP Systems EGM-5</h1>
+<p>In 2023, I collected survey data on soil respiration using a handheld PP Systems-brand EGM-5 chamber system.</p>
+</section></main><!-- /main column --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

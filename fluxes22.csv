@@ -1,0 +1,242 @@
+site_name,line,collar,sample,treatment,location,park_id,datetime,tot_vol_cm3,meanchamberT,Lflux_dry,Qflux_dry,Lflux_R2,Qflux_R2,soil_mois_probe_VWC,light_lux,soil_temp,air_temp,soil_pH,humidity,notes
+Berry Hill,1,1,SB_BerryHill_line1_1,insect,BerryHill,GMNP,7/21/22 14:34,1105.3,20.24467,3.30781,4.20469,0.99797,0.99966,33,9500,14,22,5.4,90,NA
+Berry Hill,1,1,SB_BerryHill_line1_1,insect,BerryHill,GMNP,7/21/22 14:35,1105.3,20.07817,3.16252,3.75239,0.99891,0.99956,33,9500,14,22,5.4,90,NA
+Berry Hill,1,2,SB_BerryHill_line1_2,insect,BerryHill,GMNP,7/21/22 14:17,1021.6,19.24115,1.78403,2.07311,0.99762,0.99841,60,17000,13,21,6.2,90,NA
+Berry Hill,1,2,SB_BerryHill_line1_2,insect,BerryHill,GMNP,7/21/22 14:18,1021.6,19.50131,1.51999,1.51999,0.99546,0.99546,60,17000,13,21,6.2,90,NA
+Berry Hill,1,3,SB_BerryHill_line1_3,insect,BerryHill,GMNP,7/21/22 14:47,1063.45,18.229,3.6757,4.24651,0.99903,0.99969,28,2000,13,20,5.9,82,NA
+Berry Hill,1,3,SB_BerryHill_line1_3,insect,BerryHill,GMNP,7/21/22 14:49,1063.45,18.11767,3.50663,4.02877,0.99872,0.99936,28,2000,13,20,5.9,82,NA
+Berry Hill,1,4,SB_BerryHill_line1_4,insect,BerryHill,GMNP,7/21/22 14:01,1021.6,16.65213,1.24151,1.24151,0.99371,0.99371,21,2600,12,21,5.4,82,NA
+Berry Hill,1,4,SB_BerryHill_line1_4,insect,BerryHill,GMNP,7/21/22 14:02,1021.6,16.65541,1.79002,1.85072,0.999,0.99908,21,2600,12,21,5.4,82,NA
+Berry Hill,1,5,SB_BerryHill_line1_5,insect,BerryHill,GMNP,7/21/22 13:46,979.75,17.09787,1.64902,1.67717,0.99874,0.99875,43,1700,11,24,6.2,67,NA
+Berry Hill,1,5,SB_BerryHill_line1_5,insect,BerryHill,GMNP,7/21/22 13:48,979.75,16.95311,1.75233,1.81047,0.99872,0.99878,43,1700,11,24,6.2,67,NA
+Berry Hill,2,1,SB_BerryHill_line2_1,insect,BerryHill,GMNP,7/21/22 17:16,1105.3,19.74767,7.51861,9.64293,0.99802,0.99972,58,600,13,21,5.8,88,NA
+Berry Hill,2,1,SB_BerryHill_line2_1,insect,BerryHill,GMNP,7/21/22 17:18,1105.3,19.569,6.45434,7.55379,0.99908,0.99966,58,600,13,21,5.8,88,NA
+Berry Hill,2,2,SB_BerryHill_line2_2,insect,BerryHill,GMNP,7/21/22 17:05,1021.6,20.62917,3.95992,4.58082,0.99855,0.99917,97,3600,14,21,5.3,89,NA
+Berry Hill,2,2,SB_BerryHill_line2_2,insect,BerryHill,GMNP,7/21/22 17:06,1021.6,20.61617,3.6274,3.98441,0.99925,0.99948,97,3600,14,21,5.3,89,NA
+Berry Hill,2,3,SB_BerryHill_line2_3,insect,BerryHill,GMNP,7/21/22 17:31,958.83,19.151,2.64054,2.97391,0.99875,0.9992,52,1000,13,20,5.6,91,NA
+Berry Hill,2,3,SB_BerryHill_line2_3,insect,BerryHill,GMNP,7/21/22 17:33,958.83,18.96467,2.43991,2.69105,0.99918,0.99946,52,1000,13,20,5.6,91,NA
+Berry Hill,2,4,SB_BerryHill_line2_4,insect,BerryHill,GMNP,7/21/22 16:53,1021.6,19.24,3.54125,3.91915,0.99909,0.9994,20,1800,13,21,4.6,87,NA
+Berry Hill,2,4,SB_BerryHill_line2_4,insect,BerryHill,GMNP,7/21/22 16:55,1021.6,19.152,3.29886,3.74653,0.99887,0.99939,20,1800,13,21,4.6,87,NA
+Berry Hill,2,5,SB_BerryHill_line2_5,insect,BerryHill,GMNP,7/21/22 16:43,1021.6,19.60617,4.39052,4.52337,0.99975,0.99977,74,1700,15,22,5.8,87,NA
+Berry Hill,2,5,SB_BerryHill_line2_5,insect,BerryHill,GMNP,7/21/22 16:44,1021.6,19.47683,3.94616,4.29557,0.99946,0.99969,74,1700,15,22,5.8,87,NA
+Berry Hill,3,1,SB_BerryHill_line3_1,insect,BerryHill,GMNP,7/21/22 15:47,1021.6,20.0875,3.40974,3.85976,0.99901,0.99944,32,9000,12,21,5.4,92,NA
+Berry Hill,3,1,SB_BerryHill_line3_1,insect,BerryHill,GMNP,7/21/22 15:49,1021.6,20.08417,3.44408,3.82273,0.99911,0.99939,32,9000,12,21,5.4,92,NA
+Berry Hill,3,2,SB_BerryHill_line3_2,insect,BerryHill,GMNP,7/21/22 15:34,1063.45,18.67083,3.494,4.14347,0.99809,0.999,49,5200,14,18,5.2,92,NA
+Berry Hill,3,2,SB_BerryHill_line3_2,insect,BerryHill,GMNP,7/21/22 15:36,1063.45,18.5805,3.2677,3.82758,0.99797,0.99885,49,5200,14,18,5.2,92,NA
+Berry Hill,3,3,SB_BerryHill_line3_3,insect,BerryHill,GMNP,7/21/22 16:07,979.75,21.74667,2.66678,3.17329,0.99846,0.99944,35,3700,12,21,6.4,93,NA
+Berry Hill,3,3,SB_BerryHill_line3_3,insect,BerryHill,GMNP,7/21/22 16:09,979.75,21.45833,2.45069,2.63699,0.99893,0.99907,35,3700,12,21,6.4,93,NA
+Berry Hill,3,4,SB_BerryHill_line3_4,insect,BerryHill,GMNP,7/21/22 15:21,979.75,17.3605,2.49994,2.73109,0.99897,0.9992,24,2500,13,18,7,89,NA
+Berry Hill,3,4,SB_BerryHill_line3_4,insect,BerryHill,GMNP,7/21/22 15:23,979.75,17.31633,2.49984,2.61071,0.99901,0.99906,24,2500,13,18,7,89,NA
+Berry Hill,3,5,SB_BerryHill_line3_5,insect,BerryHill,GMNP,7/21/22 15:11,1021.6,17.74933,4.17214,4.43438,0.99939,0.9995,22,1900,12,19,6,87,NA
+Berry Hill,3,5,SB_BerryHill_line3_5,insect,BerryHill,GMNP,7/21/22 15:13,1021.6,17.7105,3.99696,3.99696,0.99947,0.99947,22,1900,12,19,6,87,NA
+Berry Pond,1,1,SB_BerryPond_line1_1,insect,BerryPond,GMNP,7/22/22 15:07,1063.45,30.0418,4.80976,5.47173,0.99877,0.99975,62,31500,14,29,5.4,65,NA
+Berry Pond,1,1,SB_BerryPond_line1_1,insect,BerryPond,GMNP,7/22/22 15:08,1063.45,30.5377,4.83704,5.32852,0.99894,0.99953,62,31500,14,29,5.4,65,NA
+Berry Pond,1,2,SB_BerryPond_line1_2,insect,BerryPond,GMNP,7/22/22 14:46,1105.3,28.11115,4.85223,5.99998,0.99709,0.99965,42,24200,15,29,5.6,71,NA
+Berry Pond,1,2,SB_BerryPond_line1_2,insect,BerryPond,GMNP,7/22/22 14:48,1105.3,28.00836,4.5301,6.24008,0.99831,0.99954,42,24200,15,29,5.6,71,NA
+Berry Pond,1,3,SB_BerryPond_line1_3,insect,BerryPond,GMNP,7/22/22 14:57,1063.45,28.59623,9.22931,10.38795,0.997,0.99915,42,9800,NA,29,6,70,NA
+Berry Pond,1,3,SB_BerryPond_line1_3,insect,BerryPond,GMNP,7/22/22 14:58,1063.45,28.64705,8.68522,10.22004,0.99789,0.99954,42,9800,NA,29,6,70,NA
+Berry Pond,1,4,SB_BerryPond_line1_4,insect,BerryPond,GMNP,7/22/22 14:34,1147.15,29.15934,11.68657,12.75512,0.99942,0.9997,24,1100,12,24,5.4,65,NA
+Berry Pond,1,4,SB_BerryPond_line1_4,insect,BerryPond,GMNP,7/22/22 14:36,1147.15,28.72885,13.42933,14.16362,0.99932,0.99981,24,1100,12,24,5.4,65,NA
+Berry Pond,1,5,SB_BerryPond_line1_5,insect,BerryPond,GMNP,7/17/22 16:46,1021.6,18.83721,2.73433,2.91785,0.99943,0.99967,39,200,NA,22,NA,NA,done on different day than others in line due to rain
+Berry Pond,2,1,SB_BerryPond_line2_1,insect,BerryPond,GMNP,7/22/22 16:05,1021.6,27.5305,4.93528,5.41988,0.99932,0.99957,68,12000,15,28,5.4,77,NA
+Berry Pond,2,1,SB_BerryPond_line2_1,insect,BerryPond,GMNP,7/22/22 16:07,1021.6,27.60517,5.07209,5.72293,0.99929,0.99971,68,12000,15,28,5.4,77,NA
+Berry Pond,2,2,SB_BerryPond_line2_2,insect,BerryPond,GMNP,7/22/22 15:54,1042.53,26.8365,9.36814,9.94055,0.99968,0.99978,71,9000,13,28,5.3,74,NA
+Berry Pond,2,2,SB_BerryPond_line2_2,insect,BerryPond,GMNP,7/22/22 15:55,1042.53,26.74417,9.44616,9.96315,0.99962,0.9997,71,9000,13,28,5.3,74,NA
+Berry Pond,2,3,SB_BerryPond_line2_3,insect,BerryPond,GMNP,7/22/22 16:14,1000.68,26.65317,2.69039,2.69039,0.99911,0.99911,86,14300,17,28,5.2,76,NA
+Berry Pond,2,3,SB_BerryPond_line2_3,insect,BerryPond,GMNP,7/22/22 16:16,1000.68,26.79033,3.47575,4.14471,0.9986,0.99951,86,14300,17,28,5.2,76,NA
+Berry Pond,2,4,SB_BerryPond_line2_4,insect,BerryPond,GMNP,7/22/22 15:42,1021.6,25.117,6.63909,7.32507,0.99956,0.99984,29,1000,13,29,5.6,63,NA
+Berry Pond,2,4,SB_BerryPond_line2_4,insect,BerryPond,GMNP,7/22/22 15:44,1021.6,24.91833,6.26495,6.66137,0.99968,0.99979,29,1000,13,29,5.6,63,NA
+Berry Pond,2,5,SB_BerryPond_line2_5,insect,BerryPond,GMNP,7/22/22 15:32,1063.45,26.60633,4.84209,5.94533,0.99833,0.99961,29,4300,12,30,5.1,71,NA
+Berry Pond,2,5,SB_BerryPond_line2_5,insect,BerryPond,GMNP,7/22/22 15:33,1063.45,26.52133,4.18007,4.70906,0.99926,0.9997,29,4300,12,30,5.1,71,NA
+Berry Pond,3,1,SB_BerryPond_line3_1,insect,BerryPond,GMNP,7/17/22 16:21,1105.3,20.48557,2.89817,3.16375,0.99818,0.99928,56,12600,NA,21,NA,NA,temp/pH probe dead
+Berry Pond,3,1,SB_BerryPond_line3_1,insect,BerryPond,GMNP,7/17/22 16:22,1105.3,20.53656,2.96537,3.25689,0.99884,0.99938,56,12600,NA,21,NA,NA,temp/pH probe dead
+Berry Pond,3,2,SB_BerryPond_line3_2,insect,BerryPond,GMNP,7/17/22 15:56,1000.68,18.88066,2.7864,3.47083,0.99686,0.99926,38,1600,NA,22,NA,NA,temp/pH probe dead
+Berry Pond,3,2,SB_BerryPond_line3_2,insect,BerryPond,GMNP,7/17/22 15:58,1000.68,18.82574,2.6092,2.88493,0.99903,0.99938,38,1600,NA,22,NA,NA,temp/pH probe dead
+Berry Pond,3,3,SB_BerryPond_line3_3,insect,BerryPond,GMNP,7/17/22 16:07,1105.3,19.1877,4.1844,4.29819,0.99934,0.99947,54,7000,NA,21,NA,NA,temp/pH probe dead
+Berry Pond,3,3,SB_BerryPond_line3_3,insect,BerryPond,GMNP,7/17/22 16:09,1105.3,19.22525,4.36824,4.7552,0.99899,0.99955,54,7000,NA,21,NA,NA,temp/pH probe dead
+Berry Pond,3,4,SB_BerryPond_line3_4,insect,BerryPond,GMNP,7/17/22 15:39,1042.53,19.63131,3.55917,3.5716,0.99946,0.99951,41,325,NA,24,NA,NA,temp/pH probe dead
+Berry Pond,3,4,SB_BerryPond_line3_4,insect,BerryPond,GMNP,7/17/22 15:40,1042.53,19.49951,3.4614,3.4614,0.99954,0.99954,41,325,NA,24,NA,NA,temp/pH probe dead
+Berry Pond,3,5,SB_BerryPond_line3_5,insect,BerryPond,GMNP,7/17/22 15:29,979.75,21.93689,3.36048,3.7213,0.99919,0.99958,45,900,NA,23,NA,NA,temp/pH probe dead
+Berry Pond,3,5,SB_BerryPond_line3_5,insect,BerryPond,GMNP,7/17/22 15:30,979.75,21.47,3.64975,4.06824,0.99866,0.99959,45,900,NA,23,NA,NA,temp/pH probe dead
+BlueHill_c,1,1,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:21,1105.3,29.97233,4.1173,4.54271,0.99921,0.99946,7,4400,17,29,6.6,62,NA
+BlueHill_c,1,1,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:23,1105.3,30.00883,4.01017,4.26882,0.99958,0.99967,7,4400,17,29,6.6,62,NA
+BlueHill_c,1,2,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:29,1209.93,30.441,4.19827,4.86455,0.99874,0.9994,7,6000,18,30,6.8,62,NA
+BlueHill_c,1,2,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:30,1209.93,30.494,4.0182,4.53429,0.99907,0.99949,7,6000,18,30,6.8,62,NA
+BlueHill_c,1,3,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:36,1272.7,30.31867,7.21532,7.39116,0.99956,0.99957,28,4800,18,30,6.8,63,NA
+BlueHill_c,1,3,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:38,1272.7,30.46317,6.81743,6.92683,0.99966,0.99966,28,4800,18,30,6.8,63,NA
+BlueHill_c,1,4,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:42,1147.15,30.41167,6.01804,6.79798,0.99913,0.99951,20,700,16,30,6.6,64,NA
+BlueHill_c,1,4,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:44,1147.15,30.11767,6.00636,6.46922,0.99945,0.9996,20,700,16,30,6.6,64,NA
+BlueHill_c,1,5,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:50,1168.08,31.0885,4.07595,4.47884,0.99934,0.99959,28,23000,19,30,6.6,62,NA
+BlueHill_c,1,5,Excl_BlueHill_c,exclosure,BlueHill_c,TNNP,8/3/22 16:51,1168.08,31.015,3.98805,4.43051,0.99899,0.9993,28,23000,19,30,6.6,62,NA
+BlueHill_e,1,1,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:59,1021.6,30.16525,5.82263,6.57653,0.99858,0.99983,12,6000,15,29,6.6,69,NA
+BlueHill_e,1,1,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 16:00,1021.6,29.92246,5.62697,6.32605,0.9989,0.99977,12,6000,15,29,6.6,69,NA
+BlueHill_e,1,2,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:28,1230.85,30.18197,4.50264,5.18573,0.99812,0.99962,20,16800,15,25,6.8,72,NA
+BlueHill_e,1,2,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:30,1230.85,30.05049,4.18475,4.84539,0.99897,0.99948,20,16800,15,25,6.8,72,NA
+BlueHill_e,1,3,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:35,1084.38,29.24279,5.0801,6.80738,0.99561,0.99923,9,3800,20,27,6.4,70,NA
+BlueHill_e,1,3,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:37,1084.38,29.19738,4.83009,5.81868,0.99769,0.99945,9,3800,20,27,6.4,70,NA
+BlueHill_e,1,4,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:43,1147.15,30.04721,3.49802,3.49802,0.99932,0.99932,3,12000,18,28,6.8,71,NA
+BlueHill_e,1,4,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:44,1147.15,30.3582,4.51789,5.26362,0.99727,0.99962,3,12000,18,28,6.8,71,NA
+BlueHill_e,1,5,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:49,1272.7,30.72934,7.2036,8.29145,0.99861,0.99969,27,9800,17,29,6.8,66,NA
+BlueHill_e,1,5,Excl_BlueHill_e,exclosure,BlueHill_e,TNNP,8/3/22 15:51,1272.7,30.58443,7.16379,8.07805,0.99911,0.99977,27,9800,17,29,6.8,66,NA
+Electric,1,1,Timber_electric_line1_1,timber,electric,GMNP,7/18/22 14:55,1021.6,24.51492,2.93144,3.26416,0.9987,0.99953,80,8700,10,25,6,68,NA
+Electric,1,1,Timber_electric_line1_1,timber,electric,GMNP,7/18/22 14:57,1021.6,24.39951,2.86918,3.16379,0.99886,0.99951,80,8700,10,25,6,68,NA
+Electric,1,2,Timber_electric_line1_2,timber,electric,GMNP,7/18/22 15:19,1021.6,28.33705,4.63633,5.15517,0.99892,0.99949,34,69100,13,29,5.8,66,NA
+Electric,1,2,Timber_electric_line1_2,timber,electric,GMNP,7/18/22 15:20,1021.6,28.36131,4.60103,5.0437,0.99914,0.99972,34,69100,13,29,5.8,66,NA
+Electric,1,3,Timber_electric_line1_3,timber,electric,GMNP,7/18/22 15:09,1000.68,25.66951,2.95727,3.27769,0.99892,0.99952,25,5300,12,26,5.3,65,NA
+Electric,1,3,Timber_electric_line1_3,timber,electric,GMNP,7/18/22 15:11,1000.68,25.37984,2.98095,3.40455,0.99831,0.99893,25,5300,12,26,5.3,65,NA
+Electric,1,4,Timber_electric_line1_4,timber,electric,GMNP,7/18/22 14:40,1021.6,22.74082,5.87911,6.38612,0.9995,0.99976,31,3900,11,26,5.2,67,NA
+Electric,1,4,Timber_electric_line1_4,timber,electric,GMNP,7/18/22 14:42,1021.6,22.61934,5.61088,5.73432,0.99977,0.99978,31,3900,11,26,5.2,67,NA
+Electric,1,5,Timber_electric_line1_5,timber,electric,GMNP,7/18/22 14:30,1105.3,23.3541,8.66198,10.08486,0.99844,0.99973,23,2300,14,24,5.4,67,NA
+Electric,1,5,Timber_electric_line1_5,timber,electric,GMNP,7/18/22 14:31,1105.3,23.09705,7.84915,9.21632,0.99825,0.99972,23,2300,14,24,5.4,67,NA
+Electric,2,1,Timber_electric_line2_1,timber,electric,GMNP,7/18/22 16:19,1021.6,21.33115,4.8431,5.35063,0.99866,0.99956,37,8300,15,25,6.2,62,NA
+Electric,2,1,Timber_electric_line2_1,timber,electric,GMNP,7/18/22 16:21,1021.6,21.48557,4.80485,4.54145,0.99934,0.9114,37,8300,15,25,6.2,62,NA
+Electric,2,2,Timber_electric_line2_2,timber,electric,GMNP,7/18/22 16:38,1105.3,21.13049,6.26251,6.80833,0.9993,0.99976,60,12000,12,23,5.3,68,NA
+Electric,2,2,Timber_electric_line2_2,timber,electric,GMNP,7/18/22 16:40,1105.3,21.19984,6.04557,6.67619,0.99919,0.99961,60,12000,12,23,5.3,68,NA
+Electric,2,3,Timber_electric_line2_3,timber,electric,GMNP,7/18/22 16:29,1021.6,20.81164,4.13136,4.74354,0.99857,0.99941,32,3100,11,24,6,62,NA
+Electric,2,3,Timber_electric_line2_3,timber,electric,GMNP,7/18/22 16:31,1021.6,20.84607,4.25231,4.73473,0.99874,0.99963,32,3100,11,24,6,62,NA
+Electric,2,4,Timber_electric_line2_4,timber,electric,GMNP,7/18/22 16:06,1063.45,22.23672,5.70016,6.87152,0.99747,0.99959,22,1800,12,26,5.1,64,NA
+Electric,2,4,Timber_electric_line2_4,timber,electric,GMNP,7/18/22 16:08,1063.45,22.04475,5.1384,5.88503,0.9984,0.99977,22,1800,12,26,5.1,64,NA
+Electric,2,5,Timber_electric_line2_5,timber,electric,GMNP,7/18/22 15:51,1084.38,24.78443,3.83397,4.75812,0.99563,0.99931,12,2000,12,28,6,62,NA
+Electric,2,5,Timber_electric_line2_5,timber,electric,GMNP,7/18/22 15:53,1084.38,24.40934,3.4705,3.99669,0.99832,0.99934,12,2000,12,28,6,62,NA
+Electric,3,1,NA,NA,NA,GMNP,NA,NA,NA,NA,NA,NA,NA,38,4900,14,22,5.3,67,NA
+Electric,3,2,Timber_electric_line3_2,timber,electric,GMNP,7/18/22 17:52,1021.6,21.44117,4.38654,4.99347,0.99901,0.99949,36,40000,12,23,5.4,68,NA
+Electric,3,2,Timber_electric_line3_2,timber,electric,GMNP,7/18/22 17:54,1021.6,21.766,4.16448,4.62069,0.99935,0.99963,36,40000,12,23,5.4,68,NA
+Electric,3,3,Timber_electric_line3_3,timber,electric,GMNP,7/18/22 17:42,1063.45,19.7925,3.25102,3.47334,0.99939,0.9995,66,2100,12,22,4.4,65,NA
+Electric,3,3,Timber_electric_line3_3,timber,electric,GMNP,7/18/22 17:44,1063.45,19.7085,3.17061,3.31352,0.99932,0.99937,66,2100,12,22,4.4,65,NA
+Electric,3,4,Timber_electric_line3_4,timber,electric,GMNP,7/18/22 17:18,1105.3,20.15656,5.59574,6.56895,0.998,0.99967,16,700,12,23,6.4,63,NA
+Electric,3,4,Timber_electric_line3_4,timber,electric,GMNP,7/18/22 17:20,1105.3,20.05541,4.89702,5.10467,0.99947,0.99957,16,700,12,23,6.4,63,NA
+Electric,3,5,Timber_electric_line3_5,timber,electric,GMNP,7/18/22 17:08,1105.3,21.38,4.11635,4.61259,0.99896,0.99946,10,2000,13,24,5.4,66,NA
+Electric,3,5,Timber_electric_line3_5,timber,electric,GMNP,7/18/22 17:10,1105.3,21.30754,4.22001,4.57854,0.99908,0.99941,10,2000,13,24,5.4,66,NA
+Gros Morne trail,1,1,Timber_Gmtrail_line1_1,timber,Gmtrail,GMNP,7/19/22 14:29,1021.6,23.93754,3.43182,3.88777,0.99725,0.99942,41,1800,14,26,NA,66,NA
+Gros Morne trail,1,1,Timber_Gmtrail_line1_1,timber,Gmtrail,GMNP,7/19/22 14:31,1021.6,23.72902,3.47052,4.00334,0.9986,0.99938,41,1800,14,26,NA,66,NA
+Gros Morne trail,1,2,Timber_Gmtrail_line1_2,timber,Gmtrail,GMNP,7/19/22 14:45,1063.45,23.43623,6.10293,6.10909,0.99706,0.99954,20,1700,13,25,6.2,73,NA
+Gros Morne trail,1,2,Timber_Gmtrail_line1_2,timber,Gmtrail,GMNP,7/19/22 14:46,1063.45,23.24721,5.57806,7.13513,0.99854,0.99941,20,1700,13,25,6.2,73,NA
+Gros Morne trail,1,3,Timber_Gmtrail_line1_3,timber,Gmtrail,GMNP,7/19/22 14:11,1021.6,25.84016,2.04818,2.04818,0.99894,0.99894,48,8000,14,25,6.4,63,NA
+Gros Morne trail,1,3,Timber_Gmtrail_line1_3,timber,Gmtrail,GMNP,7/19/22 14:12,1021.6,25.68148,2.15569,2.4696,0.99626,0.99866,48,8000,14,25,6.4,63,NA
+Gros Morne trail,1,4,NA,NA,NA,GMNP,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,collar pulled
+Gros Morne trail,1,5,Timber_Gmtrail_line1_5,timber,Gmtrail,GMNP,7/19/22 15:02,1000.68,24.05066,4.8108,5.37437,0.99868,0.99971,36,2800,12,25,5.4,72,NA
+Gros Morne trail,1,5,Timber_Gmtrail_line1_5,timber,Gmtrail,GMNP,7/19/22 15:04,1000.68,24.05656,4.84224,4.62907,0.9988,0.99966,36,2800,12,25,5.4,72,NA
+Gros Morne trail,2,1,Timber_Gmtrail_line2_1,timber,Gmtrail,GMNP,7/23/22 14:17,1063.45,29.61705,8.20315,10.36819,0.99777,0.99962,83,65700,14,31,6,54,done on different day due to rain
+Gros Morne trail,2,1,Timber_Gmtrail_line2_1,timber,Gmtrail,GMNP,7/23/22 14:19,1063.45,29.32295,6.86011,7.75949,0.999,0.99967,83,65700,14,31,6,54,done on different day due to rain
+Gros Morne trail,2,2,Timber_Gmtrail_line2_2,timber,Gmtrail,GMNP,7/23/22 14:57,1021.6,29.13393,4.0353,5.15207,0.99872,0.99953,86,8600,14,29,5.8,67,done on different day due to rain
+Gros Morne trail,2,2,Timber_Gmtrail_line2_2,timber,Gmtrail,GMNP,7/23/22 14:59,1021.6,29.23115,4.13495,4.24267,0.99738,0.99925,86,8600,14,29,5.8,67,done on different day due to rain
+Gros Morne trail,2,3,Timber_Gmtrail_line2_3,timber,Gmtrail,GMNP,7/23/22 14:02,937.9,31.05525,6.34313,6.52736,0.99954,0.99968,42,57000,14,31,5.4,55,done on different day due to rain
+Gros Morne trail,2,3,Timber_Gmtrail_line2_3,timber,Gmtrail,GMNP,7/23/22 14:03,937.9,31.25,6.1756,6.58765,0.999,0.99948,42,57000,14,31,5.4,55,done on different day due to rain
+Gros Morne trail,2,4,Timber_Gmtrail_line2_4,timber,Gmtrail,GMNP,7/23/22 14:39,1084.38,26.46607,5.55867,6.01728,0.99965,0.99978,45,7700,13,31,5.3,57,done on different day due to rain
+Gros Morne trail,2,4,Timber_Gmtrail_line2_4,timber,Gmtrail,GMNP,7/23/22 14:40,1084.38,26.39443,5.78547,6.50434,0.99817,0.99942,45,7700,13,31,5.3,57,done on different day due to rain
+Gros Morne trail,2,5,Timber_Gmtrail_line2_5,timber,Gmtrail,GMNP,7/23/22 15:10,937.9,26.08115,5.98606,6.58516,0.99941,0.99982,43,1700,13,29,6.2,62,done on different day due to rain
+Gros Morne trail,2,5,Timber_Gmtrail_line2_5,timber,Gmtrail,GMNP,7/23/22 15:12,937.9,26.02984,5.71496,6.03586,0.99909,0.99972,43,1700,13,29,6.2,62,done on different day due to rain
+Gros Morne trail,3,1,Timber_Gmtrail_line3_1,timber,Gmtrail,GMNP,7/19/22 15:41,1021.6,23.95033,3.10024,3.43408,0.99872,0.99952,13,1100,13,25,6.4,71,sort of in a gap within a stand of balsam firs
+Gros Morne trail,3,1,Timber_Gmtrail_line3_1,timber,Gmtrail,GMNP,7/19/22 15:43,1021.6,23.86213,3.28149,3.5791,0.99901,0.99949,13,1100,13,25,6.4,71,sort of in a gap within a stand of balsam firs
+Gros Morne trail,3,2,Timber_Gmtrail_line3_2,timber,Gmtrail,GMNP,7/19/22 16:05,1021.6,23.72541,5.18231,6.64737,0.99653,0.99967,23,3200,16,25,6.6,74,NA
+Gros Morne trail,3,2,Timber_Gmtrail_line3_2,timber,Gmtrail,GMNP,7/19/22 16:06,1021.6,23.64918,4.85377,5.11883,0.99658,0.99953,23,3200,16,25,6.6,74,NA
+Gros Morne trail,3,3,Timber_Gmtrail_line3_3,timber,Gmtrail,GMNP,7/19/22 15:28,1021.6,24.2241,7.36283,8.36108,0.99886,0.99981,14,1800,13,25,6,72,NA
+Gros Morne trail,3,3,Timber_Gmtrail_line3_3,timber,Gmtrail,GMNP,7/19/22 15:30,1021.6,24.12918,6.93041,7.65432,0.99897,0.99971,14,1800,13,25,6,72,NA
+Gros Morne trail,3,4,Timber_Gmtrail_line3_4,timber,Gmtrail,GMNP,7/19/22 15:53,937.9,23.7459,3.59281,3.9817,0.99914,0.99962,21,625,13,25,5.6,71,NA
+Gros Morne trail,3,4,Timber_Gmtrail_line3_4,timber,Gmtrail,GMNP,7/19/22 15:55,937.9,23.68049,3.586,3.73904,0.99962,0.99977,21,625,13,25,5.6,71,NA
+Gros Morne trail,3,5,Timber_Gmtrail_line3_5,timber,Gmtrail,GMNP,7/19/22 16:18,1042.53,23.21262,3.66409,4.12249,0.99898,0.99949,29,600,13,24,4.2,74,NA
+Gros Morne trail,3,5,Timber_Gmtrail_line3_5,timber,Gmtrail,GMNP,7/19/22 16:19,1042.53,23.07262,3.58326,3.79972,0.99845,0.99969,29,600,13,24,4.2,74,NA
+Mill Brook,1,1,Excl_MillBrook,exclosure,MillBrook,GMNP,7/28/22 13:52,979.75,25.50754,4.29085,4.65253,0.99925,0.99965,73,20000,14,28,5.3,54,NA
+Mill Brook,1,1,Excl_MillBrook,exclosure,MillBrook,GMNP,7/28/22 13:53,979.75,25.38508,4.26438,4.51799,0.99933,0.99951,73,20000,14,28,5.3,54,NA
+Mill Brook,1,2,Excl_MillBrook,exclosure,MillBrook,GMNP,7/28/22 13:44,958.83,26.26508,2.97668,3.03526,0.9993,0.99931,44,13300,15,28,4.6,56,NA
+Mill Brook,1,2,Excl_MillBrook,exclosure,MillBrook,GMNP,7/28/22 13:45,958.83,26.27115,3.30811,3.45624,0.99915,0.99939,44,13300,15,28,4.6,56,NA
+Mill Brook,1,3,Excl_MillBrook,exclosure,MillBrook,GMNP,7/28/22 13:37,1063.45,26.48311,5.5083,5.70283,0.99945,0.99949,65,8600,13,27,5.4,53,NA
+Mill Brook,1,3,Excl_MillBrook,exclosure,MillBrook,GMNP,7/28/22 13:38,1063.45,26.26918,6.47646,7.08455,0.9989,0.99953,65,8600,13,27,5.4,53,NA
+Ochre,1,1,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 13:51,1021.6,25.13311,3.80842,4.16483,0.9994,0.99967,32,1100,14,26,6.6,73,NA
+Ochre,1,1,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 13:52,1021.6,24.89607,4.66762,5.71935,0.99564,0.99919,32,1100,14,26,6.6,73,NA
+Ochre,1,2,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 13:59,1272.7,24.05557,4.64512,6.68441,0.99739,0.99951,12,400,14,25,6.4,73,NA
+Ochre,1,2,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 14:01,1272.7,23.96492,4.90713,5.96955,0.99752,0.99962,12,400,14,25,6.4,73,NA
+Ochre,1,3,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 14:07,1063.45,23.83148,6.05572,6.88527,0.99858,0.99965,6,1500,16,25,6.6,72,NA
+Ochre,1,3,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 14:08,1063.45,23.82246,6.11642,7.01242,0.99601,0.99745,6,1500,16,25,6.6,72,NA
+Ochre,1,4,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 14:14,1000.68,24.01098,6.56615,7.28579,0.9985,0.99883,26,3000,NA,25,6.6,80,NA
+Ochre,1,4,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 14:15,1000.68,23.94623,6.7063,6.53121,0.99911,0.99969,26,3000,NA,25,6.6,80,NA
+Ochre,1,5,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 14:20,1189,24.09869,6.50477,6.50477,0.94,0.94,10,4700,15,25,6.6,76,NA
+Ochre,1,5,Excl_Ochre,exclosure,Ochre,TNNP,8/3/22 14:22,1189,24.01377,8.47512,9.06248,0.99805,0.99957,10,4700,15,25,6.6,76,NA
+Old cut,1,1,timber_old_line1_1,timber,old,GMNP,7/26/22 15:49,1021.6,29.78049,7.3447,7.91837,0.99912,0.99955,17,68200,20,29,5.2,59,NA
+Old cut,1,1,timber_old_line1_1,timber,old,GMNP,7/26/22 15:51,1021.6,30.29098,7.30669,7.72313,0.99949,0.99975,17,68200,20,29,5.2,59,NA
+Old cut,1,2,timber_old_line1_2,timber,old,GMNP,7/26/22 14:59,1021.6,28.85393,12.57932,13.74204,0.9993,0.99976,41,6400,15,31,5.2,55,NA
+Old cut,1,2,timber_old_line1_2,timber,old,GMNP,7/26/22 15:01,1021.6,29.35098,12.18646,13.66197,0.999,0.99968,41,6400,15,31,5.2,55,NA
+Old cut,1,3,timber_old_line1_3,timber,old,GMNP,7/26/22 15:09,1105.3,26.90607,4.15116,4.49053,0.99948,0.99972,20,1800,16,31,4.8,54,NA
+Old cut,1,3,timber_old_line1_3,timber,old,GMNP,7/26/22 15:11,1105.3,26.75869,4.61737,4.61737,0.99898,0.99898,20,1800,16,31,4.8,54,NA
+Old cut,1,4,timber_old_line1_4,timber,old,GMNP,7/26/22 14:46,979.75,26.9123,3.58877,4.15487,0.99784,0.99937,40,2100,16,32,5.4,57,NA
+Old cut,1,4,timber_old_line1_4,timber,old,GMNP,7/26/22 14:48,979.75,26.89623,3.72048,4.16012,0.99862,0.9996,40,2100,16,32,5.4,57,NA
+Old cut,1,5,timber_old_line1_5,timber,old,GMNP,7/26/22 15:26,1021.6,25.14361,4.23345,4.28506,0.99897,0.99979,31,1700,14,29,6,57,NA
+Old cut,1,5,timber_old_line1_5,timber,old,GMNP,7/26/22 15:28,1021.6,25.11311,4.05896,4.47521,0.99894,0.99943,31,1700,14,29,6,57,NA
+Old cut,2,1,timber_old_line2_1,timber,old,GMNP,7/26/22 14:34,979.75,29.75475,4.05567,4.39061,0.99946,0.99973,24,70200,16,31,5.4,66,NA
+Old cut,2,1,timber_old_line2_1,timber,old,GMNP,7/26/22 14:35,979.75,29.93852,4.27772,4.50287,0.99943,0.9997,24,70200,16,31,5.4,66,NA
+Old cut,2,2,NA,NA,NA,GMNP,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,collar pulled
+Old cut,2,3,NA,NA,NA,GMNP,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,collar pulled
+Old cut,2,4,timber_old_line2_4,timber,old,GMNP,7/26/22 16:03,1021.6,28.52689,5.23397,5.55702,0.99906,0.99928,44,67400,14,29,5.3,48,collar in really patchy section; not contiguous mature
+Old cut,2,4,timber_old_line2_4,timber,old,GMNP,7/26/22 16:04,1021.6,28.61246,5.25117,5.78725,0.9985,0.99934,44,67400,14,29,5.3,48,collar in really patchy section; not contiguous mature
+Old cut,2,5,timber_old_line2_5,timber,old,GMNP,7/26/22 16:22,1021.6,25.28689,3.59294,3.82496,0.99936,0.99961,39,3200,15,30,4.6,43,collar in really patchy section; not contiguous mature
+Old cut,2,5,timber_old_line2_5,timber,old,GMNP,7/26/22 16:24,1021.6,25.12426,3.60749,3.73423,0.9995,0.99957,39,3200,15,30,4.6,43,collar in really patchy section; not contiguous mature
+Old cut,3,1,timber_old_line3_1,timber,old,GMNP,7/26/22 16:40,937.9,26.041,5.56778,5.63238,0.99955,0.99955,41,16400,16,28,5.3,45,NA
+Old cut,3,1,timber_old_line3_1,timber,old,GMNP,7/26/22 16:42,937.9,25.99283,5.85856,5.85856,0.9998,0.9998,41,16400,16,28,5.3,45,NA
+Old cut,3,2,timber_old_line3_2,timber,old,GMNP,7/26/22 17:13,937.9,23.62967,7.73636,8.45652,0.99958,0.99981,57,4700,19,27,5.1,51,NA
+Old cut,3,2,timber_old_line3_2,timber,old,GMNP,7/26/22 17:15,937.9,23.71183,7.70266,8.30817,0.99965,0.99982,57,4700,19,27,5.1,51,NA
+Old cut,3,3,timber_old_line3_3,timber,old,GMNP,7/26/22 17:22,1105.3,22.88017,4.04624,4.55577,0.99908,0.99956,32,900,16,27,NA,50,NA
+Old cut,3,3,timber_old_line3_3,timber,old,GMNP,7/26/22 17:24,1105.3,22.74333,4.1762,4.58799,0.99918,0.99945,32,900,16,27,NA,50,NA
+Old cut,3,4,timber_old_line3_4,timber,old,GMNP,7/26/22 17:01,1021.6,22.57067,2.60861,2.83425,0.99826,0.99848,37,1400,16,28,5.2,4.6,NA
+Old cut,3,4,timber_old_line3_4,timber,old,GMNP,7/26/22 17:03,1021.6,22.42833,3.02601,3.02601,0.9991,0.9991,37,1400,16,28,5.2,4.6,NA
+Old cut,3,5,timber_old_line3_5,timber,old,GMNP,7/26/22 17:39,954.64,21.71833,3.5598,3.5598,0.99953,0.99953,55,2000,13,25,6.4,55,NA
+Old cut,3,5,timber_old_line3_5,timber,old,GMNP,7/26/22 17:41,954.64,21.62667,3.68413,3.70597,0.99913,0.99913,55,2000,13,25,6.4,55,NA
+Rocky Harbour,1,1,Ctrl_RH_line1_1,control,RockyHarbour,GMNP,7/13/22 15:26,1063.45,17.76867,2.45778,2.45778,0.99929,0.99929,48,113,11,18,5.4,NA,50-175 lux
+Rocky Harbour,1,1,Ctrl_RH_line1_1,control,RockyHarbour,GMNP,7/13/22 15:27,1063.45,17.74483,2.51862,2.51862,0.99916,0.99916,48,113,11,18,5.4,NA,50-175 lux
+Rocky Harbour,1,2,Ctrl_RH_line1_2,control,RockyHarbour,GMNP,7/13/22 15:33,1000.68,17.764,3.57224,3.69787,0.99929,0.99932,52,1000,12,18,5.4,NA,100-350 lux
+Rocky Harbour,1,2,Ctrl_RH_line1_2,control,RockyHarbour,GMNP,7/13/22 15:35,1000.68,17.6845,3.74343,3.89559,0.99941,0.99945,52,1000,12,18,5.4,NA,100-350 lux
+Rocky Harbour,1,3,Ctrl_RH_line1_3,control,RockyHarbour,GMNP,7/13/22 15:57,1042.53,17.51617,2.52678,2.56259,0.99878,0.99879,11,225,12,17,5.6,NA,0-70 lux
+Rocky Harbour,1,3,Ctrl_RH_line1_3,control,RockyHarbour,GMNP,7/13/22 15:59,1042.53,17.47083,2.24809,2.43703,0.99884,0.99905,11,225,12,17,5.6,NA,0-70 lux
+Rocky Harbour,1,4,Ctrl_RH_line1_4,control,RockyHarbour,GMNP,7/13/22 15:50,946.27,17.64283,3.02447,3.04974,0.99959,0.99959,30,40,12,17,5.6,NA,90-140 lux
+Rocky Harbour,1,4,Ctrl_RH_line1_4,control,RockyHarbour,GMNP,7/13/22 15:52,946.27,17.58767,3.0706,3.23966,0.99908,0.99915,30,40,12,17,5.6,NA,90-140 lux
+Rocky Harbour,1,5,Ctrl_RH_line1_5,control,RockyHarbour,GMNP,7/13/22 15:43,1000.68,17.66717,2.88018,3.158,0.99887,0.99914,25,115,11,16,6,NA,900-1000 lux
+Rocky Harbour,1,5,Ctrl_RH_line1_5,control,RockyHarbour,GMNP,7/13/22 15:45,1000.68,17.60433,2.91069,3.16301,0.99908,0.99928,25,115,11,16,6,NA,900-1000 lux
+Rocky Harbour,2,1,Ctrl_RH_line2_1,control,RockyHarbour,GMNP,7/13/22 14:37,979.75,18.39917,4.91931,5.07167,0.99966,0.99969,13,900,13,18,6,NA,250-350 lux
+Rocky Harbour,2,1,Ctrl_RH_line2_1,control,RockyHarbour,GMNP,7/13/22 14:39,979.75,18.36367,4.83448,5.0532,0.99962,0.99967,13,900,13,18,6,NA,250-350 lux
+Rocky Harbour,2,2,Ctrl_RH_line2_3,control,RockyHarbour,GMNP,7/13/22 14:49,1021.6,17.7585,2.701,3.17362,0.99715,0.99813,37,300,12,18,5.6,NA,175-200 lux
+Rocky Harbour,2,2,Ctrl_RH_line2_3,control,RockyHarbour,GMNP,7/13/22 14:50,1021.6,17.69417,2.25765,2.68076,0.99745,0.99827,37,300,12,18,5.6,NA,175-200 lux
+Rocky Harbour,2,3,Ctrl_RH_line2_4,control,RockyHarbour,GMNP,7/13/22 15:13,958.83,17.74667,3.28674,3.37103,0.99932,0.99933,25,190,13,18,6.2,NA,500-650 lux
+Rocky Harbour,2,3,Ctrl_RH_line2_4,control,RockyHarbour,GMNP,7/13/22 15:15,958.83,17.71333,3.42919,3.42919,0.99929,0.99929,25,190,13,18,6.2,NA,500-650 lux
+Rocky Harbour,2,4,Ctrl_RH_line2_5,control,RockyHarbour,GMNP,7/13/22 15:05,1084.38,17.85133,6.17498,7.3353,0.99878,0.99975,34,590,12,18,5.4,NA,140-260 lux
+Rocky Harbour,2,4,Ctrl_RH_line2_5,control,RockyHarbour,GMNP,7/13/22 15:07,1084.38,17.77617,5.83787,6.70413,0.99904,0.99967,34,590,12,18,5.4,NA,140-260 lux
+Rocky Harbour,2,5,Ctrl_RH_line2_2,control,RockyHarbour,GMNP,7/13/22 14:58,1021.6,17.918,3.97044,4.17112,0.99934,0.9994,26,200,12,18,6.4,NA,380-490 lux
+Rocky Harbour,2,5,Ctrl_RH_line2_2,control,RockyHarbour,GMNP,7/13/22 15:00,1021.6,17.8665,4.00206,4.2521,0.99941,0.99951,26,200,12,18,6.4,NA,380-490 lux
+Rocky Harbour,3,1,Ctrl_RH_line3_1,control,RockyHarbour,GMNP,7/13/22 16:09,1021.6,17.541,4.39089,4.83582,0.99929,0.99955,31,435,11,18,6.2,NA,380-825 lux
+Rocky Harbour,3,1,Ctrl_RH_line3_1,control,RockyHarbour,GMNP,7/13/22 16:10,1021.6,17.49133,3.84769,4.45545,0.99865,0.99935,31,435,11,18,6.2,NA,380-825 lux
+Rocky Harbour,3,2,Ctrl_RH_line3_2,control,RockyHarbour,GMNP,7/13/22 16:16,1189,17.53617,4.05473,4.31546,0.99931,0.99942,19,690,13,20,6,NA,309-460 lux
+Rocky Harbour,3,2,Ctrl_RH_line3_2,control,RockyHarbour,GMNP,7/13/22 16:18,1189,17.48,4.05686,4.29559,0.99958,0.99967,19,690,13,20,6,NA,309-460 lux
+Rocky Harbour,3,3,Ctrl_RH_line3_3,control,RockyHarbour,GMNP,7/13/22 16:41,979.75,17.58983,3.0454,3.14225,0.9996,0.99962,23,385,11,20,5.3,NA,450-550 lux
+Rocky Harbour,3,3,Ctrl_RH_line3_3,control,RockyHarbour,GMNP,7/13/22 16:42,979.75,17.501,3.16824,3.44215,0.99912,0.99931,23,385,11,20,5.3,NA,450-550 lux
+Rocky Harbour,3,4,Ctrl_RH_line3_4,control,RockyHarbour,GMNP,7/13/22 16:34,979.75,17.61883,2.11949,2.52188,0.99791,0.99902,35,500,13,19,5.6,NA,775-1000 lux
+Rocky Harbour,3,4,Ctrl_RH_line3_4,control,RockyHarbour,GMNP,7/13/22 16:36,979.75,17.56033,2.1653,2.30347,0.99788,0.99798,35,500,13,19,5.6,NA,775-1000 lux
+Rocky Harbour,3,5,Ctrl_RH_line3_5,control,RockyHarbour,GMNP,7/13/22 16:27,1042.53,17.74367,5.25959,6.29955,0.99856,0.99956,41,890,13,19,5.4,NA,NA
+Rocky Harbour,3,5,Ctrl_RH_line3_5,control,RockyHarbour,GMNP,7/13/22 16:29,1042.53,17.66567,5.32591,6.23728,0.99885,0.99961,41,890,13,19,5.4,NA,NA
+Wiltondale,1,1,SB_Wiltondale_line1_1,insect,Wiltondale,GMNP,7/27/22 15:57,1189,26.17817,4.23791,4.82744,0.99895,0.99948,27,66000,17,25,6.6,63,NA
+Wiltondale,1,1,SB_Wiltondale_line1_1,insect,Wiltondale,GMNP,7/27/22 15:59,1189,26.92267,4.11253,4.41368,0.99936,0.9995,27,66000,17,25,6.6,63,NA
+Wiltondale,1,2,SB_Wiltondale_line1_2,insect,Wiltondale,GMNP,7/27/22 15:38,1042.53,24.06533,10.33553,12.08678,0.99905,0.99979,22,2200,17,25,5.4,63,NA
+Wiltondale,1,2,SB_Wiltondale_line1_2,insect,Wiltondale,GMNP,7/27/22 15:40,1042.53,24.093,9.72648,11.01979,0.99933,0.9998,22,2200,17,25,5.4,63,NA
+Wiltondale,1,3,SB_Wiltondale_line1_3,insect,Wiltondale,GMNP,7/27/22 16:18,1021.6,24.3915,6.60859,7.27035,0.99955,0.99978,19,4400,14,26,6.2,57,NA
+Wiltondale,1,3,SB_Wiltondale_line1_3,insect,Wiltondale,GMNP,7/27/22 16:20,1021.6,24.22583,6.54024,7.25929,0.9994,0.99968,19,4400,14,26,6.2,57,NA
+Wiltondale,1,4,SB_Wiltondale_line1_4,insect,Wiltondale,GMNP,7/27/22 15:47,1021.6,23.257,3.48395,3.56388,0.9994,0.99941,47,10000,14,24,5.8,65,NA
+Wiltondale,1,4,SB_Wiltondale_line1_4,insect,Wiltondale,GMNP,7/27/22 15:49,1021.6,23.31817,3.6016,3.66824,0.99962,0.99963,47,10000,14,24,5.8,65,NA
+Wiltondale,1,5,SB_Wiltondale_line1_5,insect,Wiltondale,GMNP,7/27/22 16:07,1105.3,24.9785,6.79903,7.71491,0.99908,0.99951,77,1600,NA,26,5.3,56,NA
+Wiltondale,1,5,SB_Wiltondale_line1_5,insect,Wiltondale,GMNP,7/27/22 16:09,1105.3,24.75,8.13159,8.82283,0.99957,0.99974,77,1600,NA,26,5.3,56,NA
+Wiltondale,2,1,SB_Wiltondale_line2_1,insect,Wiltondale,GMNP,7/27/22 16:54,1147.15,23.4365,5.60526,6.85695,0.99848,0.99965,27,7200,15,26,5.8,64,NA
+Wiltondale,2,1,SB_Wiltondale_line2_1,insect,Wiltondale,GMNP,7/27/22 16:56,1147.15,23.3,5.40226,6.24377,0.9991,0.99968,27,7200,15,26,5.8,64,NA
+Wiltondale,2,2,SB_Wiltondale_line2_2,insect,Wiltondale,GMNP,7/27/22 16:36,1021.6,25.79133,3.96473,4.81062,0.99797,0.99925,47,18000,16,26,6.4,61,NA
+Wiltondale,2,2,SB_Wiltondale_line2_2,insect,Wiltondale,GMNP,7/27/22 16:38,1021.6,25.8035,3.54364,4.21195,0.99825,0.99918,47,18000,16,26,6.4,61,NA
+Wiltondale,2,3,SB_Wiltondale_line2_3,insect,Wiltondale,GMNP,7/27/22 17:13,1042.53,22.28483,4.76479,5.12618,0.99963,0.99977,69,1000,13,24,5.4,65,NA
+Wiltondale,2,3,SB_Wiltondale_line2_3,insect,Wiltondale,GMNP,7/27/22 17:15,1042.53,22.26283,4.51464,4.92694,0.99943,0.99963,69,1000,13,24,5.4,65,NA
+Wiltondale,2,4,SB_Wiltondale_line2_4,insect,Wiltondale,GMNP,7/27/22 16:45,1063.45,23.98217,6.44456,7.44306,0.999,0.99969,64,700,13,26,5.4,56,NA
+Wiltondale,2,4,SB_Wiltondale_line2_4,insect,Wiltondale,GMNP,7/27/22 16:47,1063.45,23.66533,5.62773,6.0651,0.9996,0.99975,64,700,13,26,5.4,56,NA
+Wiltondale,2,5,SB_Wiltondale_line2_5,insect,Wiltondale,GMNP,7/27/22 17:04,979.75,23.079,7.30843,8.49068,0.999,0.99974,26,400,16,25,5.4,64,NA
+Wiltondale,2,5,SB_Wiltondale_line2_5,insect,Wiltondale,GMNP,7/27/22 17:06,979.75,22.82283,7.20301,8.42414,0.9988,0.99962,26,400,16,25,5.4,64,NA
+Wiltondale,3,1,SB_Wiltondale_line3_1,insect,Wiltondale,GMNP,7/27/22 14:59,1063.45,23.43017,8.93996,9.9438,0.99955,0.99983,43,32000,17,25,5.8,68,NA
+Wiltondale,3,1,SB_Wiltondale_line3_1,insect,Wiltondale,GMNP,7/27/22 15:01,1063.45,23.45367,8.61363,10.21619,0.99911,0.99977,43,32000,17,25,5.8,68,NA
+Wiltondale,3,2,SB_Wiltondale_line3_2,insect,Wiltondale,GMNP,7/27/22 14:39,1147.15,24.32567,4.2348,4.54269,0.99957,0.99971,25,7800,17,25,6.4,65,NA
+Wiltondale,3,2,SB_Wiltondale_line3_2,insect,Wiltondale,GMNP,7/27/22 14:40,1147.15,24.39783,4.10459,4.27955,0.99957,0.99962,25,7800,17,25,6.4,65,NA
+Wiltondale,3,3,SB_Wiltondale_line3_3,insect,Wiltondale,GMNP,7/27/22 15:21,1063.45,23.022,6.96388,7.74111,0.99956,0.99985,39,2200,14,25,5.4,63,NA
+Wiltondale,3,3,SB_Wiltondale_line3_3,insect,Wiltondale,GMNP,7/27/22 15:23,1063.45,22.922,6.84693,8.0529,0.99879,0.99962,39,2200,14,25,5.4,63,NA
+Wiltondale,3,4,SB_Wiltondale_line3_4,insect,Wiltondale,GMNP,7/27/22 14:49,1021.6,23.31683,8.35554,9.13331,0.99956,0.99978,38,2500,13,24,6,64,NA
+Wiltondale,3,4,SB_Wiltondale_line3_4,insect,Wiltondale,GMNP,7/27/22 14:51,1021.6,23.185,8.12528,8.8996,0.99947,0.99969,38,2500,13,24,6,64,NA
+Wiltondale,3,5,SB_Wiltondale_line3_5,insect,Wiltondale,GMNP,7/27/22 15:11,1021.6,22.7665,10.16281,11.23569,0.99949,0.99979,20,6600,13,26,6.2,61,NA
+Wiltondale,3,5,SB_Wiltondale_line3_5,insect,Wiltondale,GMNP,7/27/22 15:13,1021.6,22.695,10.07343,11.44537,0.9992,0.99974,20,6600,13,26,6.2,61,NA
