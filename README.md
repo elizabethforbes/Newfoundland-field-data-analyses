@@ -3,7 +3,7 @@ Newfoundland empirical data analysis: Elizabeth Forbes
 Collected summers 2022, 2023 and consisting of:
 # 2022: 
 - soil carbon flux (LiCor 8100A) across triplicate 100m transects transversing moose meadows to mature forest (15 total measurements per site)
-![fluxes_distr width="40px"](https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_densdistr.png)
+<img src="fluxes_distr width="40px"](https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_densdistr.png" width="200" />
 
 ![fluxes_collars](https://github.com/elizabethforbes/Newfoundland-field-data-analyses/blob/main/images/fluxes_collars_treatments.png)
 
