@@ -9,7 +9,7 @@ Collected summers 2022, 2023 and consisting of:
 - light level;
 - rough ground vegetation composition;
 - canopy cover
-# 2022: 
+# 2023: 
 - soil carbon flux (EGM5) across 3x locations per site, including mature stands, moose meadows, and exclosures;
 - soil C and N content;
 - soil moisture and temp;
